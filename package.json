@@ -13,6 +13,7 @@
     "apollo-link-context": "^1.0.20",
     "apollo-link-http": "^1.5.17",
     "babel-preset-typescript-vue": "^1.1.1",
+    "date-fns": "^2.14.0",
     "graphql": "^15.0.0",
     "graphql-tag": "^2.10.3",
     "tailwindcss": "^1.4.6",

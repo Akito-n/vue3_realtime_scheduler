@@ -13,6 +13,14 @@
             {{ result.currentUser.email }}
           </router-link>
         </li>
+        <li class="mr-6">
+          <router-link
+            to="/protected/calendar"
+            class="text-white hover:text-yellow-800"
+          >
+            calendar
+          </router-link>
+        </li>
         <li>
           <a href="/users/sign_out" data-method="delete">
             Sign out
