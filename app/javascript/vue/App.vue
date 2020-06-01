@@ -10,7 +10,7 @@
             to="/protected/example"
             class="text-white hover:text-yellow-800"
           >
-            {{ result.currentUser.email }}
+            {{ result.currentUser.email }}({{ result.currentUser.role }})
           </router-link>
         </li>
         <li class="mr-6">
