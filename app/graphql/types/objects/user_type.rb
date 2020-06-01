@@ -6,4 +6,8 @@ class Types::Objects::UserType < Types::BaseObject
 
   field :id, ID, null: false
   field :email, String, null: true
+  field :role, String, null: false
+  def role
+    User.human_attribute_name("role.#{object.role}")
+  end
 end
