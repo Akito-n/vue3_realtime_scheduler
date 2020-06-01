@@ -3,7 +3,7 @@
     <div class="flex row justify-around items-center">
       <div v-for="(day, i) in elementalies" :key="i">
         <div
-          class="border-l border-t border-r text-center"
+          class="border-l border-t border-r text-center pt-2"
           style="width: 200px; height: 50px;"
         >
           {{ day }}
