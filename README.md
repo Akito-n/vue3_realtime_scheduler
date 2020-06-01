@@ -15,6 +15,7 @@
 docker-compose build
 docker-compose run --rm app yarn
 docker-compose run --rm app bundle install
+docker-compose run --rm app rails db:create db:migrate
 ```
 
 ## VSCode
