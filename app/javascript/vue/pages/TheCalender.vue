@@ -2,7 +2,12 @@
   <div>
     <div class="flex row justify-around items-center">
       <div v-for="(day, i) in elementalies" :key="i">
-        {{ day }}
+        <div
+          class="border-l border-t border-r text-center pt-2"
+          style="width: 200px; height: 50px;"
+        >
+          {{ day }}
+        </div>
       </div>
     </div>
     <div
@@ -11,7 +16,9 @@
       :key="`week-${i}`"
     >
       <div v-for="(day, j) in week" :key="`day-${j}`">
-        {{ day }}
+        <div class="border text-center" style="width: 200px; height: 100px;">
+          {{ day }}
+        </div>
       </div>
     </div>
   </div>

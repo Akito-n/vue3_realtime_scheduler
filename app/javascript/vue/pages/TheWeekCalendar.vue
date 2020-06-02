@@ -10,10 +10,16 @@
       v-for="(week, i) in days"
       :key="`week-${i}`"
     >
-      <div v-for="(day, i) in week" :key="`day-${i}`">
-        {{ day }}
-        <div v-for="(time, i) in times" :key="`time-${i}`">
-          {{ time }}
+      <div class="items-center" v-for="(day, i) in week" :key="`day-${i}`">
+        <p class="text-center">{{ day }}</p>
+        <div v-for="(time, t) in times" :key="`time-${t}`">
+          <div
+            class="border bg-gray-200"
+            :class="`day-${day} time-${time}`"
+            style="width: 150px; height: 50px;"
+          >
+            <span v-if="i === 0">{{ time }}</span>
+          </div>
         </div>
       </div>
     </div>
