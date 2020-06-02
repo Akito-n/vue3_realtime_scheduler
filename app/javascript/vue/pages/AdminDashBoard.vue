@@ -1,6 +1,11 @@
 <template>
   <div>
-    <p>Dash Board</p>
+    <div class="flex md:flex-row-reverse flex-wrap">
+      <!--Main Content-->
+      <div class="w-full md:w-4/5 bg-gray-100">
+        <div class="container bg-gray-100 pt-16 px-6"></div>
+      </div>
+    </div>
   </div>
 </template>
 
