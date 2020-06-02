@@ -1,4 +1,3 @@
-require('dotenv').config()
 const { GRAPHQL_BASE_URL } = process.env.GRAPHQL_BASE_URL
 
 module.exports = {
