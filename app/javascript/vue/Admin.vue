@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <p>This is Admin page!</p>
-    {{ !loading && email ? email : 'loading' }}
+  <div class="flex">
     <side-bar />
-    <router-view />
+    <div class="md:w-4/5">
+      <p>This is Admin page!</p>
+      {{ !loading && email ? email : 'loading' }}
+      <router-view />
+    </div>
   </div>
 </template>
 
