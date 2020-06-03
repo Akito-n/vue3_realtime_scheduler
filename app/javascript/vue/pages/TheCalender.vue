@@ -1,5 +1,27 @@
 <template>
   <div>
+    <div class="fixed bg-gray-600 w-3/5 h-64 inset-auto" v-if="state.opened">
+      開いた
+      <input type="datetime-local" step="3600" v-model="state.date" />
+      <button
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
+        @click="mutate"
+      >
+        登録する
+      </button>
+      <button
+        class="bg-white-500 hover:bg-white-700 text-white font-bold py-2 px-4 rounded-full"
+        @click="state.opened = false"
+      >
+        <font-awesome-icon icon="window-close" />
+      </button>
+    </div>
+    <button
+      class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+      @click="state.opened = true"
+    >
+      <font-awesome-icon icon="plus" />
+    </button>
     <div class="flex row justify-around items-center">
       <div v-for="(day, i) in elementalies" :key="i">
         <div
@@ -28,8 +50,11 @@
 import { addDays, format, startOfWeek, startOfMonth } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
-import { defineComponent } from '@vue/composition-api'
-import { useCurrentUserQuery } from '@/graphql/types'
+import { defineComponent, reactive } from '@vue/composition-api'
+import {
+  useCurrentUserQuery,
+  useAddBlankScheduleMutation
+} from '@/graphql/types'
 
 export default defineComponent({
   setup() {
@@ -51,7 +76,21 @@ export default defineComponent({
       days.push(_days)
     }
 
-    return { elementalies, days }
+    const state = reactive({
+      opened: false,
+      date: new Date()
+    })
+
+    const { mutate, loading, error, onDone } = useAddBlankScheduleMutation({
+      variables: {
+        input: {
+          startAt: new Date(),
+          endAt: new Date()
+        }
+      }
+    })
+
+    return { elementalies, days, state, open, mutate }
   }
 })
 </script>

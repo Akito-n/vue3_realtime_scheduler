@@ -52,6 +52,18 @@
 import Vue from 'vue'
 import { defineComponent } from '@vue/composition-api'
 import { useCurrentUserQuery } from '@/graphql/types'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faUserSecret,
+  faAd,
+  faPlus,
+  faWindowClose
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faPlus)
+library.add(faWindowClose)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 export default defineComponent({
   setup() {
