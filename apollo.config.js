@@ -1,11 +1,9 @@
-const { GRAPHQL_BASE_URL } = process.env.GRAPHQL_BASE_URL
-
 module.exports = {
   client: {
     service: {
       name: 'my-app',
       // URL to the GraphQL API
-      url: GRAPHQL_BASE_URL
+      url: '/graphql'
     },
     // Files processed by the extension
     includes: [
