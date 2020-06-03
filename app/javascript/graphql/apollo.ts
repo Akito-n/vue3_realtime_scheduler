@@ -6,7 +6,7 @@ import { setContext } from 'apollo-link-context'
 import Rails from '@rails/ujs'
 
 const httpLink = createHttpLink({
-  uri: '/graphgl'
+  uri: 'http://localhost:3000/graphql'
 })
 
 const authLink = setContext(async (_, { headers }) => {
