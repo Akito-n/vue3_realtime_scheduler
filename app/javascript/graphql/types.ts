@@ -105,6 +105,7 @@ export type QueryUsersArgs = {
 
 export type User = {
   __typename?: 'User';
+  companyName?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
@@ -170,7 +171,7 @@ export type CurrentUserQuery = (
   { __typename?: 'Query' }
   & { currentUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'role' | 'name'>
+    & Pick<User, 'id' | 'email' | 'role' | 'name' | 'companyName'>
   )> }
 );
 
@@ -247,6 +248,7 @@ export const CurrentUserDocument = gql`
     email
     role
     name
+    companyName
   }
 }
     `;

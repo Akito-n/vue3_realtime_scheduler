@@ -12,7 +12,7 @@
           >
             {{ result.currentUser.email }}({{ result.currentUser.role }})/{{
               result.currentUser.name
-            }}
+            }}{{ result.currentUser.companyName }}
           </router-link>
         </li>
         <li class="mr-6">
