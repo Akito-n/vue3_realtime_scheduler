@@ -10,7 +10,9 @@
             to="/protected/example"
             class="text-white hover:text-yellow-800"
           >
-            {{ result.currentUser.email }}({{ result.currentUser.role }})
+            {{ result.currentUser.email }}({{ result.currentUser.role }})/{{
+              result.currentUser.name
+            }}
           </router-link>
         </li>
         <li class="mr-6">
@@ -51,6 +53,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { defineComponent } from '@vue/composition-api'
+import { useResult } from '@vue/apollo-composable'
 import { useCurrentUserQuery } from '@/graphql/types'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -60,6 +63,7 @@ import {
   faWindowClose
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { CurrentUserQuery } from 'graphql/types'
 library.add(faPlus)
 library.add(faWindowClose)
 

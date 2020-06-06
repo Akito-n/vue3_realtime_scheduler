@@ -107,6 +107,7 @@ export type User = {
   __typename?: 'User';
   email?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
   role: Scalars['String'];
 };
 
@@ -169,7 +170,7 @@ export type CurrentUserQuery = (
   { __typename?: 'Query' }
   & { currentUser?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'role'>
+    & Pick<User, 'id' | 'email' | 'role' | 'name'>
   )> }
 );
 
@@ -245,6 +246,7 @@ export const CurrentUserDocument = gql`
     id
     email
     role
+    name
   }
 }
     `;
