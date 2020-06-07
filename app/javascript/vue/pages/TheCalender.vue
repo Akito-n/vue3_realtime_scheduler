@@ -1,27 +1,6 @@
 <template>
   <div>
-    <div class="fixed bg-gray-600 w-3/5 h-64 inset-auto" v-if="state.opened">
-      開いた
-      <input type="datetime-local" step="3600" v-model="state.date" />
-      <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
-        @click="mutate"
-      >
-        登録する
-      </button>
-      <button
-        class="bg-white-500 hover:bg-white-700 text-white font-bold py-2 px-4 rounded-full"
-        @click="state.opened = false"
-      >
-        <font-awesome-icon icon="window-close" />
-      </button>
-    </div>
-    <button
-      class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
-      @click="state.opened = true"
-    >
-      <font-awesome-icon icon="plus" />
-    </button>
+    <schedule-add-button />
     <div class="flex row justify-around items-center">
       <div v-for="(day, i) in elementalies" :key="i">
         <div
@@ -47,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { addDays, format, startOfWeek, startOfMonth } from 'date-fns'
+import { add, addDays, format, startOfWeek, startOfMonth } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
 import { defineComponent, reactive } from '@vue/composition-api'
@@ -55,12 +34,15 @@ import {
   useCurrentUserQuery,
   useAddBlankScheduleMutation
 } from '@/graphql/types'
+import ScheduleAddButton from '../components/ScheduleButtonAdd.vue'
 
 export default defineComponent({
+  components: { ScheduleAddButton },
   setup() {
     const monthStart = startOfMonth(new Date())
-    const startDate = startOfWeek(monthStart)
-    const endDate = addDays(startDate, 7 * 6)
+    const displayMonth = add(monthStart, { months: 0 })
+    const startDate = startOfWeek(displayMonth)
+    const endDate = addDays(startDate, 7 * 4)
     const elementalies = [0, 1, 2, 3, 4, 5, 6].map((i) =>
       format(addDays(startOfWeek(new Date()), i), 'E', { locale: jaLocale })
     )
