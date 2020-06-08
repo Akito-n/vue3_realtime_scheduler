@@ -35,6 +35,7 @@ import {
   useAddBlankScheduleMutation
 } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
+import { useCalendar } from '@/vue/composition-funcs/calendar'
 
 export default defineComponent({
   components: { ScheduleCreator },
@@ -43,18 +44,14 @@ export default defineComponent({
     const displayMonth = add(monthStart, { months: 0 })
     const startDate = startOfWeek(displayMonth)
     const endDate = addDays(startDate, 7 * 4)
-    const elementalies = [0, 1, 2, 3, 4, 5, 6].map((i) =>
-      format(addDays(startOfWeek(new Date()), i), 'E', { locale: jaLocale })
-    )
+
+    const { daysOfWeek, elementalies } = useCalendar()
 
     let day = startDate
     const days = []
     while (day <= endDate) {
-      const _days = []
-      for (let i = 0; i < 7; i++) {
-        _days.push(format(day, 'dd'))
-        day = addDays(day, 1)
-      }
+      const _days = daysOfWeek(day)
+      day = addDays(day, 7)
       days.push(_days)
     }
 

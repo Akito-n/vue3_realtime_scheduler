@@ -61,6 +61,7 @@ import {
 } from '@vue/composition-api'
 import { useCurrentUserQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
+import { useCalendar } from '@/vue/composition-funcs/calendar'
 
 export default defineComponent({
   setup(props, context) {
@@ -70,9 +71,7 @@ export default defineComponent({
       days: []
     })
 
-    const elementalies = [0, 1, 2, 3, 4, 5, 6].map((i) =>
-      format(addDays(startOfWeek(new Date()), i), 'E', { locale: jaLocale })
-    )
+    const { daysOfWeek, elementalies } = useCalendar()
 
     const times = []
     for (let i = 1; i < 25; i++) {
@@ -84,12 +83,7 @@ export default defineComponent({
       state.lastWeek = format(addWeeks(current, -1), 'yyyy/MM/dd')
       state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
 
-      let _day = startOfWeek(current)
-      state.days = []
-      for (let i = 0; i < 7; i++) {
-        state.days.push(format(_day, 'dd'))
-        _day = addDays(_day, 1)
-      }
+      state.days = daysOfWeek(current)
     }
 
     watch(
