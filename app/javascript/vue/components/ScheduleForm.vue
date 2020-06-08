@@ -8,20 +8,12 @@
       <vue-timepicker
         :format="timepickerOptions.format"
         :minute-interval="timepickerOptions.interval"
-        @change="
-          (e) => {
-            state.startDateTime = settingTime(state.startDate, e.data)
-          }
-        "
+        v-model="state.startTime"
       />
       <vue-timepicker
         :format="timepickerOptions.format"
         :minute-interval="timepickerOptions.interval"
-        @change="
-          (e) => {
-            state.endDateTime = settingTime(state.endDate, e.data)
-          }
-        "
+        v-model="state.endTime"
       />
       <input type="date" v-model="state.endDate" />
       <!-- <input
@@ -33,7 +25,7 @@
 
       <button
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
-        @click="change"
+        @click="submit"
       >
         登録する
       </button>
@@ -59,27 +51,29 @@ import { format, parse } from 'date-fns'
 import { defineComponent, reactive, computed } from '@vue/composition-api'
 import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
-import VueApollo from 'vue-apollo'
-import {
-  useCurrentUserQuery,
-  useAddBlankScheduleMutation
-} from '@/graphql/types'
 
-export default defineComponent({
+interface Props {
+  submit(startAt: Date, endAt: Date)
+}
+
+interface TimeProps {
+  HH: String
+  mm: String
+}
+
+export default defineComponent<Props>({
   components: { VueTimepicker },
-  setup() {
-    interface TimeProps {
-      HH: String
-      mm: String
-    }
+  setup(props, context) {
     const state = reactive({
       opened: false,
       startDate: new Date(),
       startTime: { HH: String, mm: String },
-      startDateTime: new Date(),
+      startDateTime: computed(() =>
+        settingTime(state.startDate, state.startTime)
+      ),
       endDate: new Date(),
       endTime: { HH: String, mm: String },
-      endDateTime: new Date()
+      endDateTime: computed(() => settingTime(state.endDate, state.endTime))
     })
     const variables = computed(() => ({
       input: {
@@ -93,25 +87,6 @@ export default defineComponent({
       interval: '30'
     }
 
-    const change = () => {
-      // console.log(state.start_time)
-      // console.log(state.start_date)
-      // console.log(
-      //   parse(
-      //     state.start_date + '-' + state.start_time.HH + state.start_time.mm,
-      //     'yyyy-MM-dd-HHmm',
-      //     new Date()
-      //   )
-      // )
-      // console.log('new Date', new Date(), 'type', typeof new Date())
-      // const a = settingTime(state.start_date, state.start_time)
-      // console.log(a, typeof a)
-      console.log('開始時間', state.startDateTime)
-      console.log('終了時間', state.endDateTime)
-      console.log(variables.value)
-      mutate(variables.value)
-      // console.log(Date.parse(state.startDateTime))
-    }
     // methodにしてみる
     const settingTime = function (
       date: any,
@@ -122,13 +97,14 @@ export default defineComponent({
         'yyyy-MM-dd-HHmm',
         new Date()
       )
-      console.log(_dateTime)
       return _dateTime
     }
-    //@ts-ignore
-    const { mutate, loading, error, onDone } = useAddBlankScheduleMutation()
 
-    return { state, timepickerOptions, open, mutate, change, settingTime }
+    const submit = () => {
+      context.emit('submit', state.startDateTime, state.endDateTime)
+    }
+
+    return { state, timepickerOptions, open, settingTime, submit }
   }
 })
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <schedule-add-button />
+    <schedule-creator />
     <div class="flex row justify-around items-center">
       <div v-for="(day, i) in elementalies" :key="i">
         <div
@@ -34,10 +34,10 @@ import {
   useCurrentUserQuery,
   useAddBlankScheduleMutation
 } from '@/graphql/types'
-import ScheduleAddButton from '../components/ScheduleButtonAdd.vue'
+import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 
 export default defineComponent({
-  components: { ScheduleAddButton },
+  components: { ScheduleCreator },
   setup() {
     const monthStart = startOfMonth(new Date())
     const displayMonth = add(monthStart, { months: 0 })
