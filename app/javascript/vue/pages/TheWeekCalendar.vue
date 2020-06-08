@@ -49,34 +49,57 @@ import {
 } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
-import { defineComponent } from '@vue/composition-api'
+import {
+  defineComponent,
+  watch,
+  reactive,
+  computed
+} from '@vue/composition-api'
 import { useCurrentUserQuery } from '@/graphql/types'
+import { routes } from 'vue/routes'
 
 export default defineComponent({
   setup(props, context) {
-    const { year, month, day } = context.root.$route.params
-    const current = parse(`${year}-${month}-${day}`, 'yyyy-MM-dd', new Date())
-    const lastWeek = format(addWeeks(current, -1), 'yyyy/MM/dd')
-    const nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
-    const startDate = startOfWeek(current)
-    const endDate = addDays(startDate, 6)
+    const state = reactive({
+      route: computed(() => {
+        return context.root.$route
+      }),
+      current: computed(() => {
+        const path = context.root.$route
+        const { year, month, day } = route.params
+        const _current = parse(
+          `${year}-${month}-${day}`,
+          'yyyy-MM-dd',
+          new Date()
+        )
+        return _current
+      }),
+      lastWeek: computed(() =>
+        format(addWeeks(state.current, -1), 'yyyy/MM/dd')
+      ),
+      nextWeek: computed(() =>
+        format(addWeeks(state.current, 1), 'yyyy/MM/dd')
+      ),
+      days: computed(() => {
+        let _day = startOfWeek(state.current)
+        const _days = []
+        for (let i = 0; i < 7; i++) {
+          _days.push(format(_day, 'dd'))
+          _day = addDays(_day, 1)
+        }
+        return _days
+      })
+    })
     const elementalies = [0, 1, 2, 3, 4, 5, 6].map((i) =>
       format(addDays(startOfWeek(new Date()), i), 'E', { locale: jaLocale })
     )
-
-    let _day = startDate
-    const days = []
-    for (let i = 0; i < 7; i++) {
-      days.push(format(_day, 'dd'))
-      _day = addDays(_day, 1)
-    }
 
     const times = []
     for (let i = 1; i < 25; i++) {
       times.push(i)
     }
 
-    return { elementalies, days, times, lastWeek, nextWeek }
+    return { elementalies, times, ...state }
   }
 })
 </script>
