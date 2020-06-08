@@ -33,7 +33,7 @@
 
       <button
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
-        @click="mutate"
+        @click="change"
       >
         登録する
       </button>
@@ -81,6 +81,12 @@ export default defineComponent({
       endTime: { HH: String, mm: String },
       endDateTime: new Date()
     })
+    const variables = computed(() => ({
+      input: {
+        startAt: state.startDateTime,
+        endAt: state.endDateTime
+      }
+    }))
 
     const timepickerOptions = {
       format: 'HH:mm',
@@ -100,9 +106,11 @@ export default defineComponent({
       // console.log('new Date', new Date(), 'type', typeof new Date())
       // const a = settingTime(state.start_date, state.start_time)
       // console.log(a, typeof a)
-      console.log('開始時間', state.start_date_time)
-      console.log('終了時間', state.end_date_time)
-      console.log(Date.parse(state.start_date_time))
+      console.log('開始時間', state.startDateTime)
+      console.log('終了時間', state.endDateTime)
+      console.log(variables.value)
+      mutate(variables.value)
+      // console.log(Date.parse(state.startDateTime))
     }
     // methodにしてみる
     const settingTime = function (
@@ -118,14 +126,7 @@ export default defineComponent({
       return _dateTime
     }
     //@ts-ignore
-    const { mutate, loading, error, onDone } = useAddBlankScheduleMutation({
-      variables: {
-        input: {
-          startAt: state.startDateTime,
-          endAt: state.endDateTime
-        }
-      }
-    })
+    const { mutate, loading, error, onDone } = useAddBlankScheduleMutation()
 
     return { state, timepickerOptions, open, mutate, change, settingTime }
   }
