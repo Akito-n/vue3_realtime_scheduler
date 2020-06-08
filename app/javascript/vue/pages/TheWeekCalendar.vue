@@ -6,13 +6,13 @@
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         <font-awesome-icon icon="chevron-left" />
-        前月
+        前週
       </router-link>
       <router-link
         :to="`/calendar/week/${state.nextWeek}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        翌月
+        翌週
         <font-awesome-icon icon="chevron-right" />
       </router-link>
     </div>
