@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="flex row justify-around items-center">
-      <div class="" v-for="(day, i) in state.days" :key="`day-${i}`">
+      <div v-for="(day, i) in state.days" :key="`day-${i}`">
         <div class="border text-center" style="width: 200px; height: 100px;">
           {{ day }}
         </div>
