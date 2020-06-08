@@ -4,15 +4,26 @@
       class="fixed bg-gray-300 mx-10 w-3/5 h-64 inset-auto"
       v-if="state.opened"
     >
-      <input type="date" v-model="state.start_date" />
+      <input type="date" v-model="state.startDate" />
       <vue-timepicker
         :format="timepickerOptions.format"
         :minute-interval="timepickerOptions.interval"
-        v-model="state.start_time"
-        @change="change"
+        @change="
+          (e) => {
+            state.startDateTime = settingTime(state.startDate, e.data)
+          }
+        "
       />
-      <vue-timepicker></vue-timepicker>
-      <input type="date" />
+      <vue-timepicker
+        :format="timepickerOptions.format"
+        :minute-interval="timepickerOptions.interval"
+        @change="
+          (e) => {
+            state.endDateTime = settingTime(state.endDate, e.data)
+          }
+        "
+      />
+      <input type="date" v-model="state.endDate" />
       <!-- <input
         type="datetime-local"
         step="3600"
@@ -45,7 +56,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { format, parse } from 'date-fns'
-import { defineComponent, reactive } from '@vue/composition-api'
+import { defineComponent, reactive, computed } from '@vue/composition-api'
 import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 import VueApollo from 'vue-apollo'
@@ -63,10 +74,12 @@ export default defineComponent({
     }
     const state = reactive({
       opened: false,
-      start_date: new Date(),
-      start_time: { HH: String, mm: String },
-      end_date: new Date(),
-      end_time: { HH: String, mm: String }
+      startDate: new Date(),
+      startTime: { HH: String, mm: String },
+      startDateTime: new Date(),
+      endDate: new Date(),
+      endTime: { HH: String, mm: String },
+      endDateTime: new Date()
     })
 
     const timepickerOptions = {
@@ -84,11 +97,14 @@ export default defineComponent({
       //     new Date()
       //   )
       // )
-      console.log('z')
-      const a = settingTime(state.start_date, state.start_time)
-      console.log(a)
+      // console.log('new Date', new Date(), 'type', typeof new Date())
+      // const a = settingTime(state.start_date, state.start_time)
+      // console.log(a, typeof a)
+      console.log('開始時間', state.start_date_time)
+      console.log('終了時間', state.end_date_time)
+      console.log(Date.parse(state.start_date_time))
     }
-
+    // methodにしてみる
     const settingTime = function (
       date: any,
       time: { HH: StringConstructor; mm: StringConstructor }
@@ -101,17 +117,17 @@ export default defineComponent({
       console.log(_dateTime)
       return _dateTime
     }
-
+    //@ts-ignore
     const { mutate, loading, error, onDone } = useAddBlankScheduleMutation({
       variables: {
         input: {
-          startAt: settingTime(state.start_date, state.start_time),
-          endAt: settingTime(state.end_date, state.end_time)
+          startAt: state.startDateTime,
+          endAt: state.endDateTime
         }
       }
     })
 
-    return { state, timepickerOptions, open, mutate, change }
+    return { state, timepickerOptions, open, mutate, change, settingTime }
   }
 })
 </script>
