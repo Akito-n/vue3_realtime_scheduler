@@ -16,6 +16,7 @@
         <font-awesome-icon icon="chevron-right" />
       </router-link>
     </div>
+    <schedule-creator />
     <div class="flex row justify-around items-center">
       <div v-for="(day, i) in elementalies" :key="i">
         {{ day }}
@@ -61,9 +62,11 @@ import {
 } from '@vue/composition-api'
 import { useCurrentUserQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
+import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 
 export default defineComponent({
+  components: { ScheduleCreator },
   setup(props, context) {
     const state = reactive({
       lastWeek: '',
