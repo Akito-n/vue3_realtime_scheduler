@@ -65,32 +65,11 @@ import { routes } from 'vue/routes'
 export default defineComponent({
   setup(props, context) {
     const state = reactive({
-      route: context.root.$route,
-      current: computed(() => {
-        const { year, month, day } = state.route.params
-        const _current = parse(
-          `${year}-${month}-${day}`,
-          'yyyy-MM-dd',
-          new Date()
-        )
-        return _current
-      }),
-      lastWeek: computed(() =>
-        format(addWeeks(state.current, -1), 'yyyy/MM/dd')
-      ),
-      nextWeek: computed(() =>
-        format(addWeeks(state.current, 1), 'yyyy/MM/dd')
-      ),
-      days: computed(() => {
-        let _day = startOfWeek(state.current)
-        const _days = []
-        for (let i = 0; i < 7; i++) {
-          _days.push(format(_day, 'dd'))
-          _day = addDays(_day, 1)
-        }
-        return _days
-      })
+      lastWeek: '',
+      nextWeek: '',
+      days: []
     })
+
     const elementalies = [0, 1, 2, 3, 4, 5, 6].map((i) =>
       format(addDays(startOfWeek(new Date()), i), 'E', { locale: jaLocale })
     )
@@ -100,10 +79,24 @@ export default defineComponent({
       times.push(i)
     }
 
+    const load = (year: string, month: string, day: string) => {
+      const current = parse(`${year}-${month}-${day}`, 'yyyy-MM-dd', new Date())
+      state.lastWeek = format(addWeeks(current, -1), 'yyyy/MM/dd')
+      state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
+
+      let _day = startOfWeek(current)
+      state.days = []
+      for (let i = 0; i < 7; i++) {
+        state.days.push(format(_day, 'dd'))
+        _day = addDays(_day, 1)
+      }
+    }
+
     watch(
       () => context.root.$route,
       (r) => {
-        state.route = context.root.$route
+        const { year, month, day } = r.params
+        load(year, month, day)
       }
     )
 
