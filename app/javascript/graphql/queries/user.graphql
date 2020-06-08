@@ -3,5 +3,7 @@ query currentUser {
     id
     email
     role
+    name
+    companyName
   }
 }

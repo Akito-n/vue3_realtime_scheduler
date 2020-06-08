@@ -5,8 +5,10 @@ import { ApolloLink } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
 import Rails from '@rails/ujs'
 
+const { GRAPHQL_BASE_URL } = process.env
+
 const httpLink = createHttpLink({
-  uri: 'http://localhost:3000/graphql'
+  uri: GRAPHQL_BASE_URL
 })
 
 const authLink = setContext(async (_, { headers }) => {
