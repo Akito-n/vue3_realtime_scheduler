@@ -5,12 +5,8 @@
         {{ day }}
       </div>
     </div>
-    <div
-      class="flex row justify-around items-center"
-      v-for="(week, i) in days"
-      :key="`week-${i}`"
-    >
-      <div class="items-center" v-for="(day, i) in week" :key="`day-${i}`">
+    <div class="flex row justify-around items-center">
+      <div class="items-center" v-for="(day, i) in days" :key="`day-${i}`">
         <p class="text-center">{{ day }}</p>
         <div v-for="(time, t) in times" :key="`time-${t}`">
           <div
@@ -43,13 +39,9 @@ export default defineComponent({
 
     let day = startDate
     const days = []
-    while (day <= endDate) {
-      const _days = []
-      for (let i = 0; i < 7; i++) {
-        _days.push(format(day, 'dd'))
-        day = addDays(day, 1)
-      }
-      days.push(_days)
+    for (let i = 0; i < 7; i++) {
+      days.push(format(day, 'dd'))
+      day = addDays(day, 1)
     }
 
     const times = []
