@@ -2,14 +2,14 @@
   <div>
     <div class="flex row justify-around items-center my-5">
       <router-link
-        :to="`/calendar/week/${lastWeek}`"
+        :to="`/calendar/week/${state.lastWeek}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         <font-awesome-icon icon="chevron-left" />
         前月
       </router-link>
       <router-link
-        :to="`/calendar/week/${nextWeek}`"
+        :to="`/calendar/week/${state.nextWeek}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         翌月
@@ -22,7 +22,11 @@
       </div>
     </div>
     <div class="flex row justify-around items-center">
-      <div class="items-center" v-for="(day, i) in days" :key="`day-${i}`">
+      <div
+        class="items-center"
+        v-for="(day, i) in state.days"
+        :key="`day-${i}`"
+      >
         <p class="text-center">{{ day }}</p>
         <div v-for="(time, t) in times" :key="`time-${t}`">
           <div
@@ -61,12 +65,9 @@ import { routes } from 'vue/routes'
 export default defineComponent({
   setup(props, context) {
     const state = reactive({
-      route: computed(() => {
-        return context.root.$route
-      }),
+      route: context.root.$route,
       current: computed(() => {
-        const path = context.root.$route
-        const { year, month, day } = route.params
+        const { year, month, day } = state.route.params
         const _current = parse(
           `${year}-${month}-${day}`,
           'yyyy-MM-dd',
@@ -99,7 +100,14 @@ export default defineComponent({
       times.push(i)
     }
 
-    return { elementalies, times, ...state }
+    watch(
+      () => context.root.$route,
+      (r) => {
+        state.route = context.root.$route
+      }
+    )
+
+    return { elementalies, times, state }
   }
 })
 </script>
