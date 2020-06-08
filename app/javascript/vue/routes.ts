@@ -1,5 +1,5 @@
 import Example from './Example.vue'
-import TheCalendar from './pages/TheCalender.vue'
+import TheCalendar from './pages/TheCalendar.vue'
 import TheWeekCalendar from './pages/TheWeekCalendar.vue'
 import Protected from './Protected.vue'
 import Admin from './Admin.vue'
@@ -23,10 +23,10 @@ export const routes = [
         path: 'calendar/week',
         redirect: `/calendar/week/${year}/${month}/${day}`
       },
-      { path: 'calender/month/:year/:month', component: TheCalendar },
+      { path: 'calendar/month/:year/:month/01', component: TheCalendar },
       {
-        path: 'calendar',
-        redirect: `/calender/month/${year}/${month}`
+        path: 'calendar/month',
+        redirect: `/calendar/month/${year}/${month}/01`
       }
     ]
   },

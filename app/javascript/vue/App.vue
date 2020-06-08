@@ -13,7 +13,10 @@
           </router-link>
         </li>
         <li class="mr-6">
-          <router-link to="/calendar" class="text-white hover:text-yellow-800">
+          <router-link
+            to="/calendar/month"
+            class="text-white hover:text-yellow-800"
+          >
             calendar
           </router-link>
         </li>
