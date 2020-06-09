@@ -17,12 +17,25 @@
       </router-link>
     </div>
     <schedule-creator />
-    <div class="flex row justify-around items-center">
-      <div v-for="(day, i) in elementalies" :key="i">
-        {{ day }}
+    <div class="flex row justify-center items-center">
+      <div v-for="(elementaly, i) in elementalies" :key="i" class="w-40 h-20">
+        <div class="text-center">
+          {{ elementaly }}
+        </div>
       </div>
     </div>
-    <div class="flex row justify-around items-center">
+    <div class="flex row justify-center items-center">
+      <div class="flex flex-col">
+        <template v-for="(time, t) in times">
+          <div
+            :key="`time-${t}`"
+            class="w-40 h-20 flex justify-end items-center"
+          >
+            <span>{{ time }}</span>
+          </div>
+        </template>
+      </div>
+
       <div
         class="items-center"
         v-for="(day, i) in state.days"
@@ -31,12 +44,9 @@
         <p class="text-center">{{ day }}</p>
         <div v-for="(time, t) in times" :key="`time-${t}`">
           <div
-            class="border bg-gray-200"
+            class="border bg-gray-200 w-40 h-20"
             :class="`day-${day} time-${time}`"
-            style="width: 150px; height: 50px;"
-          >
-            <span v-if="i === 0">{{ time }}</span>
-          </div>
+          ></div>
         </div>
       </div>
     </div>
