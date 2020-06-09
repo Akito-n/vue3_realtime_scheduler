@@ -6,10 +6,7 @@
         class="flex items-center justify-end p-6 bg-teal-500"
       >
         <li class="mr-6">
-          <router-link
-            to="/protected/example"
-            class="text-white hover:text-yellow-800"
-          >
+          <router-link to="/example" class="text-white hover:text-yellow-800">
             {{ result.currentUser.email }}({{ result.currentUser.role }})/{{
               result.currentUser.name
             }}{{ result.currentUser.companyName }}
@@ -17,7 +14,7 @@
         </li>
         <li class="mr-6">
           <router-link
-            to="/protected/calendar"
+            to="/calendar/month"
             class="text-white hover:text-yellow-800"
           >
             calendar
@@ -25,7 +22,7 @@
         </li>
         <li class="mr-6">
           <router-link
-            to="/protected/calendar/week"
+            to="/calendar/week"
             class="text-white hover:text-yellow-800"
           >
             week calendar
@@ -46,7 +43,9 @@
         </li>
       </ul>
     </template>
-    <router-view />
+    <main class="flex justify-center items-start">
+      <router-view />
+    </main>
   </div>
 </template>
 
@@ -60,12 +59,16 @@ import {
   faUserSecret,
   faAd,
   faPlus,
-  faWindowClose
+  faWindowClose,
+  faChevronLeft,
+  faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { CurrentUserQuery } from 'graphql/types'
 library.add(faPlus)
 library.add(faWindowClose)
+library.add(faChevronLeft)
+library.add(faChevronRight)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

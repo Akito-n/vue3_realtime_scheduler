@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p>Protected</p>
     <router-view />
   </div>
 </template>
