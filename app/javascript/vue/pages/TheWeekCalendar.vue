@@ -75,7 +75,7 @@ import {
   reactive,
   computed
 } from '@vue/composition-api'
-import { useCurrentUserQuery } from '@/graphql/types'
+import { useBlankSchedulesQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
@@ -83,14 +83,18 @@ import { useCalendar } from '@/vue/composition-funcs/calendar'
 export default defineComponent({
   components: { ScheduleCreator },
   setup(props, context) {
+    const { daysOfWeek, elementalies } = useCalendar()
     const state = reactive({
       currentWeek: '',
-      lastWeek: '',
-      nextWeek: '',
+      lastWeek: new Date().toString(),
+      nextWeek: new Date().toString(),
       days: []
     })
 
-    const { daysOfWeek, elementalies } = useCalendar()
+    const { result, loading, refetch } = useBlankSchedulesQuery({
+      minDate: state.lastWeek,
+      maxDate: state.nextWeek
+    })
 
     const times = []
     for (let i = 1; i <= 24; i++) {
@@ -109,6 +113,11 @@ export default defineComponent({
       state.currentWeek = `${format(current, 'M月')} ${state.days[0].day}～${
         state.days[6].day
       }日`
+
+      refetch({
+        minDate: state.lastWeek,
+        maxDate: state.nextWeek
+      })
     }
 
     watch(
@@ -119,7 +128,7 @@ export default defineComponent({
       }
     )
 
-    return { times, state }
+    return { times, state, loading, result }
   }
 })
 </script>

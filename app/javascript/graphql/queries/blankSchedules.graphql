@@ -1,0 +1,11 @@
+query blankSchedules($minDate: Date!, $maxDate: Date!) {
+  blankSchedules(minDate: $minDate, maxDate: $maxDate) {
+    nodes {
+      id
+      userId
+      startAt
+      endAt
+      mine
+    }
+  }
+}
