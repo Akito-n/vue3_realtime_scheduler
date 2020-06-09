@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 1400px;">
+  <div class="max-w-screen-xl">
     <div class="flex row justify-around items-center my-5">
       <router-link
         :to="`/calendar/month/${state.lastMonth}`"
@@ -21,10 +21,7 @@
     <div class="">
       <div class="flex row justify-around items-center">
         <div v-for="(elementaly, i) in elementalies" :key="i">
-          <div
-            class="border-l border-t border-r text-center pt-2"
-            style="width: 200px; height: 50px;"
-          >
+          <div class="border-l border-t border-r text-center pt-2 w-40 h-10">
             {{ elementaly }}
           </div>
         </div>
@@ -35,7 +32,7 @@
         :key="`week-${i}`"
       >
         <div v-for="(day, j) in week" :key="`day-${j}`">
-          <div class="border text-center" style="width: 200px; height: 100px;">
+          <div class="border text-center w-40 h-20">
             {{ day }}
           </div>
         </div>

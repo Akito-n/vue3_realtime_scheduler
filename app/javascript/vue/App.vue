@@ -43,7 +43,9 @@
         </li>
       </ul>
     </template>
-    <router-view />
+    <main class="flex justify-center items-start">
+      <router-view />
+    </main>
   </div>
 </template>
 
