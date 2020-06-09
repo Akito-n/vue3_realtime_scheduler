@@ -4,12 +4,12 @@ import TheWeekCalendar from './pages/TheWeekCalendar.vue'
 import Protected from './Protected.vue'
 import Admin from './Admin.vue'
 import AdminDashBoard from './pages/AdminDashBoard.vue'
-import { format, addMonths, parse } from 'date-fns'
+import { format } from 'date-fns'
 
 //funcsに分ける？
 const today = new Date()
 const year = format(today, 'yyyy')
-const month = format(addMonths(today, 1), 'MM')
+const month = format(today, 'MM')
 const day = format(today, 'dd')
 
 export const routes = [
