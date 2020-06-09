@@ -1,6 +1,11 @@
 <template>
   <div>
     <div
+      v-if="state.opened"
+      class="fixed bg-gray-100 inset-0 opacity-50"
+      @click="state.opened = false"
+    ></div>
+    <div
       class="fixed bg-gray-300 mx-10 my-10 w-3/5 h-64 inset-auto flex justify-center"
       v-if="state.opened"
     >
