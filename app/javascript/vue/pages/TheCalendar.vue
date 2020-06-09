@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 1400px;">
     <div class="flex row justify-around items-center my-5">
       <router-link
         :to="`/calendar/month/${state.lastMonth}`"
@@ -8,6 +8,7 @@
         <font-awesome-icon icon="chevron-left" />
         前月
       </router-link>
+      <div>{{ state.currentMonth }}月</div>
       <router-link
         :to="`/calendar/month/${state.nextMonth}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -62,11 +63,20 @@ import {
 } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
+import { routes } from 'vue/routes'
+
+interface State {
+  currentMonth: string
+  nextMonth: string
+  lastMonth: string
+  days: string[]
+}
 
 export default defineComponent({
   components: { ScheduleCreator },
   setup(_, context) {
-    const state = reactive({
+    const state = reactive<State>({
+      currentMonth: '',
       nextMonth: '',
       lastMonth: '',
       days: []
@@ -74,29 +84,18 @@ export default defineComponent({
 
     const { daysOfWeek, elementalies } = useCalendar()
 
-    // const monthStart = startOfMonth(new Date())
-    // const startDate = startOfWeek(monthStart)
-    // const endDate = addDays(startDate, 7 * 4)
-    // console.log(monthStart, startDate, endDate)
-
-    // let day = startDate
-    // const days = []
-    // while (day <= endDate) {
-    //   const _days = daysOfWeek(day)
-    //   day = addDays(day, 7)
-    //   days.push(_days)
-    // }
-
     const load = (year: string, month: string) => {
       const current = parse(`${year}-${month}-01`, 'yyyy-MM-dd', new Date())
+      state.currentMonth = format(current, 'M')
       const monthStart = startOfMonth(current)
       const startDate = startOfWeek(monthStart)
       const endDate = addDays(startDate, 28)
-      let day = startDate
-      const tempdays = []
       state.nextMonth = format(addMonths(current, 1), 'yyyy/MM/dd')
       state.lastMonth = format(addMonths(current, -1), 'yyyy/MM/dd')
 
+      //funcsに分ける startDateだけあれば行ける気がする
+      let day = startDate
+      const tempdays = []
       while (day <= endDate) {
         const _days = daysOfWeek(day)
         day = addDays(day, 7)
@@ -109,7 +108,6 @@ export default defineComponent({
       () => context.root.$route,
       (r) => {
         const { year, month } = r.params
-        console.log(year, month)
         load(year, month)
       }
     )
@@ -118,4 +116,10 @@ export default defineComponent({
   }
 })
 </script>
-<style scoped></style>
+<style scoped lang="sass">
+.calender{
+  &__cell {
+    height: 100px
+  }
+}
+</style>
