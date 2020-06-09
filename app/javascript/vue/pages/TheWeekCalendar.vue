@@ -1,5 +1,6 @@
 <template>
   <div class="flex justify-center items-end">
+    <button @click="sample(new Date(), 20, 0)">検証</button>
     <div class="flex flex-col">
       <div
         v-for="(time, t) in times"
@@ -49,7 +50,9 @@
               :key="i"
               v-for="i in [1, 2]"
               class="border bg-gray-200 w-40 h-5"
-              :class="`day-${day} time-${time} ${i === 1 ? 'border-b-0' : ''}`"
+              :class="`day-${day.day} time-${time} ${
+                i === 1 ? 'border-b-0' : ''
+              }`"
             ></div>
           </div>
         </div>
@@ -65,7 +68,10 @@ import {
   startOfWeek,
   startOfMonth,
   parse,
-  addWeeks
+  addWeeks,
+  addHours,
+  addMinutes,
+  areIntervalsOverlapping
 } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
@@ -79,6 +85,7 @@ import { useBlankSchedulesQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
+import { useResult } from '@vue/apollo-composable'
 
 export default defineComponent({
   components: { ScheduleCreator },
@@ -95,6 +102,30 @@ export default defineComponent({
       minDate: state.lastWeek,
       maxDate: state.nextWeek
     })
+
+    const schedules = useResult(
+      result,
+      null,
+      (data) => data.blankSchedules.nodes
+    )
+
+    const sample = (day, hours, minutes) => {
+      //
+      //day, timeから時間を再生成して
+      let criteriaTime = addHours(day, hours)
+      criteriaTime = addMinutes(criteriaTime, minutes)
+      //
+      const tempdata = result.value.blankSchedules.nodes.find((schedule) => {
+        return areIntervalsOverlapping(
+          { start: new Date(schedule.startAt), end: new Date(schedule.endAt) },
+          { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
+        )
+      })
+      console.log(tempdata)
+
+      return tempdata
+      //schedulからstartAtがマッチしたshceduleを返す
+    }
 
     const times = []
     for (let i = 1; i <= 24; i++) {
@@ -128,7 +159,7 @@ export default defineComponent({
       }
     )
 
-    return { times, state, loading, result }
+    return { times, state, loading, result, schedules, sample }
   }
 })
 </script>

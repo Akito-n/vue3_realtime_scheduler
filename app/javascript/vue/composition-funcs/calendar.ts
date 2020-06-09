@@ -9,7 +9,7 @@ export const useCalendar = () => {
     let _day = day
     const days = []
     for (let i = 0; i < 7; i++) {
-      days.push(format(_day, 'd'))
+      days.push(_day)
       _day = addDays(_day, 1)
     }
     return days
