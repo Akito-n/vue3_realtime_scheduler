@@ -33,7 +33,7 @@
       >
         <div v-for="(day, j) in week" :key="`day-${j}`">
           <div class="border text-center w-40 h-20">
-            {{ day }}
+            {{ format(day, 'dd') }}
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@ export default defineComponent({
       }
     )
 
-    return { elementalies, state }
+    return { elementalies, state, format }
   }
 })
 </script>

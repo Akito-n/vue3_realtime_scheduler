@@ -36,7 +36,7 @@
           class="w-40 h-16 text-center"
         >
           {{ elementaly }}<br />
-          {{ day }}
+          {{ format(day, 'dd') }}
         </div>
       </div>
       <div v-if="loading">Loading...</div>
@@ -165,7 +165,7 @@ export default defineComponent({
       }
     )
 
-    return { times, state, loading, result, schedules, sample }
+    return { times, state, loading, result, schedules, sample, format }
   }
 })
 </script>
