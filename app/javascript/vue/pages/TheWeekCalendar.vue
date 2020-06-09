@@ -8,6 +8,7 @@
         <font-awesome-icon icon="chevron-left" />
         前週
       </router-link>
+      {{ state.currentWeek }}
       <router-link
         :to="`/calendar/week/${state.nextWeek}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -26,14 +27,13 @@
     </div>
     <div class="flex row justify-center items-center">
       <div class="flex flex-col">
-        <template v-for="(time, t) in times">
-          <div
-            :key="`time-${t}`"
-            class="w-40 h-20 flex justify-end items-center"
-          >
-            <span>{{ time }}</span>
-          </div>
-        </template>
+        <div
+          v-for="(time, t) in times"
+          :key="`time-${t}`"
+          class="w-40 h-20 flex justify-end items-center"
+        >
+          <span>{{ time }}</span>
+        </div>
       </div>
 
       <div
@@ -79,6 +79,7 @@ export default defineComponent({
   components: { ScheduleCreator },
   setup(props, context) {
     const state = reactive({
+      currentWeek: '',
       lastWeek: '',
       nextWeek: '',
       days: []
@@ -97,6 +98,9 @@ export default defineComponent({
       state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
 
       state.days = daysOfWeek(current)
+      state.currentWeek = `${format(current, 'M月')} ${state.days[0]}～${
+        state.days[6]
+      }日`
     }
 
     watch(
