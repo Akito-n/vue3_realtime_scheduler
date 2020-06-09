@@ -1,52 +1,57 @@
 <template>
-  <div>
-    <div class="flex row justify-around items-center my-5">
-      <router-link
-        :to="`/calendar/week/${state.lastWeek}`"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        <font-awesome-icon icon="chevron-left" />
-        前週
-      </router-link>
-      {{ state.currentWeek }}
-      <router-link
-        :to="`/calendar/week/${state.nextWeek}`"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        翌週
-        <font-awesome-icon icon="chevron-right" />
-      </router-link>
-    </div>
-    <schedule-creator />
-    <div class="flex row justify-center items-center">
-      <div v-for="(elementaly, i) in elementalies" :key="i" class="w-40 h-20">
-        <div class="text-center">
-          {{ elementaly }}
-        </div>
-      </div>
-    </div>
-    <div class="flex row justify-center items-center">
-      <div class="flex flex-col">
-        <div
-          v-for="(time, t) in times"
-          :key="`time-${t}`"
-          class="w-40 h-20 flex justify-end items-center"
-        >
-          <span>{{ time }}</span>
-        </div>
-      </div>
-
+  <div class="flex justify-center items-end">
+    <div class="flex flex-col">
       <div
-        class="items-center"
-        v-for="(day, i) in state.days"
-        :key="`day-${i}`"
+        v-for="(time, t) in times"
+        :key="`time-${t}`"
+        class="w-3 h-10 flex justify-end items-end border-b-2"
       >
-        <p class="text-center">{{ day }}</p>
-        <div v-for="(time, t) in times" :key="`time-${t}`">
-          <div
-            class="border bg-gray-200 w-40 h-20"
-            :class="`day-${day} time-${time}`"
-          ></div>
+        <span class="-mb-2 mr-4 whitespace-no-wrap">{{ time }}時</span>
+      </div>
+    </div>
+    <div>
+      <div class="flex row justify-around items-center my-5">
+        <router-link
+          :to="`/calendar/week/${state.lastWeek}`"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          <font-awesome-icon icon="chevron-left" />
+          前週
+        </router-link>
+        {{ state.currentWeek }}
+        <router-link
+          :to="`/calendar/week/${state.nextWeek}`"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          翌週
+          <font-awesome-icon icon="chevron-right" />
+        </router-link>
+      </div>
+      <schedule-creator />
+      <div class="flex row justify-center items-center">
+        <div
+          v-for="({ day, elementaly }, i) in state.days"
+          :key="i"
+          class="w-40 h-16 text-center"
+        >
+          {{ elementaly }}<br />
+          {{ day }}
+        </div>
+      </div>
+      <div class="flex row justify-center items-center">
+        <div
+          class="items-center"
+          v-for="(day, i) in state.days"
+          :key="`day-${i}`"
+        >
+          <div v-for="(time, t) in times" :key="`time-${t}`">
+            <div
+              :key="i"
+              v-for="i in [1, 2]"
+              class="border bg-gray-200 w-40 h-5"
+              :class="`day-${day} time-${time} ${i === 1 ? 'border-b-0' : ''}`"
+            ></div>
+          </div>
         </div>
       </div>
     </div>
@@ -88,7 +93,7 @@ export default defineComponent({
     const { daysOfWeek, elementalies } = useCalendar()
 
     const times = []
-    for (let i = 1; i < 25; i++) {
+    for (let i = 1; i <= 24; i++) {
       times.push(i)
     }
 
@@ -97,9 +102,12 @@ export default defineComponent({
       state.lastWeek = format(addWeeks(current, -1), 'yyyy/MM/dd')
       state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
 
-      state.days = daysOfWeek(current)
-      state.currentWeek = `${format(current, 'M月')} ${state.days[0]}～${
-        state.days[6]
+      state.days = daysOfWeek(current).map((day, i) => ({
+        day,
+        elementaly: elementalies[i]
+      }))
+      state.currentWeek = `${format(current, 'M月')} ${state.days[0].day}～${
+        state.days[6].day
       }日`
     }
 
@@ -111,7 +119,7 @@ export default defineComponent({
       }
     )
 
-    return { elementalies, times, state }
+    return { times, state }
   }
 })
 </script>
