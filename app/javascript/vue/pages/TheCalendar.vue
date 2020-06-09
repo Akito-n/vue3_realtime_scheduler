@@ -17,20 +17,26 @@
       </router-link>
     </div>
     <schedule-creator />
-    <div class="flex row justify-around items-center">
-      <div v-for="(elementaly, i) in elementalies" :key="i">
-        <div
-          class="border-l border-t border-r text-center pt-2"
-          style="width: 200px; height: 50px;"
-        >
-          {{ elementaly }}
+    <div class="">
+      <div class="flex row justify-around items-center">
+        <div v-for="(elementaly, i) in elementalies" :key="i">
+          <div
+            class="border-l border-t border-r text-center pt-2"
+            style="width: 200px; height: 50px;"
+          >
+            {{ elementaly }}
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex row justify-around items-center">
-      <div v-for="(day, i) in state.days" :key="`day-${i}`">
-        <div class="border text-center" style="width: 200px; height: 100px;">
-          {{ day }}
+      <div
+        class="flex row justify-around items-center"
+        v-for="(week, i) in state.days"
+        :key="`week-${i}`"
+      >
+        <div v-for="(day, j) in week" :key="`day-${j}`">
+          <div class="border text-center" style="width: 200px; height: 100px;">
+            {{ day }}
+          </div>
         </div>
       </div>
     </div>
@@ -94,7 +100,7 @@ export default defineComponent({
       while (day <= endDate) {
         const _days = daysOfWeek(day)
         day = addDays(day, 7)
-        tempdays.push(..._days)
+        tempdays.push(_days)
       }
       state.days = tempdays
     }
