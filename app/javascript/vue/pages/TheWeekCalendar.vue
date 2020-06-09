@@ -39,21 +39,28 @@
           {{ day }}
         </div>
       </div>
-      <div class="flex row justify-center items-center">
+      <div v-if="loading">Loading...</div>
+      <div v-else-if="result" class="flex row justify-center items-center">
         <div
           class="items-center"
           v-for="(day, i) in state.days"
           :key="`day-${i}`"
         >
-          <div v-for="(time, t) in times" :key="`time-${t}`">
+          <div v-for="(hour, t) in times" :key="`hour-${t}`">
             <div
-              :key="i"
-              v-for="i in [1, 2]"
-              class="border bg-gray-200 w-40 h-5"
-              :class="`day-${day.day} time-${time} ${
-                i === 1 ? 'border-b-0' : ''
+              :key="minute"
+              v-for="minute in [0, 30]"
+              class="bg-gray-200 w-40 h-5 schedule-cell relative"
+              :class="`day-${day.day} hour-${hour} ${
+                minute === 0 ? 'border-b-0' : ''
               }`"
-            ></div>
+            >
+              <div
+                v-if="sample(day.day, hour, minute)"
+                class="schedule-cell--blank min-w-full min-h-full bg-red-200"
+              ></div>
+              <div class="schedule-cell--border inset-0 absolute" />
+            </div>
           </div>
         </div>
       </div>
@@ -110,7 +117,6 @@ export default defineComponent({
     )
 
     const sample = (day, hours, minutes) => {
-      //
       //day, timeから時間を再生成して
       let criteriaTime = addHours(day, hours)
       criteriaTime = addMinutes(criteriaTime, minutes)
