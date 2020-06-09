@@ -37,4 +37,6 @@ class User < ApplicationRecord
          :confirmable, :trackable
 
   enum role: { individual: 0, company: 1, admin: 9 }
+
+  has_many :blank_schedules
 end
