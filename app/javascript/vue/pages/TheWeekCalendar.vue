@@ -1,6 +1,5 @@
 <template>
   <div class="flex justify-center items-end">
-    <button @click="sample(new Date(), 20, 0)">検証</button>
     <div class="flex flex-col">
       <div
         v-for="(time, t) in times"
@@ -33,7 +32,7 @@
         <div
           v-for="(day, i) in state.days"
           :key="i"
-          class="w-40 h-16 text-center"
+          class="w-40 h-10 text-center"
         >
           {{ format(day, 'dd(E)', { locale: jaLocale }) }}
         </div>
