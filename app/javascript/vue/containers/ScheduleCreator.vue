@@ -32,8 +32,11 @@ export default defineComponent({
 
     const submit = (startAt: Date, endAt: Date) => {
       mutate({ input: { startAt, endAt } })
-      context.root.$router.push({ query: { status: 'closed' } })
     }
+
+    onDone(() => {
+      context.root.$router.push({ query: { status: 'closed' } })
+    })
 
     console.log(error)
 
