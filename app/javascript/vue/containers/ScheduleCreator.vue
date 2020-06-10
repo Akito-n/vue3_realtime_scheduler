@@ -1,6 +1,6 @@
 <template>
   <div>
-    <schedule-form @submit="submit" />
+    <schedule-form @submit="submit" :disabled="loading" />
     <template v-if="error">
       <template v-for="(errorMessage, i) in error.graphQLErrors">
         <p :key="i">{{ errorMessage.message }}</p>
@@ -40,7 +40,7 @@ export default defineComponent({
 
     console.log(error)
 
-    return { submit, error }
+    return { submit, error, loading }
   }
 })
 </script>

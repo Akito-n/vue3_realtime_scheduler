@@ -35,6 +35,7 @@
         <button
           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
           @click="submit"
+          :disabled="props.disabled"
         >
           登録する
         </button>
@@ -63,11 +64,14 @@ import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 
 interface Props {
-  submit(startAt: Date, endAt: Date)
+  disabled: boolean
 }
 
 export default defineComponent<Props>({
   components: { VueTimepicker },
+  props: {
+    disabled: Boolean
+  },
   setup(props, context) {
     const state = reactive({
       opened: false,
@@ -117,7 +121,7 @@ export default defineComponent<Props>({
       context.emit('submit', state.startDateTime, state.endDateTime)
     }
 
-    return { state, timepickerOptions, open, settingTime, submit }
+    return { state, timepickerOptions, open, settingTime, submit, props }
   }
 })
 </script>
