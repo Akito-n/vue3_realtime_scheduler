@@ -1,40 +1,48 @@
 <template>
   <div>
     <div
-      class="fixed bg-gray-300 mx-10 w-3/5 h-64 inset-auto"
+      v-if="state.opened"
+      class="fixed bg-gray-100 inset-0 opacity-50"
+      @click="state.opened = false"
+    ></div>
+    <div
+      class="fixed bg-gray-300 mx-10 my-10 w-3/5 h-64 inset-auto flex justify-center"
       v-if="state.opened"
     >
-      <input type="date" v-model="state.startDate" />
-      <vue-timepicker
-        :format="timepickerOptions.format"
-        :minute-interval="timepickerOptions.interval"
-        v-model="state.startTime"
-      />
-      <vue-timepicker
-        :format="timepickerOptions.format"
-        :minute-interval="timepickerOptions.interval"
-        v-model="state.endTime"
-      />
-      <input type="date" v-model="state.endDate" />
-      <!-- <input
-        type="datetime-local"
-        step="3600"
-        v-model="state.end_date"
-        value="now"
-      /> -->
+      <div class="item-center my-5">
+        <input type="date" v-model="state.startDate" />
+        <vue-timepicker
+          :format="timepickerOptions.format"
+          :placeholder="timepickerOptions.placeholder"
+          :minute-interval="timepickerOptions.interval"
+          :hour-label="timepickerOptions.hourLabel"
+          :minute-label="timepickerOptions.minuteLabel"
+          :default-value="timepickerOptions.defaultValue"
+          v-model="state.startTime"
+        />
+        <vue-timepicker
+          :format="timepickerOptions.format"
+          :minute-interval="timepickerOptions.interval"
+          :placeholder="timepickerOptions.placeholder"
+          :hour-label="timepickerOptions.hourLabel"
+          :minute-label="timepickerOptions.minuteLabel"
+          v-model="state.endTime"
+        />
+        <input type="date" v-model="state.endDate" />
 
-      <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
-        @click="submit"
-      >
-        登録する
-      </button>
-      <button
-        class="bg-white-500 hover:bg-white-700 text-white font-bold py-2 px-4 rounded-full"
-        @click="state.opened = false"
-      >
-        <font-awesome-icon icon="window-close" />
-      </button>
+        <button
+          class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
+          @click="submit"
+        >
+          登録する
+        </button>
+        <button
+          class="bg-white-500 hover:bg-white-700 text-white font-bold py-2 px-4 rounded-full"
+          @click="state.opened = false"
+        >
+          <font-awesome-icon icon="window-close" />
+        </button>
+      </div>
     </div>
     <button
       class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
@@ -47,7 +55,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { format, parse } from 'date-fns'
+import { format, parse, addHours } from 'date-fns'
 import { defineComponent, reactive, computed } from '@vue/composition-api'
 import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
@@ -56,23 +64,24 @@ interface Props {
   submit(startAt: Date, endAt: Date)
 }
 
-interface TimeProps {
-  HH: String
-  mm: String
-}
-
 export default defineComponent<Props>({
   components: { VueTimepicker },
   setup(props, context) {
     const state = reactive({
       opened: false,
-      startDate: new Date(),
-      startTime: { HH: String, mm: String },
+      startDate: format(new Date(), 'yyyy-MM-dd'),
+      startTime: {
+        HH: format(new Date(), 'HH'),
+        mm: '00'
+      },
       startDateTime: computed(() =>
         settingTime(state.startDate, state.startTime)
       ),
-      endDate: new Date(),
-      endTime: { HH: String, mm: String },
+      endDate: format(new Date(), 'yyyy-MM-dd'),
+      endTime: {
+        HH: format(addHours(new Date(), 1), 'HH'),
+        mm: '00'
+      },
       endDateTime: computed(() => settingTime(state.endDate, state.endTime))
     })
     const variables = computed(() => ({
@@ -84,10 +93,12 @@ export default defineComponent<Props>({
 
     const timepickerOptions = {
       format: 'HH:mm',
-      interval: '30'
+      interval: '30',
+      placeholder: ' ',
+      hourLabel: '時間',
+      minuteLabel: '分'
     }
 
-    // methodにしてみる
     const settingTime = function (
       date: any,
       time: { HH: StringConstructor; mm: StringConstructor }

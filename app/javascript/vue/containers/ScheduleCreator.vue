@@ -1,7 +1,6 @@
 <template>
   <div>
     <schedule-form @submit="submit" />
-    クリエイター
   </div>
 </template>
 
