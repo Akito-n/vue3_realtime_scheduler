@@ -19,4 +19,12 @@
 #
 class BlankSchedule < ApplicationRecord
   belongs_to :user
+
+  validate :check_schedule
+
+  def check_schedule
+    if start_at > end_at
+      errors.add(:start_at,'は終了時間よりも前に設定してください。')
+    end
+  end
 end

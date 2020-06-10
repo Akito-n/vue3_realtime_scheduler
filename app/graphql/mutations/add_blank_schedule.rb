@@ -12,7 +12,11 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
   end
 
   def resolve(start_at:, end_at:)
-    schedule = BlankSchedule.create(start_at: start_at, end_at: end_at, user: context[:current_user])
-    { blank_schdule: schedule }
+    blank_schedule = BlankSchedule.new(start_at: start_at, end_at: end_at, user: context[:current_user])
+    if blank_schedule.save
+      { blank_schdule: blank_schedule }
+    else
+      raise GraphQL::ExecutionError, blank_schedule.errors.full_messages.join(', ')
+    end
   end
 end
