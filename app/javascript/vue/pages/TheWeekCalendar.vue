@@ -31,12 +31,11 @@
       <schedule-creator />
       <div class="flex row justify-center items-center">
         <div
-          v-for="({ day, elementaly }, i) in state.days"
+          v-for="(day, i) in state.days"
           :key="i"
           class="w-40 h-16 text-center"
         >
-          {{ elementaly }}<br />
-          {{ format(day, 'dd') }}
+          {{ format(day, 'dd(E)', { locale: jaLocale }) }}
         </div>
       </div>
       <div v-if="loading">Loading...</div>
@@ -51,12 +50,12 @@
               :key="minute"
               v-for="minute in [0, 30]"
               class="bg-gray-200 w-40 h-5 schedule-cell relative"
-              :class="`day-${day.day} hour-${hour} ${
+              :class="`day-${day} hour-${hour} ${
                 minute === 0 ? 'border-b-0' : ''
               }`"
             >
               <div
-                v-if="sample(day.day, hour, minute)"
+                v-if="sample(day, hour, minute)"
                 class="schedule-cell--blank min-w-full min-h-full bg-red-200"
               ></div>
               <div class="schedule-cell--border inset-0 absolute" />
@@ -143,14 +142,11 @@ export default defineComponent({
       state.lastWeek = format(addWeeks(current, -1), 'yyyy/MM/dd')
       state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
 
-      state.days = daysOfWeek(current).map((day, i) => ({
-        day,
-        elementaly: elementalies[i]
-      }))
+      state.days = daysOfWeek(current)
       state.currentWeek = `${format(current, 'M月')} ${format(
-        state.days[0].day,
+        state.days[0],
         'dd'
-      )}～${format(state.days[6].day, 'dd')}日`
+      )}～${format(state.days[6], 'dd')}日`
 
       refetch({
         minDate: state.lastWeek,
@@ -166,7 +162,16 @@ export default defineComponent({
       }
     )
 
-    return { times, state, loading, result, schedules, sample, format }
+    return {
+      times,
+      state,
+      loading,
+      result,
+      schedules,
+      sample,
+      format,
+      jaLocale
+    }
   }
 })
 </script>
