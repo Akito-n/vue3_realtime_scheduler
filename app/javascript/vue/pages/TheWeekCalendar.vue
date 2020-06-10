@@ -147,9 +147,10 @@ export default defineComponent({
         day,
         elementaly: elementalies[i]
       }))
-      state.currentWeek = `${format(current, 'M月')} ${state.days[0].day}～${
-        state.days[6].day
-      }日`
+      state.currentWeek = `${format(current, 'M月')} ${format(
+        state.days[0].day,
+        'dd'
+      )}～${format(state.days[6].day, 'dd')}日`
 
       refetch({
         minDate: state.lastWeek,

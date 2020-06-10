@@ -8,7 +8,7 @@
         <font-awesome-icon icon="chevron-left" />
         前月
       </router-link>
-      <div>{{ state.currentMonth }}月</div>
+      <div>{{ format(state.currentMonth, 'M') }}月</div>
       <router-link
         :to="`/calendar/month/${state.nextMonth}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -49,18 +49,21 @@ import {
   format,
   startOfWeek,
   startOfMonth,
-  parse
+  parse,
+  areIntervalsOverlapping
 } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
 import { defineComponent, reactive, watch } from '@vue/composition-api'
 import {
   useCurrentUserQuery,
-  useAddBlankScheduleMutation
+  useAddBlankScheduleMutation,
+  useBlankSchedulesQuery
 } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import { routes } from 'vue/routes'
+import { useResult } from '@vue/apollo-composable'
 
 interface State {
   currentMonth: string
@@ -73,7 +76,7 @@ export default defineComponent({
   components: { ScheduleCreator },
   setup(_, context) {
     const state = reactive<State>({
-      currentMonth: '',
+      currentMonth: new Date(),
       nextMonth: '',
       lastMonth: '',
       days: []
@@ -83,7 +86,7 @@ export default defineComponent({
 
     const load = (year: string, month: string) => {
       const current = parse(`${year}-${month}-01`, 'yyyy-MM-dd', new Date())
-      state.currentMonth = format(current, 'M')
+      state.currentMonth = current
       const monthStart = startOfMonth(current)
       const startDate = startOfWeek(monthStart)
       const endDate = addDays(startDate, 28)
@@ -99,6 +102,36 @@ export default defineComponent({
         tempdays.push(_days)
       }
       state.days = tempdays
+    }
+
+    const { result, loading, refetch } = useBlankSchedulesQuery({
+      minDate: state.currentMonth,
+      maxDate: state.currentMonth
+    })
+
+    const schedules = useResult(
+      result,
+      null,
+      (data) => data.blankSchedules.nodes
+    )
+
+    const setSchedule = (day) => {
+      const _day = day
+      const scheduleList = []
+
+      return result.value.blankSchedules.nodes.forEach((schedule) => {
+        if (
+          areIntervalsOverlapping(
+            {
+              start: new Date(schedule.startAt),
+              end: new Date(schedule.endAt)
+            },
+            { start: day, end: addDays(day, 1) }
+          )
+        ) {
+          scheduleList.push(schedule)
+        }
+      })
     }
 
     watch(
