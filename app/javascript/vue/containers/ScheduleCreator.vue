@@ -1,6 +1,7 @@
 <template>
   <div>
     <schedule-form @submit="submit" />
+    <p v-if="error">{{ error.message }}</p>
   </div>
 </template>
 
@@ -25,9 +26,13 @@ export default defineComponent({
 
     const submit = (startAt: Date, endAt: Date) => {
       mutate({ input: { startAt, endAt } })
+      // .then((data) => {
+      //   console.log('data', data)
+      // })
+      // .catch((e) => console.log(typeof e.message))
     }
 
-    return { submit }
+    return { submit, error }
   }
 })
 </script>

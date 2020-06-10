@@ -16,7 +16,13 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
     if blank_schedule.save
       { blank_schdule: blank_schedule }
     else
-      raise GraphQL::ExecutionError, blank_schedule.errors.full_messages.join(', ')
+      set_errors(blank_schedule)
+      return
     end
+  end
+
+  def set_errors(blank_schedule)
+    message = blank_schedule.errors.full_messages.join(', ')
+    context.add_error(GraphQL::ExecutionError.new(message))
   end
 end
