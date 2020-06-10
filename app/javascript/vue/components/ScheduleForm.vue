@@ -19,6 +19,7 @@
           :minute-label="timepickerOptions.minuteLabel"
           :default-value="timepickerOptions.defaultValue"
           v-model="state.startTime"
+          hide-clear-button
         />
         <vue-timepicker
           :format="timepickerOptions.format"
@@ -27,6 +28,7 @@
           :hour-label="timepickerOptions.hourLabel"
           :minute-label="timepickerOptions.minuteLabel"
           v-model="state.endTime"
+          hide-clear-button
         />
         <input type="date" v-model="state.endDate" />
 
