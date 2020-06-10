@@ -1,7 +1,11 @@
 <template>
   <div>
     <schedule-form @submit="submit" />
-    <p v-if="error">{{ error.message }}</p>
+    <template v-if="error">
+      <template v-for="(errorMessage, i) in error.graphQLErrors">
+        <p :key="i">{{ errorMessage.message }}</p>
+      </template>
+    </template>
   </div>
 </template>
 
@@ -15,10 +19,12 @@ import {
   AddBlankScheduleMutationVariables
 } from '@/graphql/types'
 import ScheduleForm from '@/vue/components/ScheduleForm.vue'
+import content from '*.gql'
+import { routes } from 'vue/routes'
 
 export default defineComponent({
   components: { ScheduleForm },
-  setup() {
+  setup(_, context) {
     const { mutate, loading, error, onDone } = useMutation<
       AddBlankScheduleMutation,
       AddBlankScheduleMutationVariables
@@ -26,11 +32,10 @@ export default defineComponent({
 
     const submit = (startAt: Date, endAt: Date) => {
       mutate({ input: { startAt, endAt } })
-      // .then((data) => {
-      //   console.log('data', data)
-      // })
-      // .catch((e) => console.log(typeof e.message))
+      context.root.$router.push({ query: { status: 'closed' } })
     }
+
+    console.log(error)
 
     return { submit, error }
   }

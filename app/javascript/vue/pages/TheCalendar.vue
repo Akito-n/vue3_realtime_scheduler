@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-screen-xl">
+    <button @click="setSchedule(new Date())">検査</button>
     <div class="flex row justify-around items-center my-5">
       <router-link
         :to="`/calendar/month/${state.lastMonth}`"
@@ -66,7 +67,7 @@ import { routes } from 'vue/routes'
 import { useResult } from '@vue/apollo-composable'
 
 interface State {
-  currentMonth: string
+  currentMonth: Date
   nextMonth: string
   lastMonth: string
   days: string[]
@@ -118,6 +119,7 @@ export default defineComponent({
     const setSchedule = (day) => {
       const _day = day
       const scheduleList = []
+      console.log('call')
 
       return result.value.blankSchedules.nodes.forEach((schedule) => {
         if (
@@ -142,7 +144,7 @@ export default defineComponent({
       }
     )
 
-    return { elementalies, state, format }
+    return { elementalies, state, format, setSchedule }
   }
 })
 </script>
