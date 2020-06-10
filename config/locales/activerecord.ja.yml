@@ -1,0 +1,8 @@
+ja:
+  activerecord:
+    models:
+      blank_schedule: 空き予定
+    attributes:
+      blank_schedule:
+        start_at: 開始時間
+        end_at: 終了時間
