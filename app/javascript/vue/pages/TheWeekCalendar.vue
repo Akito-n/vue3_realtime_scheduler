@@ -45,7 +45,7 @@
           v-for="(day, i) in state.days"
           :key="`day-${i}`"
         >
-          <div v-for="(hour, t) in times" :key="`hour-${t}`">
+          <div v-for="(hour, t) in times.map((t) => t - 1)" :key="`hour-${t}`">
             <div
               :key="minute"
               v-for="minute in [0, 30]"
@@ -55,7 +55,7 @@
               }`"
             >
               <div
-                v-if="sample(day, hour, minute)"
+                v-if="getBlankSchedule(day, hour, minute)"
                 class="schedule-cell--blank min-w-full min-h-full bg-red-200"
               ></div>
               <div class="schedule-cell--border inset-0 absolute" />
@@ -115,7 +115,7 @@ export default defineComponent({
       (data) => data.blankSchedules.nodes
     )
 
-    const sample = (day, hours, minutes) => {
+    const getBlankSchedule = (day, hours, minutes) => {
       //day, timeから時間を再生成して
       let criteriaTime = addHours(day, hours)
       criteriaTime = addMinutes(criteriaTime, minutes)
@@ -168,7 +168,7 @@ export default defineComponent({
       loading,
       result,
       schedules,
-      sample,
+      getBlankSchedule,
       format,
       jaLocale
     }

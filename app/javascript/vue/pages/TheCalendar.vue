@@ -1,6 +1,8 @@
 <template>
   <div class="max-w-screen-xl">
-    <button @click="setSchedule(new Date())">検査</button>
+    <button @click="setSchedule(new Date(2020, 5, 10))">
+      検査 {{ loading }}
+    </button>
     <div class="flex row justify-around items-center my-5">
       <router-link
         :to="`/calendar/month/${state.lastMonth}`"
@@ -116,12 +118,13 @@ export default defineComponent({
       (data) => data.blankSchedules.nodes
     )
 
+    //名前
     const setSchedule = (day) => {
       const _day = day
       const scheduleList = []
-      console.log('call')
+      console.log('渡した日', day)
 
-      return result.value.blankSchedules.nodes.forEach((schedule) => {
+      result.value.blankSchedules.nodes.forEach((schedule) => {
         if (
           areIntervalsOverlapping(
             {
@@ -132,8 +135,12 @@ export default defineComponent({
           )
         ) {
           scheduleList.push(schedule)
+        } else {
+          console.log('no-hit')
         }
       })
+      console.log(scheduleList)
+      return scheduleList
     }
 
     watch(
@@ -144,7 +151,7 @@ export default defineComponent({
       }
     )
 
-    return { elementalies, state, format, setSchedule }
+    return { elementalies, loading, state, format, setSchedule }
   }
 })
 </script>
