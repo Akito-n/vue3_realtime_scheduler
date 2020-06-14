@@ -1,13 +1,14 @@
 <template>
   <div>
+    <button @click="test">テスト</button>
     <div
-      v-if="state.opened"
+      v-if="props.opened"
       class="fixed z-10 bg-gray-100 inset-0 opacity-50"
-      @click="state.opened = false"
+      @click="close"
     ></div>
     <div
       class="fixed z-10 bg-gray-300 mx-10 my-10 w-3/5 h-64 inset-auto flex justify-center"
-      v-if="state.opened"
+      v-if="props.opened"
     >
       <div class="item-center my-5">
         <input type="date" v-model="state.startDate" />
@@ -40,7 +41,7 @@
         </button>
         <button
           class="bg-white-500 hover:bg-white-700 text-white font-bold py-2 px-4 rounded-full"
-          @click="state.opened = false"
+          @click="close"
         >
           <font-awesome-icon icon="window-close" />
         </button>
@@ -48,7 +49,7 @@
     </div>
     <button
       class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
-      @click="state.opened = true"
+      @click="open"
     >
       <font-awesome-icon icon="plus" />
     </button>
@@ -64,13 +65,21 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
 
 interface Props {
   submit(startAt: Date, endAt: Date)
+  open
+  opened: boolean
 }
 
 export default defineComponent<Props>({
   components: { VueTimepicker },
-  setup(props, context) {
+  props: {
+    opened: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(props: Props, context) {
     const state = reactive({
-      opened: false,
+      opened: props.opened,
       startDate: format(new Date(), 'yyyy-MM-dd'),
       startTime: {
         HH: format(new Date(), 'HH'),
@@ -117,7 +126,29 @@ export default defineComponent<Props>({
       context.emit('submit', state.startDateTime, state.endDateTime)
     }
 
-    return { state, timepickerOptions, open, settingTime, submit }
+    const open = () => {
+      context.emit('open')
+    }
+
+    const close = () => {
+      context.emit('close')
+    }
+
+    const test = () => {
+      console.log(props)
+      console.log(state)
+    }
+
+    return {
+      props,
+      state,
+      timepickerOptions,
+      settingTime,
+      submit,
+      open,
+      close,
+      test
+    }
   }
 })
 </script>

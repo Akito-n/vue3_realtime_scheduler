@@ -1,6 +1,11 @@
 <template>
   <div>
-    <schedule-form @submit="submit" />
+    <schedule-form
+      @submit="submit"
+      @open="open"
+      @close="close"
+      :opened="state.opened"
+    />
     <template v-if="error">
       <template v-for="(errorMessage, i) in error.graphQLErrors">
         <p :key="i">{{ errorMessage.message }}</p>
@@ -25,6 +30,9 @@ import { routes } from 'vue/routes'
 export default defineComponent({
   components: { ScheduleForm },
   setup(_, context) {
+    const state = reactive({
+      opened: false
+    })
     const { mutate, loading, error, onDone } = useMutation<
       AddBlankScheduleMutation,
       AddBlankScheduleMutationVariables
@@ -33,11 +41,22 @@ export default defineComponent({
     const submit = (startAt: Date, endAt: Date) => {
       mutate({ input: { startAt, endAt } })
       context.root.$router.push({ query: { status: 'closed' } })
+      state.opened = false
+    }
+
+    const open = () => {
+      context.root.$router.push({ query: { status: 'open' } })
+      state.opened = true
+    }
+
+    const close = () => {
+      context.root.$router.push({ query: { status: 'closed' } })
+      state.opened = false
     }
 
     console.log(error)
 
-    return { submit, error }
+    return { state, submit, error, open, close }
   }
 })
 </script>
