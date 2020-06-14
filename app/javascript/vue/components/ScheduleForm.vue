@@ -1,6 +1,5 @@
 <template>
   <div>
-    <button @click="test">テスト</button>
     <div
       v-if="props.opened"
       class="fixed z-10 bg-gray-100 inset-0 opacity-50"
@@ -79,7 +78,6 @@ export default defineComponent<Props>({
   },
   setup(props: Props, context) {
     const state = reactive({
-      opened: props.opened,
       startDate: format(new Date(), 'yyyy-MM-dd'),
       startTime: {
         HH: format(new Date(), 'HH'),
@@ -134,11 +132,6 @@ export default defineComponent<Props>({
       context.emit('close')
     }
 
-    const test = () => {
-      console.log(props)
-      console.log(state)
-    }
-
     return {
       props,
       state,
@@ -146,8 +139,7 @@ export default defineComponent<Props>({
       settingTime,
       submit,
       open,
-      close,
-      test
+      close
     }
   }
 })
