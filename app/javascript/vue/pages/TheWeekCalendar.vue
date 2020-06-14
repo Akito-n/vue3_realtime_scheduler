@@ -116,20 +116,15 @@ export default defineComponent({
     )
 
     const getBlankSchedule = (day, hours, minutes) => {
-      //day, timeから時間を再生成して
       let criteriaTime = addHours(day, hours)
       criteriaTime = addMinutes(criteriaTime, minutes)
-      //
-      const tempdata = result.value.blankSchedules.nodes.find((schedule) => {
+
+      return result.value.blankSchedules.nodes.find((schedule) => {
         return areIntervalsOverlapping(
           { start: new Date(schedule.startAt), end: new Date(schedule.endAt) },
           { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
         )
       })
-      console.log(tempdata)
-
-      return tempdata
-      //schedulからstartAtがマッチしたshceduleを返す
     }
 
     const times = []
