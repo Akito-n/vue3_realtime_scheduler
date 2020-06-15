@@ -80,4 +80,13 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.schedule-cell {
+  &--border {
+    border: solid 1px #a0aec0;
+  }
+  &--blank + &--border {
+    border: none;
+  }
+}
+</style>

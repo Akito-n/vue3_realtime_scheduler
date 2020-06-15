@@ -7,6 +7,11 @@ class Types::Objects::BlankScheduleType < Types::BaseObject
   field :id, ID, null: false
   field :start_at, Types::Scalars::DateTime, null: true
   field :end_at, Types::Scalars::DateTime, null: true
+  field :user_id, ID, null: false
+  field :mine, Boolean, null: false
+  def mine
+    object.user_id == context[:current_user].id
+  end
   #field :role, String, null: false
   # def role
   #   User.human_attribute_name("role.#{object.role}")

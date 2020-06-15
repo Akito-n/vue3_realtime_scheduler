@@ -30,27 +30,35 @@
       <schedule-creator />
       <div class="flex row justify-center items-center">
         <div
-          v-for="({ day, elementaly }, i) in state.days"
+          v-for="(day, i) in state.days"
           :key="i"
-          class="w-40 h-16 text-center"
+          class="w-40 h-10 text-center"
         >
-          {{ elementaly }}<br />
-          {{ day }}
+          {{ format(day, 'dd(E)', { locale: jaLocale }) }}
         </div>
       </div>
-      <div class="flex row justify-center items-center">
+      <div v-if="loading">Loading...</div>
+      <div v-else-if="result" class="flex row justify-center items-center">
         <div
           class="items-center"
           v-for="(day, i) in state.days"
           :key="`day-${i}`"
         >
-          <div v-for="(time, t) in times" :key="`time-${t}`">
+          <div v-for="(hour, t) in times.map((t) => t - 1)" :key="`hour-${t}`">
             <div
-              :key="i"
-              v-for="i in [1, 2]"
-              class="border bg-gray-200 w-40 h-5"
-              :class="`day-${day} time-${time} ${i === 1 ? 'border-b-0' : ''}`"
-            ></div>
+              :key="minute"
+              v-for="minute in [0, 30]"
+              class="bg-gray-200 w-40 h-5 schedule-cell relative"
+              :class="`day-${day} hour-${hour} ${
+                minute === 0 ? 'border-b-0' : ''
+              }`"
+            >
+              <div
+                v-if="getBlankSchedule(day, hour, minute)"
+                class="schedule-cell--blank min-w-full min-h-full bg-red-200"
+              ></div>
+              <div class="schedule-cell--border inset-0 absolute" />
+            </div>
           </div>
         </div>
       </div>
@@ -65,7 +73,10 @@ import {
   startOfWeek,
   startOfMonth,
   parse,
-  addWeeks
+  addWeeks,
+  addHours,
+  addMinutes,
+  areIntervalsOverlapping
 } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
@@ -75,22 +86,45 @@ import {
   reactive,
   computed
 } from '@vue/composition-api'
-import { useCurrentUserQuery } from '@/graphql/types'
+import { useBlankSchedulesQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
+import { useResult } from '@vue/apollo-composable'
 
 export default defineComponent({
   components: { ScheduleCreator },
   setup(props, context) {
+    const { daysOfWeek, elementalies } = useCalendar()
     const state = reactive({
       currentWeek: '',
-      lastWeek: '',
-      nextWeek: '',
+      lastWeek: new Date().toString(),
+      nextWeek: new Date().toString(),
       days: []
     })
 
-    const { daysOfWeek, elementalies } = useCalendar()
+    const { result, loading, refetch } = useBlankSchedulesQuery({
+      minDate: state.lastWeek,
+      maxDate: state.nextWeek
+    })
+
+    const schedules = useResult(
+      result,
+      null,
+      (data) => data.blankSchedules.nodes
+    )
+
+    const getBlankSchedule = (day, hours, minutes) => {
+      let criteriaTime = addHours(day, hours)
+      criteriaTime = addMinutes(criteriaTime, minutes)
+
+      return result.value.blankSchedules.nodes.find((schedule) => {
+        return areIntervalsOverlapping(
+          { start: new Date(schedule.startAt), end: new Date(schedule.endAt) },
+          { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
+        )
+      })
+    }
 
     const times = []
     for (let i = 1; i <= 24; i++) {
@@ -102,13 +136,16 @@ export default defineComponent({
       state.lastWeek = format(addWeeks(current, -1), 'yyyy/MM/dd')
       state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
 
-      state.days = daysOfWeek(current).map((day, i) => ({
-        day,
-        elementaly: elementalies[i]
-      }))
-      state.currentWeek = `${format(current, 'M月')} ${state.days[0].day}～${
-        state.days[6].day
-      }日`
+      state.days = daysOfWeek(current)
+      state.currentWeek = `${format(current, 'M月')} ${format(
+        state.days[0],
+        'dd'
+      )}～${format(state.days[6], 'dd')}日`
+
+      refetch({
+        minDate: state.lastWeek,
+        maxDate: state.nextWeek
+      })
     }
 
     watch(
@@ -119,7 +156,16 @@ export default defineComponent({
       }
     )
 
-    return { times, state }
+    return {
+      times,
+      state,
+      loading,
+      result,
+      schedules,
+      getBlankSchedule,
+      format,
+      jaLocale
+    }
   }
 })
 </script>

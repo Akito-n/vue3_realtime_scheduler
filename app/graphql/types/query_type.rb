@@ -16,5 +16,15 @@ module Types
     def users(page: nil, items: nil)
       User.all
     end
+
+    field :blank_schedules, Types::Objects::BlankScheduleType.connection_type, null: false do
+      argument :min_date, Types::Scalars::Date, required: true
+      argument :max_date, Types::Scalars::Date, required: true
+    end
+    def blank_schedules(min_date:, max_date:)
+      BlankSchedule
+        .where(user: current_user)
+        .where('end_at >= ? AND start_at <= ?', min_date.beginning_of_day, max_date.end_of_day)
+    end
   end
 end

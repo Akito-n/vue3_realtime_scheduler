@@ -1,13 +1,13 @@
 <template>
   <div>
     <div
-      v-if="state.opened"
-      class="fixed bg-gray-100 inset-0 opacity-50"
-      @click="state.opened = false"
+      v-if="props.opened"
+      class="fixed z-10 bg-gray-100 inset-0 opacity-50"
+      @click="close"
     ></div>
     <div
-      class="fixed bg-gray-300 mx-10 my-10 w-3/5 h-64 inset-auto flex justify-center"
-      v-if="state.opened"
+      class="fixed z-10 bg-gray-300 mx-10 my-10 w-3/5 h-64 inset-auto flex justify-center"
+      v-if="props.opened"
     >
       <div class="item-center my-5">
         <input type="date" v-model="state.startDate" />
@@ -19,6 +19,7 @@
           :minute-label="timepickerOptions.minuteLabel"
           :default-value="timepickerOptions.defaultValue"
           v-model="state.startTime"
+          hide-clear-button
         />
         <vue-timepicker
           :format="timepickerOptions.format"
@@ -27,18 +28,20 @@
           :hour-label="timepickerOptions.hourLabel"
           :minute-label="timepickerOptions.minuteLabel"
           v-model="state.endTime"
+          hide-clear-button
         />
         <input type="date" v-model="state.endDate" />
 
         <button
           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
           @click="submit"
+          :disabled="props.disabled"
         >
           登録する
         </button>
         <button
           class="bg-white-500 hover:bg-white-700 text-white font-bold py-2 px-4 rounded-full"
-          @click="state.opened = false"
+          @click="close"
         >
           <font-awesome-icon icon="window-close" />
         </button>
@@ -46,7 +49,7 @@
     </div>
     <button
       class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
-      @click="state.opened = true"
+      @click="open"
     >
       <font-awesome-icon icon="plus" />
     </button>
@@ -61,14 +64,20 @@ import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 
 interface Props {
+  disabled: boolean
+  opened: boolean
   submit(startAt: Date, endAt: Date)
+  open
 }
 
 export default defineComponent<Props>({
   components: { VueTimepicker },
-  setup(props, context) {
+  props: {
+    disabled: Boolean,
+    opened: Boolean
+  },
+  setup(props: Props, context) {
     const state = reactive({
-      opened: false,
       startDate: format(new Date(), 'yyyy-MM-dd'),
       startTime: {
         HH: format(new Date(), 'HH'),
@@ -115,7 +124,23 @@ export default defineComponent<Props>({
       context.emit('submit', state.startDateTime, state.endDateTime)
     }
 
-    return { state, timepickerOptions, open, settingTime, submit }
+    const open = () => {
+      context.emit('open')
+    }
+
+    const close = () => {
+      context.emit('close')
+    }
+
+    return {
+      props,
+      state,
+      timepickerOptions,
+      settingTime,
+      submit,
+      open,
+      close
+    }
   }
 })
 </script>
