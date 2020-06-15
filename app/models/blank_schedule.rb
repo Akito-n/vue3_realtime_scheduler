@@ -21,6 +21,7 @@ class BlankSchedule < ApplicationRecord
   belongs_to :user
 
   validate :check_schedule
+  validates_with CheckScheduleValidator
 
   def check_schedule
     if start_at > end_at
