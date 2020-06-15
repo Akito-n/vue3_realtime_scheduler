@@ -12,7 +12,6 @@ class CheckScheduleValidator < ActiveModel::Validator
         break
       end
     end
-    byebug
     record.errors.add(:start_at, 'と終了時間が既存の予定と重複しています') if BlankSchedule.where(start_at: record.start_at..record.end_at).any?
   end
 end
