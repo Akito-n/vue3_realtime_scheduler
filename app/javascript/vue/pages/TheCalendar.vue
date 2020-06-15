@@ -1,11 +1,11 @@
 <template>
   <div class="max-w-screen-xl">
-    <button @click="setSchedule(new Date(2020, 5, 10))">
+    <button @click="setSchedule(new Date(2020, 5, 15))">
       検査 {{ loading }}
     </button>
     <div class="flex row justify-around items-center my-5">
       <router-link
-        :to="`/calendar/month/${state.lastMonth}`"
+        :to="`/calendar/month/${state.last}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         <font-awesome-icon icon="chevron-left" />
@@ -13,7 +13,7 @@
       </router-link>
       <div>{{ format(state.currentMonth, 'M') }}月</div>
       <router-link
-        :to="`/calendar/month/${state.nextMonth}`"
+        :to="`/calendar/month/${state.next}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         翌月
@@ -21,7 +21,8 @@
       </router-link>
     </div>
     <schedule-creator />
-    <div class="">
+    <div v-if="loading">loading...</div>
+    <div class="" v-else-if="result">
       <div class="flex row justify-around items-center">
         <div v-for="(elementaly, i) in elementalies" :key="i">
           <div class="border-l border-t border-r text-center pt-2 w-40 h-10">
@@ -37,6 +38,9 @@
         <div v-for="(day, j) in week" :key="`day-${j}`">
           <div class="border text-center w-40 h-20">
             {{ format(day, 'dd') }}
+            <div v-for="(schedule, i) in setSchedule(day)" :key="i">
+              <span>{{ scheduleFormatter(schedule) }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -61,7 +65,8 @@ import { defineComponent, reactive, watch } from '@vue/composition-api'
 import {
   useCurrentUserQuery,
   useAddBlankScheduleMutation,
-  useBlankSchedulesQuery
+  useBlankSchedulesQuery,
+  BlankSchedule
 } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
@@ -70,8 +75,9 @@ import { useResult } from '@vue/apollo-composable'
 
 interface State {
   currentMonth: Date
-  nextMonth: string
-  lastMonth: string
+  nextMonth: Date
+  next: string
+  last: string
   days: string[]
 }
 
@@ -80,8 +86,9 @@ export default defineComponent({
   setup(_, context) {
     const state = reactive<State>({
       currentMonth: new Date(),
-      nextMonth: '',
-      lastMonth: '',
+      nextMonth: addMonths(new Date(), 1),
+      next: '',
+      last: '',
       days: []
     })
 
@@ -90,11 +97,12 @@ export default defineComponent({
     const load = (year: string, month: string) => {
       const current = parse(`${year}-${month}-01`, 'yyyy-MM-dd', new Date())
       state.currentMonth = current
+      state.nextMonth = addMonths(current, 1)
       const monthStart = startOfMonth(current)
       const startDate = startOfWeek(monthStart)
       const endDate = addDays(startDate, 28)
-      state.nextMonth = format(addMonths(current, 1), 'yyyy/MM/dd')
-      state.lastMonth = format(addMonths(current, -1), 'yyyy/MM/dd')
+      state.next = format(addMonths(current, 1), 'yyyy/MM/dd')
+      state.last = format(addMonths(current, -1), 'yyyy/MM/dd')
 
       //funcsに分ける startDateだけあれば行ける気がする
       let day = startDate
@@ -109,7 +117,7 @@ export default defineComponent({
 
     const { result, loading, refetch } = useBlankSchedulesQuery({
       minDate: state.currentMonth,
-      maxDate: state.currentMonth
+      maxDate: state.nextMonth
     })
 
     const schedules = useResult(
@@ -118,11 +126,11 @@ export default defineComponent({
       (data) => data.blankSchedules.nodes
     )
 
-    //名前
+    //名前変えたい
     const setSchedule = (day) => {
+      console.log(state.currentMonth)
       const _day = day
       const scheduleList = []
-      console.log('渡した日', day)
 
       result.value.blankSchedules.nodes.forEach((schedule) => {
         if (
@@ -134,13 +142,28 @@ export default defineComponent({
             { start: day, end: addDays(day, 1) }
           )
         ) {
+          console.log('あった')
           scheduleList.push(schedule)
         } else {
           console.log('no-hit')
         }
       })
-      console.log(scheduleList)
+      //console.log(scheduleList)
       return scheduleList
+    }
+    // 名前
+    const scheduleFormatter = (schedule: BlankSchedule) => {
+      const startAt = format(Date.parse(schedule.startAt), 'ah:mm', {
+        locale: jaLocale
+      })
+      const endAt = format(Date.parse(schedule.endAt), 'ah:mm', {
+        locale: jaLocale
+      })
+      return startAt + '~' + endAt
+    }
+
+    const sample = (date: Date) => {
+      console.log(format(new Date(), 'ah:mm', { locale: jaLocale }))
     }
 
     watch(
@@ -151,7 +174,15 @@ export default defineComponent({
       }
     )
 
-    return { elementalies, loading, state, format, setSchedule }
+    return {
+      elementalies,
+      loading,
+      result,
+      state,
+      format,
+      setSchedule,
+      scheduleFormatter
+    }
   }
 })
 </script>
