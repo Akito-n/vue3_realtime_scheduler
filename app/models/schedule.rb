@@ -21,6 +21,8 @@
 #  fk_rails_...  (responder_id => users.id)
 #
 class Schedule < ApplicationRecord
-  belongs_to :requester
-  belongs_to :responder
+  belongs_to :requester, class_name: :User
+  belongs_to :responder, class_name: :User
+
+  validates :requester_id, uniqueness: { scope: :responder_id }
 end
