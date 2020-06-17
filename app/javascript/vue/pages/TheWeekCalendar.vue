@@ -53,13 +53,9 @@
                 minute === 0 ? 'border-b-0' : ''
               }`"
             >
-              <div
-                v-if="getBlankSchedule(day, hour, minute)"
-                class="schedule-cell--blank min-w-full min-h-full"
-                :class="`bg-${
-                  getBlankSchedule(day, hour, minute).user.color
-                }-200`"
-              ></div>
+              <request-creator
+                :blankSchedules="getBlankSchedules(day, hour, minute)"
+              />
               <div class="schedule-cell--border inset-0 absolute" />
             </div>
           </div>
@@ -97,10 +93,11 @@ import {
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
+import RequestCreator from '@/vue/containers/RequestCreator.vue'
 import { useResult, useSubscription } from '@vue/apollo-composable'
 
 export default defineComponent({
-  components: { ScheduleCreator },
+  components: { ScheduleCreator, RequestCreator },
   setup(props, context) {
     const { daysOfWeek, elementalies } = useCalendar()
     const state = reactive({
@@ -131,11 +128,11 @@ export default defineComponent({
       }
     })
 
-    const getBlankSchedule = (day, hours, minutes) => {
+    const getBlankSchedules = (day, hours, minutes) => {
       let criteriaTime = addHours(day, hours)
       criteriaTime = addMinutes(criteriaTime, minutes)
 
-      return result.value.blankSchedules.blankSchedules.nodes.find(
+      return result.value.blankSchedules.blankSchedules.nodes.filter(
         (schedule) => {
           return areIntervalsOverlapping(
             {
@@ -184,7 +181,7 @@ export default defineComponent({
       loading,
       result,
       schedules,
-      getBlankSchedule,
+      getBlankSchedules,
       format,
       jaLocale
     }
