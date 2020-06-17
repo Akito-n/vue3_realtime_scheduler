@@ -40,6 +40,7 @@
             {{ format(day, 'dd') }}
             <div v-for="(schedule, i) in setSchedule(day)" :key="i">
               <span>{{ scheduleFormatter(schedule) }}</span>
+              <span>{{ schedule.user.name }}</span>
             </div>
           </div>
         </div>

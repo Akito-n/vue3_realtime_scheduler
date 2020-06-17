@@ -9,9 +9,13 @@ class Types::Objects::BlankScheduleType < Types::BaseObject
   field :end_at, Types::Scalars::DateTime, null: true
   field :user_id, ID, null: false
   field :mine, Boolean, null: false
+  field :user, Types::Objects::MemberType, null: false
+
   def mine
-    object.user_id == context[:current_user].id
+    #object.user_id == context[:current_user].id
+    true
   end
+
   #field :role, String, null: false
   # def role
   #   User.human_attribute_name("role.#{object.role}")

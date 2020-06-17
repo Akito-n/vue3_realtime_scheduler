@@ -1,0 +1,18 @@
+subscription blankSchedulesSubscription {
+  blankSchedules {
+    blankSchedules {
+      nodes {
+        id
+        userId
+        startAt
+        endAt
+        mine
+        user {
+          name
+          companyName
+          color
+        }
+      }
+    }
+  }
+}

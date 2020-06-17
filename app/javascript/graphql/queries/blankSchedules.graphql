@@ -6,6 +6,11 @@ query blankSchedules($minDate: Date!, $maxDate: Date!) {
       startAt
       endAt
       mine
+      role
+      color
+      user {
+        name
+      }
     }
   }
 }

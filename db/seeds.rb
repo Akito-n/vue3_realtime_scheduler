@@ -1,7 +1,7 @@
 [:individual, :company, :admin].each.with_index do |role, i|
   user = User.new(
     name: Gimei.name,
-    email: "#{i}@example.com",
+    email: "#{role}@example.com",
     password: 'test1234',
     role: role,
   )

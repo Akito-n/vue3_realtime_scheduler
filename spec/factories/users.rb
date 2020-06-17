@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id                     :uuid             not null, primary key
+#  color                  :string           default("purple"), not null
 #  company_name           :string
 #  confirmation_sent_at   :datetime
 #  confirmation_token     :string

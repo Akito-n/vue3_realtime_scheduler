@@ -55,7 +55,10 @@
             >
               <div
                 v-if="getBlankSchedule(day, hour, minute)"
-                class="schedule-cell--blank min-w-full min-h-full bg-red-200"
+                class="schedule-cell--blank min-w-full min-h-full"
+                :class="`bg-${
+                  getBlankSchedule(day, hour, minute).user.color
+                }-200`"
               ></div>
               <div class="schedule-cell--border inset-0 absolute" />
             </div>
@@ -81,16 +84,20 @@ import {
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
 import {
+  ref,
   defineComponent,
   watch,
   reactive,
   computed
 } from '@vue/composition-api'
-import { useBlankSchedulesQuery } from '@/graphql/types'
+import {
+  useBlankSchedulesQuery,
+  BlankSchedulesSubscriptionDocument
+} from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
-import { useResult } from '@vue/apollo-composable'
+import { useResult, useSubscription } from '@vue/apollo-composable'
 
 export default defineComponent({
   components: { ScheduleCreator },
@@ -103,27 +110,42 @@ export default defineComponent({
       days: []
     })
 
-    const { result, loading, refetch } = useBlankSchedulesQuery({
+    const { loading, refetch } = useBlankSchedulesQuery({
       minDate: state.lastWeek,
       maxDate: state.nextWeek
     })
 
-    const schedules = useResult(
-      result,
-      null,
-      (data) => data.blankSchedules.nodes
-    )
+    const { result } = useSubscription(BlankSchedulesSubscriptionDocument)
+
+    // const schedules = useResult(result, null, (data) => {
+    //   console.log(data)
+    //   return data.blankSchedules.blankSchedules.nodes
+    // })
+    // const schedules = []
+    const schedules = ref([])
+    // const schedules = result.value.blankSchedules.blankSchedules.nodes
+    watch(result, (data) => {
+      console.log(data)
+      if (data) {
+        console.log(data.blankSchedules)
+      }
+    })
 
     const getBlankSchedule = (day, hours, minutes) => {
       let criteriaTime = addHours(day, hours)
       criteriaTime = addMinutes(criteriaTime, minutes)
 
-      return result.value.blankSchedules.nodes.find((schedule) => {
-        return areIntervalsOverlapping(
-          { start: new Date(schedule.startAt), end: new Date(schedule.endAt) },
-          { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
-        )
-      })
+      return result.value.blankSchedules.blankSchedules.nodes.find(
+        (schedule) => {
+          return areIntervalsOverlapping(
+            {
+              start: new Date(schedule.startAt),
+              end: new Date(schedule.endAt)
+            },
+            { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
+          )
+        }
+      )
     }
 
     const times = []

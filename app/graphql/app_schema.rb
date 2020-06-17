@@ -1,6 +1,7 @@
 class AppSchema < GraphQL::Schema
   mutation(Types::MutationType)
   query(Types::QueryType)
+  subscription(Types::SubscriptionType)
 
   # Opt in to the new runtime (default in future graphql-ruby versions)
   use GraphQL::Execution::Interpreter
@@ -10,6 +11,9 @@ class AppSchema < GraphQL::Schema
   use GraphQL::Pagination::Connections
 
   use GraphQL::Batch
+
+  use GraphQL::Subscriptions::ActionCableSubscriptions
+
 
   def self.object_from_id(unique_id, context)
     splitted_id = unique_id.split('_')

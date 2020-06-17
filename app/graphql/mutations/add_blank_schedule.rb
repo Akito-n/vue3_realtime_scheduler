@@ -4,7 +4,7 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
   argument :start_at, Types::Scalars::DateTime, required: true
   argument :end_at, Types::Scalars::DateTime, required: true
 
-  field :blank_schdule, Types::Objects::BlankScheduleType, null: true
+  field :blank_schedule, Types::Objects::BlankScheduleType, null: true
   #field :user, Types::Objects::UserType, null: true
 
   def authorized?(**args)
@@ -12,9 +12,13 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
   end
 
   def resolve(start_at:, end_at:)
-    blank_schedule = BlankSchedule.new(start_at: start_at, end_at: end_at, user: context[:current_user])
+    user = context[:current_user]
+    blank_schedule = BlankSchedule.new(start_at: start_at, end_at: end_at, user: user)
     if blank_schedule.save
-      { blank_schdule: blank_schedule }
+      AppSchema.subscriptions.trigger('blankSchedules', {}, {})
+      {
+        blank_schedule: blank_schedule
+      }
     else
       set_errors(blank_schedule)
       return

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_03_063108) do
+ActiveRecord::Schema.define(version: 2020_06_17_073419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -23,6 +23,15 @@ ActiveRecord::Schema.define(version: 2020_06_03_063108) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_blank_schedules_on_user_id"
+  end
+
+  create_table "recruitements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "individual_user_id", null: false
+    t.uuid "company_user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_user_id"], name: "index_recruitements_on_company_user_id"
+    t.index ["individual_user_id"], name: "index_recruitements_on_individual_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -45,10 +54,13 @@ ActiveRecord::Schema.define(version: 2020_06_03_063108) do
     t.integer "role", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "color", default: "purple", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "blank_schedules", "users"
+  add_foreign_key "recruitements", "users", column: "company_user_id"
+  add_foreign_key "recruitements", "users", column: "individual_user_id"
 end

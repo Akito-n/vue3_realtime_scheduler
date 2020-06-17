@@ -3,6 +3,7 @@ query currentUser {
     id
     email
     role
+    color
     name
     companyName
   }
