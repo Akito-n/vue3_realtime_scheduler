@@ -54,6 +54,7 @@ import Vue from 'vue'
 import { defineComponent } from '@vue/composition-api'
 import { useResult } from '@vue/apollo-composable'
 import { useCurrentUserQuery } from '@/graphql/types'
+import vueLoading, { VueLoadingOptions } from 'vue-loading-template'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faUserSecret,
@@ -71,6 +72,7 @@ library.add(faChevronLeft)
 library.add(faChevronRight)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.use<VueLoadingOptions>(vueLoading)
 
 export default defineComponent({
   setup() {

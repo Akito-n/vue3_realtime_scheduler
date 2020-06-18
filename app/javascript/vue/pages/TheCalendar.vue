@@ -1,8 +1,5 @@
 <template>
   <div class="max-w-screen-xl">
-    <button @click="setSchedule(new Date(2020, 5, 15))">
-      検査 {{ loading }}
-    </button>
     <div class="flex row justify-around items-center my-5">
       <router-link
         :to="`/calendar/month/${state.last}`"
@@ -21,7 +18,15 @@
       </router-link>
     </div>
     <schedule-creator />
-    <div v-if="loading">loading...</div>
+    <div v-if="loading">
+      <div class="mt-20">
+        <vue-loading
+          type="spiningDubbles"
+          color="#40e0d0"
+          :size="{ width: '300px', height: '300px' }"
+        />
+      </div>
+    </div>
     <div class="" v-else-if="result">
       <div class="flex row justify-around items-center">
         <div v-for="(elementaly, i) in elementalies" :key="i">
@@ -38,9 +43,14 @@
         <div v-for="(day, j) in week" :key="`day-${j}`">
           <div class="border text-center w-40 h-20">
             {{ format(day, 'dd') }}
-            <div v-for="(schedule, i) in setSchedule(day)" :key="i">
-              <span>{{ scheduleFormatter(schedule) }}</span>
-              <span>{{ schedule.user.name }}</span>
+            <div v-for="(schedule, i) in setSchedule(day).slice(0, 2)" :key="i">
+              <span
+                class="calender__schedule-circle calender__schedule-circle--inline"
+                :class="`bg-${schedule.user.color}-200`"
+              ></span>
+              <span class="calender__schedule-font--month">{{
+                scheduleFormatter(schedule)
+              }}</span>
             </div>
           </div>
         </div>
@@ -62,17 +72,18 @@ import {
 } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
-import { defineComponent, reactive, watch } from '@vue/composition-api'
+import { defineComponent, reactive, watch, ref } from '@vue/composition-api'
 import {
   useCurrentUserQuery,
   useAddBlankScheduleMutation,
   useBlankSchedulesQuery,
-  BlankSchedule
+  BlankSchedule,
+  BlankSchedulesSubscriptionDocument
 } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import { routes } from 'vue/routes'
-import { useResult } from '@vue/apollo-composable'
+import { useResult, useSubscription } from '@vue/apollo-composable'
 
 interface State {
   currentMonth: Date
@@ -116,41 +127,28 @@ export default defineComponent({
       state.days = tempdays
     }
 
-    const { result, loading, refetch } = useBlankSchedulesQuery({
-      minDate: state.currentMonth,
-      maxDate: state.nextMonth
-    })
-
-    const schedules = useResult(
-      result,
-      null,
-      (data) => data.blankSchedules.nodes
+    const { result, loading } = useSubscription(
+      BlankSchedulesSubscriptionDocument
     )
+
+    const schedules = ref([])
 
     //名前変えたい
     const setSchedule = (day) => {
-      console.log(state.currentMonth)
       const _day = day
       const scheduleList = []
 
-      result.value.blankSchedules.nodes.forEach((schedule) => {
-        if (
-          areIntervalsOverlapping(
+      return result.value.blankSchedules.blankSchedules.nodes.filter(
+        (schedule) => {
+          return areIntervalsOverlapping(
             {
               start: new Date(schedule.startAt),
               end: new Date(schedule.endAt)
             },
             { start: day, end: addDays(day, 1) }
           )
-        ) {
-          console.log('あった')
-          scheduleList.push(schedule)
-        } else {
-          console.log('no-hit')
         }
-      })
-      //console.log(scheduleList)
-      return scheduleList
+      )
     }
     // 名前
     const scheduleFormatter = (schedule: BlankSchedule) => {
@@ -161,10 +159,6 @@ export default defineComponent({
         locale: jaLocale
       })
       return startAt + '~' + endAt
-    }
-
-    const sample = (date: Date) => {
-      console.log(format(new Date(), 'ah:mm', { locale: jaLocale }))
     }
 
     watch(
@@ -191,6 +185,21 @@ export default defineComponent({
 .calender{
   &__cell {
     height: 100px
+  }
+  &__schedule-font {
+    &--month {
+      font-size: 50%
+    }
+  }
+  &__schedule-circle {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+
+
+    &--inline {
+      display: inline-block
+    }
   }
 }
 </style>

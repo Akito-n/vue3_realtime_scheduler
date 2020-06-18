@@ -1,12 +1,14 @@
 <template>
   <div class="flex justify-center items-end">
-    <div class="flex flex-col">
-      <div
-        v-for="(time, t) in times"
-        :key="`time-${t}`"
-        class="w-3 h-10 flex justify-end items-end border-b-2"
-      >
-        <span class="-mb-2 mr-4 whitespace-no-wrap">{{ time }}時</span>
+    <div v-if="!loading">
+      <div class="flex flex-col">
+        <div
+          v-for="(time, t) in times"
+          :key="`time-${t}`"
+          class="w-3 h-10 flex justify-end items-end border-b-2"
+        >
+          <span class="-mb-2 mr-4 whitespace-no-wrap">{{ time }}時</span>
+        </div>
       </div>
     </div>
     <div>
@@ -37,7 +39,15 @@
           {{ format(day, 'dd(E)', { locale: jaLocale }) }}
         </div>
       </div>
-      <div v-if="loading">Loading...</div>
+      <div v-if="loading">
+        <div class="mt-20">
+          <vue-loading
+            type="spiningDubbles"
+            color="#40e0d0"
+            :size="{ width: '300px', height: '300px' }"
+          />
+        </div>
+      </div>
       <div v-else-if="result" class="flex row justify-center items-center">
         <div
           class="items-center"
@@ -86,15 +96,12 @@ import {
   reactive,
   computed
 } from '@vue/composition-api'
-import {
-  useBlankSchedulesQuery,
-  BlankSchedulesSubscriptionDocument
-} from '@/graphql/types'
+import { BlankSchedulesSubscriptionDocument } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import RequestCreator from '@/vue/containers/RequestCreator.vue'
-import { useResult, useSubscription } from '@vue/apollo-composable'
+import { useSubscription } from '@vue/apollo-composable'
 
 export default defineComponent({
   components: { ScheduleCreator, RequestCreator },
@@ -107,26 +114,11 @@ export default defineComponent({
       days: []
     })
 
-    const { loading, refetch } = useBlankSchedulesQuery({
-      minDate: state.lastWeek,
-      maxDate: state.nextWeek
-    })
+    const { result, loading } = useSubscription(
+      BlankSchedulesSubscriptionDocument
+    )
 
-    const { result } = useSubscription(BlankSchedulesSubscriptionDocument)
-
-    // const schedules = useResult(result, null, (data) => {
-    //   console.log(data)
-    //   return data.blankSchedules.blankSchedules.nodes
-    // })
-    // const schedules = []
     const schedules = ref([])
-    // const schedules = result.value.blankSchedules.blankSchedules.nodes
-    watch(result, (data) => {
-      console.log(data)
-      if (data) {
-        console.log(data.blankSchedules)
-      }
-    })
 
     const getBlankSchedules = (day, hours, minutes) => {
       let criteriaTime = addHours(day, hours)
@@ -160,11 +152,6 @@ export default defineComponent({
         state.days[0],
         'dd'
       )}～${format(state.days[6], 'dd')}日`
-
-      refetch({
-        minDate: state.lastWeek,
-        maxDate: state.nextWeek
-      })
     }
 
     watch(
