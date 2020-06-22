@@ -47,6 +47,9 @@ class User < ApplicationRecord
   has_many :entries, foreign_key: :individual_user_id, class_name: :Recruitement
   has_many :company_users, through: :entries, source: :company_user
 
+  has_many :request_schedules, class_name: :Schedule, foreign_key: :requester_id
+  has_many :reseived_schedules, class_name: :Schedule, foreign_key: :responder_id
+
   #FIXME 名前
   def members_array
     target_users = individual? ? company_users : individual_users

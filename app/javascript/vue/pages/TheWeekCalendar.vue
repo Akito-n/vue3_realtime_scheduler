@@ -1,12 +1,14 @@
 <template>
   <div class="flex justify-center items-end">
-    <div class="flex flex-col">
-      <div
-        v-for="(time, t) in times"
-        :key="`time-${t}`"
-        class="w-3 h-10 flex justify-end items-end border-b-2"
-      >
-        <span class="-mb-2 mr-4 whitespace-no-wrap">{{ time }}時</span>
+    <div v-if="!loading">
+      <div class="flex flex-col">
+        <div
+          v-for="(time, t) in times"
+          :key="`time-${t}`"
+          class="w-3 h-10 flex justify-end items-end border-b-2"
+        >
+          <span class="-mb-2 mr-4 whitespace-no-wrap">{{ time }}時</span>
+        </div>
       </div>
     </div>
     <div>
@@ -37,7 +39,15 @@
           {{ format(day, 'dd(E)', { locale: jaLocale }) }}
         </div>
       </div>
-      <div v-if="loading">Loading...</div>
+      <div v-if="loading">
+        <div class="mt-20">
+          <vue-loading
+            type="spiningDubbles"
+            color="#40e0d0"
+            :size="{ width: '300px', height: '300px' }"
+          />
+        </div>
+      </div>
       <div v-else-if="result" class="flex row justify-center items-center">
         <div
           class="items-center"
@@ -53,19 +63,31 @@
                 minute === 0 ? 'border-b-0' : ''
               }`"
             >
+              <div class="flex row justify-start">
+                <div
+                  v-for="(blankSchedule, i) in getBlankSchedules(
+                    day,
+                    hour,
+                    minute
+                  )"
+                  :key="i"
+                  class="schedule-cell--blank min-h-full flex-grow"
+                  :class="`bg-${blankSchedule.requester.color}-400`"
+                  @click="select(blankSchedule)"
+                >
+                  {{ blankSchedule.isRequest ? '済' : '&nbsp;' }}
+                </div>
+              </div>
               <div
-                v-if="getBlankSchedule(day, hour, minute)"
-                class="schedule-cell--blank min-w-full min-h-full"
-                :class="`bg-${
-                  getBlankSchedule(day, hour, minute).user.color
-                }-200`"
-              ></div>
-              <div class="schedule-cell--border inset-0 absolute" />
+                class="schedule-cell--border inset-0 absolute pointer-events-none"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
+    <request-creator v-model="state.selectedSchedule" />
+    <request-accepter v-model="state.selectedRequestedSchedule" />
   </div>
 </template>
 
@@ -90,62 +112,44 @@ import {
   reactive,
   computed
 } from '@vue/composition-api'
-import {
-  useBlankSchedulesQuery,
-  BlankSchedulesSubscriptionDocument
-} from '@/graphql/types'
+import { SchedulesSubscriptionDocument, Schedule } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
-import { useResult, useSubscription } from '@vue/apollo-composable'
+import RequestCreator from '@/vue/containers/RequestCreator.vue'
+import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
+import { useSubscription } from '@vue/apollo-composable'
 
 export default defineComponent({
-  components: { ScheduleCreator },
+  components: { ScheduleCreator, RequestCreator, RequestAccepter },
   setup(props, context) {
     const { daysOfWeek, elementalies } = useCalendar()
     const state = reactive({
       currentWeek: '',
       lastWeek: new Date().toString(),
       nextWeek: new Date().toString(),
-      days: []
+      days: [],
+      selectedSchedule: null,
+      selectedRequestedSchedule: null
     })
 
-    const { loading, refetch } = useBlankSchedulesQuery({
-      minDate: state.lastWeek,
-      maxDate: state.nextWeek
-    })
+    const { result, loading } = useSubscription(SchedulesSubscriptionDocument)
 
-    const { result } = useSubscription(BlankSchedulesSubscriptionDocument)
-
-    // const schedules = useResult(result, null, (data) => {
-    //   console.log(data)
-    //   return data.blankSchedules.blankSchedules.nodes
-    // })
-    // const schedules = []
     const schedules = ref([])
-    // const schedules = result.value.blankSchedules.blankSchedules.nodes
-    watch(result, (data) => {
-      console.log(data)
-      if (data) {
-        console.log(data.blankSchedules)
-      }
-    })
 
-    const getBlankSchedule = (day, hours, minutes) => {
+    const getBlankSchedules = (day, hours, minutes) => {
       let criteriaTime = addHours(day, hours)
       criteriaTime = addMinutes(criteriaTime, minutes)
 
-      return result.value.blankSchedules.blankSchedules.nodes.find(
-        (schedule) => {
-          return areIntervalsOverlapping(
-            {
-              start: new Date(schedule.startAt),
-              end: new Date(schedule.endAt)
-            },
-            { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
-          )
-        }
-      )
+      return result.value.schedules.schedules.nodes.filter((schedule) => {
+        return areIntervalsOverlapping(
+          {
+            start: new Date(schedule.startAt),
+            end: new Date(schedule.endAt)
+          },
+          { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
+        )
+      })
     }
 
     const times = []
@@ -163,11 +167,6 @@ export default defineComponent({
         state.days[0],
         'dd'
       )}～${format(state.days[6], 'dd')}日`
-
-      refetch({
-        minDate: state.lastWeek,
-        maxDate: state.nextWeek
-      })
     }
 
     watch(
@@ -178,15 +177,25 @@ export default defineComponent({
       }
     )
 
+    const select = (blankSchedule: Schedule) => {
+      if (blankSchedule.mine) return
+      if (blankSchedule.isRequest) {
+        state.selectedRequestedSchedule = blankSchedule
+      } else {
+        state.selectedSchedule = blankSchedule
+      }
+    }
+
     return {
       times,
       state,
       loading,
       result,
       schedules,
-      getBlankSchedule,
+      getBlankSchedules,
       format,
-      jaLocale
+      jaLocale,
+      select
     }
   }
 })

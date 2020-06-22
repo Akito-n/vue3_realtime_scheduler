@@ -12,8 +12,7 @@ class Types::Objects::BlankScheduleType < Types::BaseObject
   field :user, Types::Objects::MemberType, null: false
 
   def mine
-    #object.user_id == context[:current_user].id
-    true
+    object.user_id == context[:current_user].id
   end
 
   #field :role, String, null: false

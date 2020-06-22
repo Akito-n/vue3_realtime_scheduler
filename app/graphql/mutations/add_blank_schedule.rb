@@ -15,7 +15,7 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
     user = context[:current_user]
     blank_schedule = BlankSchedule.new(start_at: start_at, end_at: end_at, user: user)
     if blank_schedule.save
-      AppSchema.subscriptions.trigger('blankSchedules', {}, {})
+      AppSchema.subscriptions.trigger('schedules', {}, {})
       {
         blank_schedule: blank_schedule
       }

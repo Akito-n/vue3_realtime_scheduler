@@ -6,14 +6,23 @@ import VueCompositionApi, { provide } from '@vue/composition-api'
 import { DefaultApolloClient } from '@vue/apollo-composable'
 import VueRouter from 'vue-router'
 import { routes } from '@/vue/routes'
+import { dateFilter } from '@/vue/filters/date'
 
 Vue.use(VueApollo)
 Vue.use(VueCompositionApi)
 Vue.use(VueRouter)
 
+dateFilter()
+
 const router = new VueRouter({
   mode: 'history',
   routes
+})
+
+Vue.filter('capitalize', function (value) {
+  if (!value) return ''
+  value = value.toString()
+  return value.charAt(0).toUpperCase() + value.slice(1)
 })
 
 document.addEventListener('DOMContentLoaded', () => {

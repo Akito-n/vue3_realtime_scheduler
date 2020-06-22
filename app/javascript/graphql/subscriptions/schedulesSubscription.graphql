@@ -1,13 +1,14 @@
-subscription blankSchedulesSubscription {
-  blankSchedules {
-    blankSchedules {
+subscription schedulesSubscription {
+  schedules {
+    schedules {
       nodes {
         id
-        userId
         startAt
         endAt
         mine
-        user {
+        isRequest
+        requester {
+          id
           name
           companyName
           color

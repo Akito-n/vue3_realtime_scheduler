@@ -23,6 +23,15 @@ class BlankSchedule < ApplicationRecord
   validate :check_schedule
   validates_with CheckScheduleValidator
 
+  #MEMO: scheduleとメソッドを合わせる
+  def requester
+    user
+  end
+
+  def requester_id
+    user_id
+  end
+
   def check_schedule
     if start_at > end_at
       errors.add(:start_at,'は終了時間よりも前に設定してください。')

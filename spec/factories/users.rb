@@ -32,6 +32,13 @@
 #
 FactoryBot.define do
   factory :user do
-    
+    sequence(:email) { |n| "test#{n}@example.com" }
+    sequence(:password) { "password01" }
+    sequence(:name) { |n| "name #{n}" }
+  end
+
+  trait :company_user do
+    sequence(:company_name) { |n| "company_#{n}" }
+    role { :company }
   end
 end
