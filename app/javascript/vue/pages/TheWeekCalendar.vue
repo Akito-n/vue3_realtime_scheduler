@@ -73,11 +73,14 @@
                   :key="i"
                   class="schedule-cell--blank min-h-full flex-grow"
                   :class="`bg-${blankSchedule.user.color}-400`"
+                  @click="setSchedule(blankSchedule)"
                 >
-                  <button @click="setSchedule(blankSchedule)">DKbuton</button>
+                  Dk
                 </div>
               </div>
-              <div class="schedule-cell--border inset-0 absolute" />
+              <div
+                class="schedule-cell--border inset-0 absolute pointer-events-none"
+              />
             </div>
           </div>
         </div>
