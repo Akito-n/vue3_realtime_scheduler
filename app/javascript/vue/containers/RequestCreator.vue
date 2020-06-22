@@ -1,16 +1,20 @@
 <template>
-  <modal :value="!!value" @input="$emit('input', null)" title="リクエストする">
-    hogehoge
-    <button @click="submit(value.id)">オラオラ</button>
+  <modal :value="!!value" @input="$emit('input', null)" title="選択した内容">
+    <template v-if="value">
+      {{ value.startAt | date('M/d(E) HH:mm') }}～{{
+        value.endAt | date('HH:mm')
+      }}
 
-    <!--Footer-->
-    <div class="flex justify-end pt-2">
-      <button
-        class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
-      >
-        リクエスト
-      </button>
-    </div>
+      <!--Footer-->
+      <div class="flex justify-end pt-2">
+        <button
+          class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
+          @click="submit(value.id)"
+        >
+          面接日程をリクエストする
+        </button>
+      </div>
+    </template>
   </modal>
 </template>
 
