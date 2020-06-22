@@ -30,8 +30,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_081746) do
     t.uuid "company_user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["company_user_id"], name: "index_recruitements_on_company_user_id"
-    t.index ["individual_user_id"], name: "index_recruitements_on_individual_user_id"
+    t.index ["individual_user_id", "company_user_id"], name: "index_recruitements_on_individual_user_id_and_company_user_id"
   end
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
