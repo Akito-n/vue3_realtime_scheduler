@@ -11,14 +11,16 @@ class Mutations::RespondSchedule < Mutations::BaseMutation
 
   def resolve(schedule:, **args)
     user = context[:current_user]
-    if schedule.update(accepted_at: Time.zone.now)
-      AppSchema.subscriptions.trigger('schedules', {}, {})
-      {
-        schedule: schedule
-      }
-    else
-      set_errors(schedule)
-      return
+    ActiveRecord::Base.transaction do
+      if schedule.accept!
+        AppSchema.subscriptions.trigger('schedules', {}, {})
+        {
+          schedule: schedule
+        }
+      else
+        set_errors(schedule)
+        return
+      end
     end
   end
 

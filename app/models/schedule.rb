@@ -26,4 +26,12 @@ class Schedule < ApplicationRecord
   belongs_to :responder, class_name: :User
 
   validates :requester_id, uniqueness: { scope: :responder_id }
+
+  def accept!
+    update!(accepted_at: Time.zone.now)
+    BlankSchedule
+      .where(user: [requester, responder])
+      .where(start_at: start_at, end_at: end_at)
+      .map(&:destroy!)
+  end
 end
