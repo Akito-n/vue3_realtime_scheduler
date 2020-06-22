@@ -73,9 +73,13 @@
                   :key="i"
                   class="schedule-cell--blank min-h-full flex-grow"
                   :class="`bg-${blankSchedule.user.color}-400`"
-                  @click="state.selectedSchedule = blankSchedule"
+                  @click="
+                    blankSchedule.mine
+                      ? undefined
+                      : (state.selectedSchedule = blankSchedule)
+                  "
                 >
-                  {{ blankSchedule.id }}
+                  &nbsp;
                 </div>
               </div>
               <div
