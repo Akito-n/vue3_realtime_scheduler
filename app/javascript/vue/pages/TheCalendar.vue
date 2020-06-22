@@ -76,9 +76,9 @@ import { defineComponent, reactive, watch, ref } from '@vue/composition-api'
 import {
   useCurrentUserQuery,
   useAddBlankScheduleMutation,
-  useBlankSchedulesQuery,
-  BlankSchedule,
-  BlankSchedulesSubscriptionDocument
+  //useBlankSchedulesQuery,
+  BlankSchedule
+  //BlankSchedulesSubscriptionDocument
 } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
@@ -127,9 +127,9 @@ export default defineComponent({
       state.days = tempdays
     }
 
-    const { result, loading } = useSubscription(
-      BlankSchedulesSubscriptionDocument
-    )
+    // const { result, loading } = useSubscription(
+    //   BlankSchedulesSubscriptionDocument
+    // )
 
     const schedules = ref([])
 
@@ -169,10 +169,12 @@ export default defineComponent({
       }
     )
 
+    const loading = true
+
     return {
       elementalies,
       loading,
-      result,
+      //result,
       state,
       format,
       setSchedule,

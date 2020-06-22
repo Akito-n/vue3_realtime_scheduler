@@ -72,7 +72,7 @@
                   )"
                   :key="i"
                   class="schedule-cell--blank min-h-full flex-grow"
-                  :class="`bg-${blankSchedule.user.color}-400`"
+                  :class="`bg-${blankSchedule.requester.color}-400`"
                   @click="
                     blankSchedule.mine
                       ? undefined
@@ -115,10 +115,7 @@ import {
   reactive,
   computed
 } from '@vue/composition-api'
-import {
-  BlankSchedulesSubscriptionDocument,
-  BlankSchedule
-} from '@/graphql/types'
+import { SchedulesSubscriptionDocument } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
@@ -137,9 +134,7 @@ export default defineComponent({
       selectedSchedule: null
     })
 
-    const { result, loading } = useSubscription(
-      BlankSchedulesSubscriptionDocument
-    )
+    const { result, loading } = useSubscription(SchedulesSubscriptionDocument)
 
     const schedules = ref([])
 
@@ -147,17 +142,15 @@ export default defineComponent({
       let criteriaTime = addHours(day, hours)
       criteriaTime = addMinutes(criteriaTime, minutes)
 
-      return result.value.blankSchedules.blankSchedules.nodes.filter(
-        (schedule) => {
-          return areIntervalsOverlapping(
-            {
-              start: new Date(schedule.startAt),
-              end: new Date(schedule.endAt)
-            },
-            { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
-          )
-        }
-      )
+      return result.value.schedules.schedules.nodes.filter((schedule) => {
+        return areIntervalsOverlapping(
+          {
+            start: new Date(schedule.startAt),
+            end: new Date(schedule.endAt)
+          },
+          { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
+        )
+      })
     }
 
     const times = []

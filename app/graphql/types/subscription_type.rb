@@ -1,6 +1,6 @@
 module Types
   class SubscriptionType < Types::BaseObject
     extend GraphQL::Subscriptions::SubscriptionRoot
-    field :blank_schedules, subscription: Subscriptions::BlankSchedules
+    field :schedules, subscription: Subscriptions::Schedules
   end
 end
