@@ -8,7 +8,7 @@
         <font-awesome-icon icon="chevron-left" />
         前月
       </router-link>
-      <div>{{ format(state.currentMonth, 'M') }}月</div>
+      <div>{{ state.currentMonth | date('M') }}月</div>
       <router-link
         :to="`/calendar/month/${state.next}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -42,11 +42,11 @@
       >
         <div v-for="(day, j) in week" :key="`day-${j}`">
           <div class="border text-center w-40 h-20">
-            {{ format(day, 'dd') }}
+            {{ day | date('dd') }}
             <div v-for="(schedule, i) in setSchedule(day).slice(0, 2)" :key="i">
               <span
                 class="calender__schedule-circle calender__schedule-circle--inline"
-                :class="`bg-${schedule.user.color}-200`"
+                :class="`bg-${schedule.requester.color}-400`"
               ></span>
               <span class="calender__schedule-font--month">{{
                 scheduleFormatter(schedule)
@@ -74,16 +74,14 @@ import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
 import { defineComponent, reactive, watch, ref } from '@vue/composition-api'
 import {
-  useCurrentUserQuery,
-  useAddBlankScheduleMutation,
-  //useBlankSchedulesQuery,
+  SchedulesSubscriptionDocument,
+  Schedule,
   BlankSchedule
-  //BlankSchedulesSubscriptionDocument
 } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import { routes } from 'vue/routes'
-import { useResult, useSubscription } from '@vue/apollo-composable'
+import { useSubscription } from '@vue/apollo-composable'
 
 interface State {
   currentMonth: Date
@@ -106,6 +104,8 @@ export default defineComponent({
 
     const { daysOfWeek, elementalies } = useCalendar()
 
+    const { result, loading } = useSubscription(SchedulesSubscriptionDocument)
+
     const load = (year: string, month: string) => {
       const current = parse(`${year}-${month}-01`, 'yyyy-MM-dd', new Date())
       state.currentMonth = current
@@ -127,10 +127,6 @@ export default defineComponent({
       state.days = tempdays
     }
 
-    // const { result, loading } = useSubscription(
-    //   BlankSchedulesSubscriptionDocument
-    // )
-
     const schedules = ref([])
 
     //名前変えたい
@@ -138,17 +134,15 @@ export default defineComponent({
       const _day = day
       const scheduleList = []
 
-      return result.value.blankSchedules.blankSchedules.nodes.filter(
-        (schedule) => {
-          return areIntervalsOverlapping(
-            {
-              start: new Date(schedule.startAt),
-              end: new Date(schedule.endAt)
-            },
-            { start: day, end: addDays(day, 1) }
-          )
-        }
-      )
+      return result.value.schedules.schedules.nodes.filter((schedule) => {
+        return areIntervalsOverlapping(
+          {
+            start: new Date(schedule.startAt),
+            end: new Date(schedule.endAt)
+          },
+          { start: day, end: addDays(day, 1) }
+        )
+      })
     }
     // 名前
     const scheduleFormatter = (schedule: BlankSchedule) => {
@@ -169,14 +163,11 @@ export default defineComponent({
       }
     )
 
-    const loading = true
-
     return {
       elementalies,
       loading,
-      //result,
+      result,
       state,
-      format,
       setSchedule,
       scheduleFormatter
     }
