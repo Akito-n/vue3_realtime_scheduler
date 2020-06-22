@@ -73,7 +73,7 @@
                   :key="i"
                   class="schedule-cell--blank min-h-full flex-grow"
                   :class="`bg-${blankSchedule.user.color}-400`"
-                  @click="setSchedule(blankSchedule)"
+                  @click="state.selectedSchedule = blankSchedule"
                 >
                   Dk
                 </div>
@@ -86,8 +86,7 @@
         </div>
       </div>
     </div>
-    <button @click="setSchedule(null)">DK</button>
-    <request-creator :blankSchedule="state.selectedSchedule" />
+    <request-creator v-model="state.selectedSchedule" />
   </div>
 </template>
 
@@ -182,12 +181,6 @@ export default defineComponent({
       }
     )
 
-    const setSchedule = (v) => {
-      // 動かないぞ?
-      console.log(v)
-      state.selectedSchedule = v
-    }
-
     return {
       times,
       state,
@@ -195,7 +188,6 @@ export default defineComponent({
       result,
       schedules,
       getBlankSchedules,
-      setSchedule,
       format,
       jaLocale
     }

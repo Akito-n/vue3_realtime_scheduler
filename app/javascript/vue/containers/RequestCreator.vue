@@ -1,8 +1,16 @@
 <template>
-  <!-- <div v-if="blankSchedule" class="flex row justify-start">
-    {{ blankSchedule.user.name }}
-  </div> -->
-  <div>aaa</div>
+  <modal :value="!!value" @input="$emit('input', null)" title="リクエストする">
+    hogehoge
+
+    <!--Footer-->
+    <div class="flex justify-end pt-2">
+      <button
+        class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
+      >
+        リクエスト
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script lang="ts">
@@ -10,19 +18,18 @@ import Vue from 'vue'
 import { defineComponent, reactive, computed } from '@vue/composition-api'
 import { useMutation } from '@vue/apollo-composable'
 import { BlankSchedule } from '@/graphql/types'
+import Modal from '@/vue/components/Modal.vue'
 
 type Props = {
   blankSchedule?: BlankSchedule | null
 }
 
 export default defineComponent<Props>({
-  components: {},
+  components: { Modal },
   props: {
-    blankSchedule: Object
+    value: Object
   },
   setup(props, context) {
-    console.log(props.blankSchedule)
-    // return { blansSchedule: props.blankSchedule }
     return {}
   }
 })
