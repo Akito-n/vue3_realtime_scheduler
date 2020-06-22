@@ -73,13 +73,9 @@
                   :key="i"
                   class="schedule-cell--blank min-h-full flex-grow"
                   :class="`bg-${blankSchedule.requester.color}-400`"
-                  @click="
-                    blankSchedule.mine
-                      ? undefined
-                      : (state.selectedSchedule = blankSchedule)
-                  "
+                  @click="select(blankSchedule)"
                 >
-                  &nbsp;
+                  {{ blankSchedule.isRequest ? '済' : '&nbsp;' }}
                 </div>
               </div>
               <div
@@ -91,6 +87,7 @@
       </div>
     </div>
     <request-creator v-model="state.selectedSchedule" />
+    <request-accepter v-model="state.selectedRequestedSchedule" />
   </div>
 </template>
 
@@ -115,15 +112,16 @@ import {
   reactive,
   computed
 } from '@vue/composition-api'
-import { SchedulesSubscriptionDocument } from '@/graphql/types'
+import { SchedulesSubscriptionDocument, Schedule } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import RequestCreator from '@/vue/containers/RequestCreator.vue'
+import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
 import { useSubscription } from '@vue/apollo-composable'
 
 export default defineComponent({
-  components: { ScheduleCreator, RequestCreator },
+  components: { ScheduleCreator, RequestCreator, RequestAccepter },
   setup(props, context) {
     const { daysOfWeek, elementalies } = useCalendar()
     const state = reactive({
@@ -131,7 +129,8 @@ export default defineComponent({
       lastWeek: new Date().toString(),
       nextWeek: new Date().toString(),
       days: [],
-      selectedSchedule: null
+      selectedSchedule: null,
+      selectedRequestedSchedule: null
     })
 
     const { result, loading } = useSubscription(SchedulesSubscriptionDocument)
@@ -178,6 +177,15 @@ export default defineComponent({
       }
     )
 
+    const select = (blankSchedule: Schedule) => {
+      if (blankSchedule.mine) return
+      if (blankSchedule.isRequest) {
+        state.selectedRequestedSchedule = blankSchedule
+      } else {
+        state.selectedSchedule = blankSchedule
+      }
+    }
+
     return {
       times,
       state,
@@ -186,7 +194,8 @@ export default defineComponent({
       schedules,
       getBlankSchedules,
       format,
-      jaLocale
+      jaLocale,
+      select
     }
   }
 })

@@ -6,6 +6,7 @@ subscription schedulesSubscription {
         startAt
         endAt
         mine
+        isRequest
         requester {
           id
           name

@@ -180,6 +180,7 @@ export type Schedule = {
   __typename?: 'Schedule';
   endAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
+  isRequest: Scalars['Boolean'];
   mine: Scalars['Boolean'];
   requester: Member;
   responder: Member;
@@ -328,7 +329,7 @@ export type SchedulesSubscriptionSubscription = (
       { __typename?: 'ScheduleConnection' }
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Schedule' }
-        & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine'>
+        & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'isRequest'>
         & { requester: (
           { __typename?: 'Member' }
           & Pick<Member, 'id' | 'name' | 'companyName' | 'color'>
@@ -476,6 +477,7 @@ export const SchedulesSubscriptionDocument = gql`
         startAt
         endAt
         mine
+        isRequest
         requester {
           id
           name

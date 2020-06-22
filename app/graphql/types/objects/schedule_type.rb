@@ -15,6 +15,11 @@ class Types::Objects::ScheduleType < Types::BaseObject
   field :requester, Types::Objects::MemberType, null: false
   field :responder, Types::Objects::MemberType, null: false
 
+  field :is_request, Boolean, null: false
+  def is_request
+    object.class.name == 'Schedule'
+  end
+
   def mine
     object.requester_id == context[:current_user].id
   end

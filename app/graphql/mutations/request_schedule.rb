@@ -14,7 +14,7 @@ class Mutations::RequestSchedule < Mutations::BaseMutation
     user = context[:current_user]
     schedule = user.request_schedules.build(start_at: blank_schedule.start_at, end_at: blank_schedule.end_at, responder: blank_schedule.user)
     if schedule.save
-      AppSchema.subscriptions.trigger('blankSchedules', {}, {})
+      AppSchema.subscriptions.trigger('schedules', {}, {})
       {
         schedule: schedule
       }
