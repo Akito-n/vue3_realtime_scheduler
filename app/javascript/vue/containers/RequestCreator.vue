@@ -7,7 +7,7 @@
       v-for="(blankSchedule, i) in blankSchedules"
       :key="i"
       class="schedule-cell--blank min-h-full flex-grow"
-      :class="`bg-${blankSchedule.user.color}-200`"
+      :class="`bg-${blankSchedule.user.color}-400`"
     >
       &nbsp;
     </div>

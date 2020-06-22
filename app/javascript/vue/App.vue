@@ -3,7 +3,8 @@
     <template v-if="!loading">
       <ul
         v-if="result.currentUser"
-        class="flex items-center justify-end p-6 bg-teal-500"
+        class="flex items-center justify-end p-6"
+        :class="`bg-${result.currentUser.color}-400`"
       >
         <li class="mr-6">
           <router-link to="/example" class="text-white hover:text-yellow-800">
