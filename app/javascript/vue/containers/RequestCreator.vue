@@ -1,15 +1,15 @@
 <template>
-  <div>
+  <div class="flex row justify-start">
     <!-- <div v-for="(blankSchedule, i) in blankSchedules" :key="i">
       {{ blankSchedule.id }}
     </div> -->
     <div
       v-for="(blankSchedule, i) in blankSchedules"
       :key="i"
-      class="schedule-cell--blank min-h-full"
+      class="schedule-cell--blank min-h-full flex-grow"
       :class="`bg-${blankSchedule.user.color}-200`"
     >
-      DK
+      &nbsp;
     </div>
   </div>
 </template>
