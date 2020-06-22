@@ -1,17 +1,8 @@
 <template>
-  <div class="flex row justify-start">
-    <!-- <div v-for="(blankSchedule, i) in blankSchedules" :key="i">
-      {{ blankSchedule.id }}
-    </div> -->
-    <div
-      v-for="(blankSchedule, i) in blankSchedules"
-      :key="i"
-      class="schedule-cell--blank min-h-full flex-grow"
-      :class="`bg-${blankSchedule.user.color}-400`"
-    >
-      &nbsp;
-    </div>
-  </div>
+  <!-- <div v-if="blankSchedule" class="flex row justify-start">
+    {{ blankSchedule.user.name }}
+  </div> -->
+  <div>aaa</div>
 </template>
 
 <script lang="ts">
@@ -21,17 +12,18 @@ import { useMutation } from '@vue/apollo-composable'
 import { BlankSchedule } from '@/graphql/types'
 
 type Props = {
-  blankSchedules: BlankSchedule[]
+  blankSchedule?: BlankSchedule | null
 }
 
 export default defineComponent<Props>({
   components: {},
   props: {
-    blankSchedules: Array
+    blankSchedule: Object
   },
   setup(props, context) {
-    console.log(props.blankSchedules)
-    return { blansSchedules: props.blankSchedules }
+    console.log(props.blankSchedule)
+    // return { blansSchedule: props.blankSchedule }
+    return {}
   }
 })
 </script>

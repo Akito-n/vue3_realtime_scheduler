@@ -63,15 +63,28 @@
                 minute === 0 ? 'border-b-0' : ''
               }`"
             >
-              <request-creator
-                :blankSchedules="getBlankSchedules(day, hour, minute)"
-              />
+              <div class="flex row justify-start">
+                <div
+                  v-for="(blankSchedule, i) in getBlankSchedules(
+                    day,
+                    hour,
+                    minute
+                  )"
+                  :key="i"
+                  class="schedule-cell--blank min-h-full flex-grow"
+                  :class="`bg-${blankSchedule.user.color}-400`"
+                >
+                  <button @click="setSchedule(blankSchedule)">DKbuton</button>
+                </div>
+              </div>
               <div class="schedule-cell--border inset-0 absolute" />
             </div>
           </div>
         </div>
       </div>
     </div>
+    <button @click="setSchedule(null)">DK</button>
+    <request-creator :blankSchedule="state.selectedSchedule" />
   </div>
 </template>
 
@@ -96,7 +109,10 @@ import {
   reactive,
   computed
 } from '@vue/composition-api'
-import { BlankSchedulesSubscriptionDocument } from '@/graphql/types'
+import {
+  BlankSchedulesSubscriptionDocument,
+  BlankSchedule
+} from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
@@ -111,7 +127,8 @@ export default defineComponent({
       currentWeek: '',
       lastWeek: new Date().toString(),
       nextWeek: new Date().toString(),
-      days: []
+      days: [],
+      selectedSchedule: null
     })
 
     const { result, loading } = useSubscription(
@@ -162,6 +179,12 @@ export default defineComponent({
       }
     )
 
+    const setSchedule = (v) => {
+      // 動かないぞ?
+      console.log(v)
+      state.selectedSchedule = v
+    }
+
     return {
       times,
       state,
@@ -169,6 +192,7 @@ export default defineComponent({
       result,
       schedules,
       getBlankSchedules,
+      setSchedule,
       format,
       jaLocale
     }
