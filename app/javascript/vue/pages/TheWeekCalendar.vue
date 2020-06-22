@@ -75,7 +75,7 @@
                   :class="`bg-${blankSchedule.user.color}-400`"
                   @click="state.selectedSchedule = blankSchedule"
                 >
-                  Dk
+                  {{ blankSchedule.id }}
                 </div>
               </div>
               <div

@@ -1,0 +1,7 @@
+mutation requestSchedule($input: RequestScheduleInput!) {
+  requestSchedule(input: $input) {
+    schedule {
+      id
+    }
+  }
+}

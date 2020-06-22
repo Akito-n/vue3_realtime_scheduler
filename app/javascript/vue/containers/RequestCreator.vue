@@ -1,6 +1,7 @@
 <template>
   <modal :value="!!value" @input="$emit('input', null)" title="リクエストする">
     hogehoge
+    <button @click="submit(value.id)">オラオラ</button>
 
     <!--Footer-->
     <div class="flex justify-end pt-2">
@@ -17,11 +18,16 @@
 import Vue from 'vue'
 import { defineComponent, reactive, computed } from '@vue/composition-api'
 import { useMutation } from '@vue/apollo-composable'
-import { BlankSchedule } from '@/graphql/types'
+import {
+  BlankSchedule,
+  RequestScheduleMutation,
+  RequestScheduleMutationVariables,
+  RequestScheduleDocument
+} from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
 
 type Props = {
-  blankSchedule?: BlankSchedule | null
+  value?: BlankSchedule | null
 }
 
 export default defineComponent<Props>({
@@ -30,7 +36,17 @@ export default defineComponent<Props>({
     value: Object
   },
   setup(props, context) {
-    return {}
+    const { mutate, loading, error, onDone } = useMutation<
+      RequestScheduleMutation,
+      RequestScheduleMutationVariables
+    >(RequestScheduleDocument)
+
+    const submit = (blankScheduleId: string) => {
+      console.log(blankScheduleId)
+      mutate({ input: { blankScheduleId: blankScheduleId } })
+    }
+
+    return { submit }
   }
 })
 </script>
