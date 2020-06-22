@@ -28,9 +28,9 @@ import { defineComponent, reactive, computed } from '@vue/composition-api'
 import { useMutation } from '@vue/apollo-composable'
 import {
   BlankSchedule,
-  RequestScheduleMutation,
-  RequestScheduleMutationVariables,
-  RequestScheduleDocument
+  RespondScheduleMutationVariables,
+  RespondScheduleDocument,
+  RespondScheduleMutation
 } from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
 
@@ -45,13 +45,13 @@ export default defineComponent<Props>({
   },
   setup(props, context) {
     const { mutate, loading, error, onDone } = useMutation<
-      RequestScheduleMutation,
-      RequestScheduleMutationVariables
-    >(RequestScheduleDocument)
+      RespondScheduleMutation,
+      RespondScheduleMutationVariables
+    >(RespondScheduleDocument)
 
-    const submit = (blankScheduleId: string) => {
-      console.log(blankScheduleId)
-      mutate({ input: { blankScheduleId: blankScheduleId } })
+    const submit = (scheduleId: string) => {
+      console.log(scheduleId)
+      mutate({ input: { scheduleId: scheduleId } })
     }
 
     onDone(() => {

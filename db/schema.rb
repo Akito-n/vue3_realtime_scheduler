@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_17_080923) do
+ActiveRecord::Schema.define(version: 2020_06_22_081746) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -30,7 +30,8 @@ ActiveRecord::Schema.define(version: 2020_06_17_080923) do
     t.uuid "company_user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["individual_user_id", "company_user_id"], name: "index_recruitements_on_individual_user_id_and_company_user_id"
+    t.index ["company_user_id"], name: "index_recruitements_on_company_user_id"
+    t.index ["individual_user_id"], name: "index_recruitements_on_individual_user_id"
   end
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -41,6 +42,7 @@ ActiveRecord::Schema.define(version: 2020_06_17_080923) do
     t.datetime "approved_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "accepted_at"
     t.index ["requester_id", "responder_id"], name: "index_schedules_on_requester_id_and_responder_id"
   end
 

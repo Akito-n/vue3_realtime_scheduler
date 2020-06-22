@@ -3,6 +3,7 @@
 # Table name: schedules
 #
 #  id           :uuid             not null, primary key
+#  accepted_at  :datetime
 #  approved_at  :datetime
 #  end_at       :datetime
 #  start_at     :datetime

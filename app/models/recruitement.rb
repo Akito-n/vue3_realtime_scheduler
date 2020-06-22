@@ -10,7 +10,8 @@
 #
 # Indexes
 #
-#  index_recruitements_on_individual_user_id_and_company_user_id  (individual_user_id,company_user_id)
+#  index_recruitements_on_company_user_id     (company_user_id)
+#  index_recruitements_on_individual_user_id  (individual_user_id)
 #
 # Foreign Keys
 #
