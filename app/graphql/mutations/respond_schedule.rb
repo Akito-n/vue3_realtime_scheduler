@@ -2,6 +2,8 @@ class Mutations::RespondSchedule < Mutations::BaseMutation
   null false
 
   argument :schedule_id, ID, required: true, loads: Types::Objects::ScheduleType
+  argument :is_accept, Boolean, required: false
+
 
   field :schedule, Types::Objects::ScheduleType, null: true
 
@@ -9,18 +11,14 @@ class Mutations::RespondSchedule < Mutations::BaseMutation
     context[:user_signed_in] && schedule.responder == context[:current_user]
   end
 
-  def resolve(schedule:, **args)
+  def resolve(schedule:, is_accept: true, **args)
     user = context[:current_user]
     ActiveRecord::Base.transaction do
-      if schedule.accept!
-        AppSchema.subscriptions.trigger('schedules', {}, {})
-        {
-          schedule: schedule
-        }
-      else
-        set_errors(schedule)
-        return
-      end
+      is_accept ? schedule.accept! : schedule.reject!
+      AppSchema.subscriptions.trigger('schedules', {}, {})
+      {
+        schedule: schedule
+      }
     end
   end
 

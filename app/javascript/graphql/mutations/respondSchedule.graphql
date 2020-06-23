@@ -2,7 +2,6 @@ mutation respondSchedule($input: RespondScheduleInput!) {
   respondSchedule(input: $input) {
     schedule {
       id
-      acceptedAt
     }
   }
 }

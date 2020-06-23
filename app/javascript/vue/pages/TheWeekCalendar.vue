@@ -73,9 +73,18 @@
                   :key="i"
                   class="schedule-cell--blank min-h-full flex-grow"
                   :class="`bg-${blankSchedule.requester.color}-400`"
-                  @click="select(blankSchedule)"
+                  @click="
+                    select(
+                      blankSchedule,
+                      format(day, 'yyyy-MM-dd', { locale: jaLocale }),
+                      hour,
+                      minute
+                    )
+                  "
                 >
-                  {{ blankSchedule.isRequest ? '済' : '&nbsp;' }}
+                  {{
+                    blankSchedule.isRequest ? blankSchedule.status : '&nbsp;'
+                  }}
                 </div>
               </div>
               <div
@@ -86,7 +95,11 @@
         </div>
       </div>
     </div>
-    <request-creator v-model="state.selectedSchedule" />
+    <request-creator
+      v-model="state.selectedSchedule"
+      :startAt="state.selectedStartAt"
+      :endAt="state.selectedEndAt"
+    />
     <request-accepter v-model="state.selectedRequestedSchedule" />
   </div>
 </template>
@@ -130,7 +143,9 @@ export default defineComponent({
       nextWeek: new Date().toString(),
       days: [],
       selectedSchedule: null,
-      selectedRequestedSchedule: null
+      selectedRequestedSchedule: null,
+      selectedStartAt: null,
+      selectedEndAt: null
     })
 
     const { result, loading } = useSubscription(SchedulesSubscriptionDocument)
@@ -177,8 +192,25 @@ export default defineComponent({
       }
     )
 
-    const select = (blankSchedule: Schedule) => {
+    const select = (
+      blankSchedule: Schedule,
+      dateString: string,
+      hour: number,
+      minute: number
+    ) => {
       if (blankSchedule.mine) return
+      if (
+        blankSchedule.status == '非承認' ||
+        blankSchedule.status == '確定済み'
+      )
+        return
+      const date = parse(
+        `${dateString} ${hour}:${minute}`,
+        'yyyy-MM-dd HH:mm',
+        new Date()
+      )
+      state.selectedStartAt = date
+      state.selectedEndAt = addMinutes(date, 30)
       if (blankSchedule.isRequest) {
         state.selectedRequestedSchedule = blankSchedule
       } else {

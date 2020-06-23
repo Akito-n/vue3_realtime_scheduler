@@ -23,6 +23,31 @@ class BlankSchedule < ApplicationRecord
   validate :check_schedule
   validates_with CheckScheduleValidator
 
+  def self.hollow_out!(users, start_at:, end_at:)
+    where(user: users).find_each do |blank_schedule|
+      #開始時間が既存のレコードのレンジ内にある時
+      if blank_schedule.start_at <= start_at && start_at <= blank_schedule.end_at
+        blank_schedule.destroy!
+        if blank_schedule.start_at < start_at
+          create!(start_at: blank_schedule.start_at, end_at: start_at, user_id: blank_schedule.user_id)
+        end
+      end
+
+      # 終了時間が既存のレコードのレンジ内にある場合
+      if blank_schedule.start_at < end_at && end_at < blank_schedule.end_at
+        blank_schedule.destroy!
+        if blank_schedule.end_at > end_at
+          create!(start_at: end_at, end_at: blank_schedule.end_at, user_id: blank_schedule.user_id)
+        end
+      end
+
+      #既存のレコードが新規作成予定のスケジュールの中に入っている場合もエラーを出す
+      if (start_at < blank_schedule.start_at && blank_schedule.start_at < end_at) || (start_at < blank_schedule.end_at && blank_schedule.end_at < end_at)
+        blank_schedule.destroy!
+      end
+    end
+  end
+
   #MEMO: scheduleとメソッドを合わせる
   def requester
     user
@@ -36,5 +61,9 @@ class BlankSchedule < ApplicationRecord
     if start_at > end_at
       errors.add(:start_at,'は終了時間よりも前に設定してください。')
     end
+  end
+
+  def status
+    :pending
   end
 end

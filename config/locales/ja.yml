@@ -12,3 +12,7 @@ ja:
         individual: 個人
         company: 法人
         admin: 管理者
+      schedule/status:
+        pending: 未対応
+        accept: 確定済み
+        reject: 非承認

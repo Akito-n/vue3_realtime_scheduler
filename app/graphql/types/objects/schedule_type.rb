@@ -12,6 +12,7 @@ class Types::Objects::ScheduleType < Types::BaseObject
   field :start_at, Types::Scalars::DateTime, null: true
   field :end_at, Types::Scalars::DateTime, null: true
   field :mine, Boolean, null: false
+  field :status, String, null: false
   field :requester, Types::Objects::MemberType, null: false
   field :responder, Types::Objects::MemberType, null: false
 
@@ -24,4 +25,7 @@ class Types::Objects::ScheduleType < Types::BaseObject
     object.requester_id == context[:current_user].id
   end
 
+  def status
+    Schedule.human_attribute_name("status.#{object.status}")
+  end
 end

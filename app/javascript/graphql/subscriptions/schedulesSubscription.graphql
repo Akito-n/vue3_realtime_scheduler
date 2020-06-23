@@ -7,6 +7,7 @@ subscription schedulesSubscription {
         endAt
         mine
         isRequest
+        status
         requester {
           id
           name

@@ -7,6 +7,7 @@
 #  approved_at  :datetime
 #  end_at       :datetime
 #  start_at     :datetime
+#  status       :integer          default("pending"), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  requester_id :uuid             not null

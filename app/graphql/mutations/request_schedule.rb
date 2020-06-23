@@ -2,6 +2,8 @@ class Mutations::RequestSchedule < Mutations::BaseMutation
   null true
 
   argument :blank_schedule_id, ID, required: true, loads: Types::Objects::BlankScheduleType
+  argument :start_at, Types::Scalars::DateTime, required: true
+  argument :end_at, Types::Scalars::DateTime, required: true
 
   field :schedule, Types::Objects::ScheduleType, null: true
   #field :user, Types::Objects::UserType, null: true
@@ -10,9 +12,9 @@ class Mutations::RequestSchedule < Mutations::BaseMutation
     context[:user_signed_in]
   end
 
-  def resolve(blank_schedule:, **args)
+  def resolve(blank_schedule:, start_at:, end_at:, **args)
     user = context[:current_user]
-    schedule = user.request_schedules.build(start_at: blank_schedule.start_at, end_at: blank_schedule.end_at, responder: blank_schedule.user)
+    schedule = user.request_schedules.build(start_at: start_at, end_at: end_at, responder: blank_schedule.user)
     if schedule.save
       AppSchema.subscriptions.trigger('schedules', {}, {})
       {
