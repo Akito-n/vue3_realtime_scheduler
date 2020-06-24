@@ -20,4 +20,10 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Occupation < ApplicationRecord
+  belongs_to :user
+  belongs_to :recruitement
+
+  has_many :blank_schedules, as: :schedulable
+  has_many :request_schedules, class_name: :Schedule, as: :requester
+  has_many :reseived_schedules, class_name: :Schedule, as: :responder
 end

@@ -16,8 +16,8 @@
 #  responder_id   :uuid             not null
 #
 class Schedule < ApplicationRecord
-  belongs_to :requester, class_name: :User
-  belongs_to :responder, class_name: :User
+  belongs_to :requester, polymorphic: true
+  belongs_to :responder, polymorphic: true
 
   enum status: { pending: 0, accept: 1, reject: 2 }, _prefix: true
 

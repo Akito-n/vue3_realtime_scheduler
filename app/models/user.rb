@@ -39,7 +39,7 @@ class User < ApplicationRecord
 
   enum role: { individual: 0, company: 1, admin: 9 }
 
-  has_many :blank_schedules
+  has_many :blank_schedules, as: :schedulable
   #法人からみる応募状況のこと
   has_many :recruitements, foreign_key: :company_user_id
   has_many :individual_users, through: :recruitements, source: :individual_user
@@ -47,8 +47,8 @@ class User < ApplicationRecord
   has_many :entries, foreign_key: :individual_user_id, class_name: :Recruitement
   has_many :company_users, through: :entries, source: :company_user
 
-  has_many :request_schedules, class_name: :Schedule, foreign_key: :requester_id
-  has_many :reseived_schedules, class_name: :Schedule, foreign_key: :responder_id
+  has_many :request_schedules, class_name: :Schedule, as: :requester
+  has_many :reseived_schedules, class_name: :Schedule, as: :responder
 
   #FIXME 名前
   def members_array
