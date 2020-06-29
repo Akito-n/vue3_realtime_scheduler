@@ -62,6 +62,6 @@ class User < ApplicationRecord
 
   #FIXME 名前
   def my_schedulable_array
-    individual? ? self : occupations
+    individual? ? [self] : occupations.to_a
   end
 end
