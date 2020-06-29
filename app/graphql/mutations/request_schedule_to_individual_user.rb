@@ -1,4 +1,4 @@
-class Mutations::RequestSchedule < Mutations::BaseMutation
+class Mutations::RequestScheduleToIndividualUser < Mutations::BaseMutation
   null true
 
   argument :blank_schedule_id, ID, required: true, loads: Types::Objects::BlankScheduleType
@@ -7,15 +7,14 @@ class Mutations::RequestSchedule < Mutations::BaseMutation
   argument :end_at, Types::Scalars::DateTime, required: true
 
   field :schedule, Types::Objects::ScheduleType, null: true
-  #field :user, Types::Objects::UserType, null: true
 
   def authorized?(blank_schedule:, occupation:, **args)
-    context[:user_signed_in] && blank_schedule.present? && occupation.present?
+    context[:user_signed_in] && context[:current_user].company? && blank_schedule.present? && occupation.present?
   end
 
   def resolve(blank_schedule:, occupation:, start_at:, end_at:, **args)
     user = context[:current_user]
-    schedule = user.request_schedules.build(start_at: start_at, end_at: end_at, responder: blank_schedule.schedulable, occupation: occupation)
+    schedule = occupation.request_schedules.build(start_at: start_at, end_at: end_at, responder: user, occupation: occupation)
     if schedule.save
       AppSchema.subscriptions.trigger('schedules', {}, {})
       {

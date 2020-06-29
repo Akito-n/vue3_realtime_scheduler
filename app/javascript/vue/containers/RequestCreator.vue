@@ -22,7 +22,7 @@
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
           @click="submit(value.id, startAt, endAt, state.selectedOccupationId)"
         >
-          面接日程をリクエストする
+          面接日程をリクエストする{{ result.currentUser.role }}
         </button>
       </div>
     </template>
@@ -36,9 +36,12 @@ import { useMutation } from '@vue/apollo-composable'
 import {
   useCurrentUserQuery,
   BlankSchedule,
-  RequestScheduleMutation,
-  RequestScheduleMutationVariables,
-  RequestScheduleDocument
+  RequestScheduleToIndividualUserMutation,
+  RequestScheduleToIndividualUserMutationVariables,
+  RequestScheduleToIndividualUserDocument,
+  RequestScheduleToOccupationMutation,
+  RequestScheduleToOccupationMutationVariables,
+  RequestScheduleToOccupationDocument
 } from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
 
@@ -56,10 +59,15 @@ export default defineComponent<Props>({
     endAt: Date
   },
   setup(props, context) {
-    const { mutate, loading, error, onDone } = useMutation<
-      RequestScheduleMutation,
-      RequestScheduleMutationVariables
-    >(RequestScheduleDocument)
+    const toIndividualUser = useMutation<
+      RequestScheduleToIndividualUserMutation,
+      RequestScheduleToIndividualUserMutationVariables
+    >(RequestScheduleToIndividualUserDocument)
+
+    const toOccupation = useMutation<
+      RequestScheduleToOccupationMutation,
+      RequestScheduleToOccupationMutationVariables
+    >(RequestScheduleToOccupationDocument)
 
     const state = reactive({
       selectedOccupationId: ''
@@ -73,10 +81,19 @@ export default defineComponent<Props>({
       endAt: Date,
       occupationId: string
     ) => {
-      mutate({ input: { blankScheduleId, startAt, endAt, occupationId } })
+      if (result.value.currentUser.isCompany) {
+        toIndividualUser.mutate({
+          input: { blankScheduleId, startAt, endAt, occupationId }
+        })
+      } else {
+        toOccupation.mutate({ input: { blankScheduleId, startAt, endAt } })
+      }
     }
 
-    onDone(() => {
+    toIndividualUser.onDone(() => {
+      context.emit('input', null)
+    })
+    toOccupation.onDone(() => {
       context.emit('input', null)
     })
 
