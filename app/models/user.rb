@@ -57,7 +57,7 @@ class User < ApplicationRecord
   def schedulable_array
     targets = individual? ? company_occupations : individual_users
     my_schedules = my_schedulable_array
-    [my_schedules, targets.to_a].flatten.sort
+    [my_schedules, targets.to_a].flatten.sort{|x| x.created_at}
   end
 
   #FIXME 名前

@@ -8,7 +8,7 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
   # end
 
   def subscribe
-    blank_schedules = BlankSchedule.where(scheduleble: context[:current_user].schedulable_array).to_a
+    blank_schedules = BlankSchedule.where(schedulable: context[:current_user].schedulable_array).to_a
     schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {
       schedules: blank_schedules + schedules
@@ -16,7 +16,7 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
   end
 
   def update
-    blank_schedules = BlankSchedule.where(scheduleble: context[:current_user].schedulable_array).to_a
+    blank_schedules = BlankSchedule.where(schedulable: context[:current_user].schedulable_array).to_a
     schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {
       schedules: blank_schedules + schedules

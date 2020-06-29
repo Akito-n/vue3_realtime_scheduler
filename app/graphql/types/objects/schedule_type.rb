@@ -1,11 +1,6 @@
 class Types::Objects::ScheduleType < Types::BaseObject
   def self.authorized?(object, context)
-    # only show it to users with the secret_feature enabled
-    if object.class.name == 'Schedule'
-      super and context[:user_signed_in] and (context[:current_user].id == object.requester_id || context[:current_user].id == object.responder_id)
-    elsif object.class.name == 'BlankSchedule'
-      super and object.user.members_array.include?(context[:current_user])
-    end
+    super and context[:user_signed_in] and object.authorized?(context[:current_user])
   end
 
   field :id, ID, null: false

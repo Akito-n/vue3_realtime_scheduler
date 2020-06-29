@@ -40,4 +40,8 @@ class Schedule < ApplicationRecord
     status_reject!
     BlankSchedule.hollow_out!(responder, start_at: start_at, end_at: end_at)
   end
+
+  def authorized?(user)
+    user.my_schedulable_array.include?(requester) || user.my_schedulable_array.include?(responder)
+  end
 end

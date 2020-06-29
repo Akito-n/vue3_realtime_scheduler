@@ -64,4 +64,8 @@ class BlankSchedule < ApplicationRecord
   def status
     :pending
   end
+
+  def authorized?(user)
+    user.schedulable_array.include?(schedulable) || user.schedulable_array.include?(schedulable)
+  end
 end

@@ -15,11 +15,11 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
   def resolve(start_at:, end_at:, occupation_id: nil)
     user = context[:current_user]
     if user.individual?
-      schedule = user.blank_schedules.build(start_at: start_at, end_at: end_at)
+      blank_schedule = user.blank_schedules.build(start_at: start_at, end_at: end_at)
     else
-      schedule = Occupation.find(occupation_id).blank_schedules.build(start_at: start_at, end_at: end_at)
+      blank_schedule = Occupation.find(occupation_id || user.occupations.first.id).blank_schedules.build(start_at: start_at, end_at: end_at)
     end
-    if schedule.save
+    if blank_schedule.save
       AppSchema.subscriptions.trigger('schedules', {}, {})
       {
         blank_schedule: blank_schedule
