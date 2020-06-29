@@ -5,9 +5,22 @@
 
       <!--Footer-->
       <div class="flex justify-end pt-2">
+        <div
+          v-for="occupation in result.currentUser.occupations.nodes"
+          :key="occupation.id"
+        >
+          <label>
+            {{ occupation.subject }}
+            <input
+              type="radio"
+              :value="occupation.id"
+              v-model="state.selectedOccupationId"
+            />
+          </label>
+        </div>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
-          @click="submit(value.id, startAt, endAt)"
+          @click="submit(value.id, startAt, endAt, state.selectedOccupationId)"
         >
           面接日程をリクエストする
         </button>
@@ -21,6 +34,7 @@ import Vue from 'vue'
 import { defineComponent, reactive, computed } from '@vue/composition-api'
 import { useMutation } from '@vue/apollo-composable'
 import {
+  useCurrentUserQuery,
   BlankSchedule,
   RequestScheduleMutation,
   RequestScheduleMutationVariables,
@@ -47,15 +61,26 @@ export default defineComponent<Props>({
       RequestScheduleMutationVariables
     >(RequestScheduleDocument)
 
-    const submit = (blankScheduleId: string, startAt: Date, endAt: Date) => {
-      mutate({ input: { blankScheduleId, startAt, endAt } })
+    const state = reactive({
+      selectedOccupationId: ''
+    })
+
+    const { result } = useCurrentUserQuery()
+
+    const submit = (
+      blankScheduleId: string,
+      startAt: Date,
+      endAt: Date,
+      occupationId: string
+    ) => {
+      mutate({ input: { blankScheduleId, startAt, endAt, occupationId } })
     }
 
     onDone(() => {
       context.emit('input', null)
     })
 
-    return { submit }
+    return { state, submit, result }
   }
 })
 </script>

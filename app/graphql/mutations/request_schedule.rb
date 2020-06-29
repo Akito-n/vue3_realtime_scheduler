@@ -10,12 +10,12 @@ class Mutations::RequestSchedule < Mutations::BaseMutation
   #field :user, Types::Objects::UserType, null: true
 
   def authorized?(blank_schedule:, occupation:, **args)
-    context[:user_signed_in] && blank_schedule.present? && coccupation.present?
+    context[:user_signed_in] && blank_schedule.present? && occupation.present?
   end
 
   def resolve(blank_schedule:, occupation:, start_at:, end_at:, **args)
     user = context[:current_user]
-    schedule = user.request_schedules.build(start_at: start_at, end_at: end_at, responder: blank_schedule.user, occupation: occupation)
+    schedule = user.request_schedules.build(start_at: start_at, end_at: end_at, responder: blank_schedule.schedulable, occupation: occupation)
     if schedule.save
       AppSchema.subscriptions.trigger('schedules', {}, {})
       {
