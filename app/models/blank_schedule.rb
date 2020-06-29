@@ -20,31 +20,30 @@ class BlankSchedule < ApplicationRecord
   validate :check_schedule
   validates_with CheckScheduleValidator
 
-  # TODO
-  # def self.hollow_out!(users, start_at:, end_at:)
-  #   where(user: users).find_each do |blank_schedule|
-  #     #開始時間が既存のレコードのレンジ内にある時
-  #     if blank_schedule.start_at <= start_at && start_at <= blank_schedule.end_at
-  #       blank_schedule.destroy!
-  #       if blank_schedule.start_at < start_at
-  #         create!(start_at: blank_schedule.start_at, end_at: start_at, user_id: blank_schedule.user_id)
-  #       end
-  #     end
+  def self.hollow_out!(schedulables, start_at:, end_at:)
+    where(schedulable: schedulables).find_each do |blank_schedule|
+      #開始時間が既存のレコードのレンジ内にある時
+      if blank_schedule.start_at <= start_at && start_at <= blank_schedule.end_at
+        blank_schedule.destroy!
+        if blank_schedule.start_at < start_at
+          create!(start_at: blank_schedule.start_at, end_at: start_at, schedulable: blank_schedule.schedulable)
+        end
+      end
 
-  #     # 終了時間が既存のレコードのレンジ内にある場合
-  #     if blank_schedule.start_at < end_at && end_at < blank_schedule.end_at
-  #       blank_schedule.destroy!
-  #       if blank_schedule.end_at > end_at
-  #         create!(start_at: end_at, end_at: blank_schedule.end_at, user_id: blank_schedule.user_id)
-  #       end
-  #     end
+      # 終了時間が既存のレコードのレンジ内にある場合
+      if blank_schedule.start_at < end_at && end_at < blank_schedule.end_at
+        blank_schedule.destroy!
+        if blank_schedule.end_at > end_at
+          create!(start_at: end_at, end_at: blank_schedule.end_at, schedulable: blank_schedule.schedulable)
+        end
+      end
 
-  #     #既存のレコードが新規作成予定のスケジュールの中に入っている場合もエラーを出す
-  #     if (start_at < blank_schedule.start_at && blank_schedule.start_at < end_at) || (start_at < blank_schedule.end_at && blank_schedule.end_at < end_at)
-  #       blank_schedule.destroy!
-  #     end
-  #   end
-  # end
+      #既存のレコードが新規作成予定のスケジュールの中に入っている場合もエラーを出す
+      if (start_at < blank_schedule.start_at && blank_schedule.start_at < end_at) || (start_at < blank_schedule.end_at && blank_schedule.end_at < end_at)
+        blank_schedule.destroy!
+      end
+    end
+  end
 
   #MEMO: scheduleとメソッドを合わせる
   def requester
