@@ -3,6 +3,7 @@
 # Table name: occupations
 #
 #  id         :uuid             not null, primary key
+#  color      :string           default("orange"), not null
 #  subject    :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
