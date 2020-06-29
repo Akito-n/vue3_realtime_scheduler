@@ -18,6 +18,8 @@ class CreateOccupations < ActiveRecord::Migration[6.0]
     remove_reference :schedules, :responder, null: false, foreign_key: {to_table: :users}, type: :uuid, index: false
     add_reference :schedules, :responder, polymorphic: true, null: false, type: :uuid, index: false
 
+    add_reference :schedules, :occupation, null: false, foreign_key: true, type: :uuid
+
     add_reference :recruitements, :occupation, null: false, type: :uuid, foreign_key: true
 
   end

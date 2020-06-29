@@ -56,6 +56,8 @@ ActiveRecord::Schema.define(version: 2020_06_24_072732) do
     t.uuid "requester_id", null: false
     t.string "responder_type", null: false
     t.uuid "responder_id", null: false
+    t.uuid "occupation_id", null: false
+    t.index ["occupation_id"], name: "index_schedules_on_occupation_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -88,4 +90,5 @@ ActiveRecord::Schema.define(version: 2020_06_24_072732) do
   add_foreign_key "recruitements", "occupations"
   add_foreign_key "recruitements", "users", column: "company_user_id"
   add_foreign_key "recruitements", "users", column: "individual_user_id"
+  add_foreign_key "schedules", "occupations"
 end
