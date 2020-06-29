@@ -41,7 +41,7 @@ class User < ApplicationRecord
 
   has_many :blank_schedules, as: :schedulable
   has_many :occupations
-  #法人からみる応募状況のこと
+  #法人からみる応募
   has_many :recruitements, foreign_key: :company_user_id
   has_many :individual_users, through: :recruitements, source: :individual_user
   #個人からのアクション
@@ -56,7 +56,12 @@ class User < ApplicationRecord
   #FIXME 名前
   def schedulable_array
     targets = individual? ? company_occupations : individual_users
-    mine = individual? ? self : occupations
-    [mine, targets.to_a].flatten.sort
+    my_schedules = my_schedulable_array
+    [my_schedules, targets.to_a].flatten.sort
+  end
+
+  #FIXME 名前
+  def my_schedulable_array
+    individual? ? self : occupations
   end
 end

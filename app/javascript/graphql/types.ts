@@ -20,6 +20,7 @@ export type Scalars = {
 export type AddBlankScheduleInput = {
   startAt: Scalars['DateTime'];
   endAt: Scalars['DateTime'];
+  occupationId?: Maybe<Scalars['ID']>;
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']>;
 };
@@ -374,7 +375,7 @@ export type SchedulesSubscriptionSubscription = (
         & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'isRequest' | 'status'>
         & { requester: (
           { __typename?: 'Member' }
-          & Pick<Member, 'id' | 'name' | 'companyName' | 'color'>
+          & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
         ) }
       )>>> }
     ) }
@@ -555,8 +556,8 @@ export const SchedulesSubscriptionDocument = gql`
         requester {
           id
           name
-          companyName
           color
+          companyName
         }
       }
     }

@@ -8,16 +8,16 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
   # end
 
   def subscribe
-    blank_schedules = BlankSchedule.where(user: context[:current_user].members_array).to_a
-    schedules = Schedule.where(requester: context[:current_user]).or(Schedule.where(responder: context[:current_user])).to_a
+    blank_schedules = BlankSchedule.where(scheduleble: context[:current_user].schedulable_array).to_a
+    schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {
       schedules: blank_schedules + schedules
     }
   end
 
   def update
-    blank_schedules = BlankSchedule.where(user: context[:current_user].members_array).to_a
-    schedules = Schedule.where(requester: context[:current_user]).or(Schedule.where(responder: context[:current_user])).to_a
+    blank_schedules = BlankSchedule.where(scheduleble: context[:current_user].schedulable_array).to_a
+    schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {
       schedules: blank_schedules + schedules
     }

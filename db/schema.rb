@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 2020_06_24_072732) do
   end
 
   create_table "occupations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
+    t.string "subject", null: false
     t.uuid "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

@@ -3,7 +3,7 @@
 # Table name: occupations
 #
 #  id         :uuid             not null, primary key
-#  name       :string           not null
+#  subject    :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  user_id    :uuid             not null
@@ -18,6 +18,8 @@
 #
 class Occupation < ApplicationRecord
   belongs_to :user
+  delegate :color, :company_name, :name, to: :user
+
   has_many :recruitements
 
   has_many :blank_schedules, as: :schedulable
