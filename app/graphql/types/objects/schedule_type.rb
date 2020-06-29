@@ -17,7 +17,11 @@ class Types::Objects::ScheduleType < Types::BaseObject
   end
 
   def mine
-    object.requester_id == context[:current_user].id
+    if context[:current_user].individual?
+      object.requester_id == context[:current_user].id
+    else
+      context[:current_user].occupations.include?(object.requester)
+    end
   end
 
   def status

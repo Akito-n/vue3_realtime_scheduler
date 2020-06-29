@@ -42,6 +42,14 @@ class Schedule < ApplicationRecord
   end
 
   def authorized?(user)
-    user.my_schedulable_array.include?(requester) || user.my_schedulable_array.include?(responder)
+    can_request?(user) || can_response?(user)
+  end
+
+  def can_request?(user)
+    user.my_schedulable_array.include?(requester)
+  end
+
+  def can_response?(user)
+    user.my_schedulable_array.include?(responder)
   end
 end

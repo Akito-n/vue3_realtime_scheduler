@@ -8,7 +8,7 @@ class Mutations::RespondSchedule < Mutations::BaseMutation
   field :schedule, Types::Objects::ScheduleType, null: true
 
   def authorized?(schedule:, **args)
-    context[:user_signed_in] && schedule.responder == context[:current_user]
+    context[:user_signed_in] && schedule.can_response?(context[:current_user])
   end
 
   def resolve(schedule:, is_accept: true, **args)
