@@ -1,58 +1,52 @@
 <template>
-  <div>
-    <div
-      v-if="props.opened"
-      class="fixed z-10 bg-gray-100 inset-0 opacity-50"
-      @click="close"
-    ></div>
-    <div
-      class="fixed z-10 bg-gray-300 mx-10 my-10 w-3/5 h-64 inset-auto flex justify-center"
-      v-if="props.opened"
-    >
-      <div class="item-center my-5">
-        <input type="date" v-model="state.startDate" />
-        <vue-timepicker
-          :format="timepickerOptions.format"
-          :placeholder="timepickerOptions.placeholder"
-          :minute-interval="timepickerOptions.interval"
-          :hour-label="timepickerOptions.hourLabel"
-          :minute-label="timepickerOptions.minuteLabel"
-          :default-value="timepickerOptions.defaultValue"
-          v-model="state.startTime"
-          hide-clear-button
-        />
-        <vue-timepicker
-          :format="timepickerOptions.format"
-          :minute-interval="timepickerOptions.interval"
-          :placeholder="timepickerOptions.placeholder"
-          :hour-label="timepickerOptions.hourLabel"
-          :minute-label="timepickerOptions.minuteLabel"
-          v-model="state.endTime"
-          hide-clear-button
-        />
-        <input type="date" v-model="state.endDate" />
-
-        <button
-          class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
-          @click="submit"
-          :disabled="props.disabled"
-        >
-          登録する
-        </button>
-        <button
-          class="bg-white-500 hover:bg-white-700 text-white font-bold py-2 px-4 rounded-full"
-          @click="close"
-        >
-          <font-awesome-icon icon="window-close" />
-        </button>
-      </div>
+  <div class="my-5">
+    <div class="justify-around items-center">
+      開始
+      <input type="date" v-model="state.startDate" />
+      <vue-timepicker
+        :format="timepickerOptions.format"
+        :placeholder="timepickerOptions.placeholder"
+        :minute-interval="timepickerOptions.interval"
+        :hour-label="timepickerOptions.hourLabel"
+        :minute-label="timepickerOptions.minuteLabel"
+        :default-value="timepickerOptions.defaultValue"
+        v-model="state.startTime"
+        hide-clear-button
+      />
     </div>
-    <button
-      class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
-      @click="open"
-    >
-      <font-awesome-icon icon="plus" />
-    </button>
+    <div class="justify-around items-center">
+      終了
+      <input type="date" v-model="state.endDate" />
+      <vue-timepicker
+        :format="timepickerOptions.format"
+        :minute-interval="timepickerOptions.interval"
+        :placeholder="timepickerOptions.placeholder"
+        :hour-label="timepickerOptions.hourLabel"
+        :minute-label="timepickerOptions.minuteLabel"
+        v-model="state.endTime"
+        hide-clear-button
+      />
+    </div>
+
+    <div class="flex justify-end pt-20 mt-10">
+      <div v-for="occupation in ocupations || []" :key="occupation.id">
+        <label>
+          {{ occupation.subject }}
+          <input
+            type="radio"
+            :value="occupation.id"
+            v-model="state.selectedOccupationId"
+          />
+        </label>
+      </div>
+      <button
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
+        @click="submit"
+        :disabled="props.disabled"
+      >
+        登録する
+      </button>
+    </div>
   </div>
 </template>
 
@@ -65,16 +59,14 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
 
 interface Props {
   disabled: boolean
-  opened: boolean
-  submit(startAt: Date, endAt: Date)
-  open
+  ocupations: Array<{ id: string; subject: string }>
 }
 
 export default defineComponent<Props>({
   components: { VueTimepicker },
   props: {
     disabled: Boolean,
-    opened: Boolean
+    ocupations: Array
   },
   setup(props: Props, context) {
     const state = reactive({
@@ -124,22 +116,12 @@ export default defineComponent<Props>({
       context.emit('submit', state.startDateTime, state.endDateTime)
     }
 
-    const open = () => {
-      context.emit('open')
-    }
-
-    const close = () => {
-      context.emit('close')
-    }
-
     return {
       props,
       state,
       timepickerOptions,
       settingTime,
-      submit,
-      open,
-      close
+      submit
     }
   }
 })
