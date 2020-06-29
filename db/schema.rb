@@ -29,10 +29,8 @@ ActiveRecord::Schema.define(version: 2020_06_24_072732) do
   create_table "occupations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.uuid "user_id", null: false
-    t.uuid "recruitement_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["recruitement_id"], name: "index_occupations_on_recruitement_id"
     t.index ["user_id"], name: "index_occupations_on_user_id"
   end
 
@@ -41,7 +39,9 @@ ActiveRecord::Schema.define(version: 2020_06_24_072732) do
     t.uuid "company_user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "occupation_id", null: false
     t.index ["individual_user_id", "company_user_id"], name: "index_recruitements_on_individual_user_id_and_company_user_id"
+    t.index ["occupation_id"], name: "index_recruitements_on_occupation_id"
   end
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -84,8 +84,8 @@ ActiveRecord::Schema.define(version: 2020_06_24_072732) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "occupations", "recruitements"
   add_foreign_key "occupations", "users"
+  add_foreign_key "recruitements", "occupations"
   add_foreign_key "recruitements", "users", column: "company_user_id"
   add_foreign_key "recruitements", "users", column: "individual_user_id"
 end
