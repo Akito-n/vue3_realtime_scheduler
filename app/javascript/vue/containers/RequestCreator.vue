@@ -9,13 +9,13 @@
           v-for="occupation in result.currentUser.occupations.nodes"
           :key="occupation.id"
         >
-          <label>
-            {{ occupation.subject }}
+          <label class="ml-3">
             <input
               type="radio"
               :value="occupation.id"
               v-model="state.selectedOccupationId"
             />
+            {{ occupation.subject }}
           </label>
         </div>
         <button

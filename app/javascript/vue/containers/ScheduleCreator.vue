@@ -1,7 +1,11 @@
 <template>
   <div>
     <modal :value="state.opened" @input="close" title="選択した内容">
-      <schedule-form :disabled="loading" @submit="submit" />
+      <schedule-form
+        :disabled="loading"
+        :ocupations="occupations"
+        @submit="submit"
+      />
       <template v-if="error">
         <template v-for="(errorMessage, i) in error.graphQLErrors">
           <p :key="i">{{ errorMessage.message }}</p>
@@ -25,7 +29,7 @@ import {
   computed,
   watch
 } from '@vue/composition-api'
-import { useMutation } from '@vue/apollo-composable'
+import { useMutation, useResult } from '@vue/apollo-composable'
 import {
   AddBlankScheduleMutation,
   AddBlankScheduleDocument,
@@ -41,6 +45,11 @@ export default defineComponent({
   components: { Modal, ScheduleForm },
   setup(_, context) {
     const { result } = useCurrentUserQuery()
+    const occupations = useResult(
+      result,
+      [],
+      (data) => data.currentUser.occupations.nodes
+    )
 
     const state = reactive({
       opened: false
@@ -50,8 +59,12 @@ export default defineComponent({
       AddBlankScheduleMutationVariables
     >(AddBlankScheduleDocument)
 
-    const submit = (startAt: Date, endAt: Date) => {
-      mutate({ input: { startAt, endAt } })
+    const submit = (
+      startAt: Date,
+      endAt: Date,
+      occupationId: string | null
+    ) => {
+      mutate({ input: { startAt, endAt, occupationId } })
     }
 
     const open = () => {
@@ -69,11 +82,11 @@ export default defineComponent({
       }
     )
 
-    onDone((result) => {
+    onDone(() => {
       context.root.$router.push({ query: null })
     })
 
-    return { state, submit, loading, error, open, close }
+    return { state, submit, loading, error, open, close, occupations }
   }
 })
 </script>

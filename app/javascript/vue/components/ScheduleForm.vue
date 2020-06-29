@@ -28,19 +28,19 @@
       />
     </div>
 
-    <div class="flex justify-end pt-20 mt-10">
+    <div class="flex justify-end items-center pt-20 mt-10">
       <div v-for="occupation in ocupations || []" :key="occupation.id">
-        <label>
-          {{ occupation.subject }}
+        <label class="ml-3">
           <input
             type="radio"
             :value="occupation.id"
             v-model="state.selectedOccupationId"
           />
+          {{ occupation.subject }}
         </label>
       </div>
       <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 ml-5"
         @click="submit"
         :disabled="props.disabled"
       >
@@ -53,7 +53,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { format, parse, addHours } from 'date-fns'
-import { defineComponent, reactive, computed } from '@vue/composition-api'
+import {
+  defineComponent,
+  reactive,
+  computed,
+  watch
+} from '@vue/composition-api'
 import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 
@@ -83,7 +88,8 @@ export default defineComponent<Props>({
         HH: format(addHours(new Date(), 1), 'HH'),
         mm: '00'
       },
-      endDateTime: computed(() => settingTime(state.endDate, state.endTime))
+      endDateTime: computed(() => settingTime(state.endDate, state.endTime)),
+      selectedOccupationId: null
     })
     const variables = computed(() => ({
       input: {
@@ -113,8 +119,22 @@ export default defineComponent<Props>({
     }
 
     const submit = () => {
-      context.emit('submit', state.startDateTime, state.endDateTime)
+      context.emit(
+        'submit',
+        state.startDateTime,
+        state.endDateTime,
+        state.selectedOccupationId
+      )
     }
+
+    watch(
+      () => props.ocupations,
+      (newOccupations) => {
+        if (newOccupations.length > 0) {
+          state.selectedOccupationId = newOccupations[0].id
+        }
+      }
+    )
 
     return {
       props,
