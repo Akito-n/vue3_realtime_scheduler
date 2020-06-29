@@ -22,7 +22,7 @@
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
           @click="submit(value.id, startAt, endAt, state.selectedOccupationId)"
         >
-          面接日程をリクエストする{{ result.currentUser.role }}
+          面接日程をリクエストする
         </button>
       </div>
     </template>
