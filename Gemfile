@@ -32,6 +32,7 @@ end
 
 group :test do
   gem 'database_rewinder'
+  gem "rspec_junit_formatter"
 end
 
 group :development do
