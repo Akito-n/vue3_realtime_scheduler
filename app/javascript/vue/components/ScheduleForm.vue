@@ -57,14 +57,15 @@ import {
   defineComponent,
   reactive,
   computed,
-  watch
+  watch,
+  onMounted
 } from '@vue/composition-api'
 import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 
 interface Props {
-  defaultStartAt: Date
-  defaultEndAt: Date
+  defaultStartAt: string
+  defaultEndAt: string
   disabled: boolean
   ocupations: Array<{ id: string; subject: string }>
 }
@@ -72,26 +73,20 @@ interface Props {
 export default defineComponent<Props>({
   components: { VueTimepicker },
   props: {
-    defaultStartAt: Date,
-    defaultEndAt: Date,
+    defaultStartAt: String,
+    defaultEndAt: String,
     disabled: Boolean,
     ocupations: Array
   },
   setup(props: Props, context) {
     const state = reactive({
-      startDate: format(props.defaultStartAt || new Date(), 'yyyy-MM-dd'),
-      startTime: {
-        HH: format(props.defaultStartAt || new Date(), 'HH'),
-        mm: '00'
-      },
+      startDate: null,
+      startTime: null,
       startDateTime: computed(() =>
         settingTime(state.startDate, state.startTime)
       ),
-      endDate: format(props.defaultEndAt || new Date(), 'yyyy-MM-dd'),
-      endTime: {
-        HH: format(addHours(props.defaultEndAt || new Date(), 1), 'HH'),
-        mm: '00'
-      },
+      endDate: null,
+      endTime: null,
       endDateTime: computed(() => settingTime(state.endDate, state.endTime)),
       selectedOccupationId: null
     })
@@ -101,6 +96,29 @@ export default defineComponent<Props>({
         endAt: state.endDateTime
       }
     }))
+
+    watch(
+      () => props.defaultStartAt,
+      (newStartAt) => {
+        const startAt = new Date(newStartAt || null)
+        state.startDate = format(startAt, 'yyyy-MM-dd')
+        state.startTime = {
+          HH: format(startAt, 'HH'),
+          mm: '00'
+        }
+      }
+    )
+    watch(
+      () => props.defaultEndAt,
+      (newEndAt) => {
+        const endAt = new Date(newEndAt || null)
+        state.endDate = format(endAt, 'yyyy-MM-dd')
+        state.endTime = {
+          HH: format(endAt, 'HH'),
+          mm: '00'
+        }
+      }
+    )
 
     const timepickerOptions = {
       format: 'HH:mm',

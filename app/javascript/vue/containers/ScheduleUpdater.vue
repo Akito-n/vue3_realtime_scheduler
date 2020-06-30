@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <modal :value="state.blankScheduleId" @input="close" title="選択した内容">
+  <div v-if="blankSchedule">
+    <modal :value="!!state.blankScheduleId" @input="close" title="選択した内容">
       <schedule-form
         :disabled="loading"
         :ocupations="occupations"
+        :defaultStartAt="blankSchedule.startAt"
+        :defaultEndAt="blankSchedule.endAt"
         @submit="submit"
       />
       <template v-if="error">
@@ -28,7 +30,8 @@ import {
   EditBlankScheduleMutation,
   EditBlankScheduleDocument,
   EditBlankScheduleMutationVariables,
-  useCurrentUserQuery
+  useCurrentUserQuery,
+  useBlankScheduleQuery
 } from '@/graphql/types'
 import ScheduleForm from '@/vue/components/ScheduleForm.vue'
 import content from '*.gql'
@@ -38,9 +41,9 @@ import Modal from '@/vue/components/Modal.vue'
 export default defineComponent({
   components: { Modal, ScheduleForm },
   setup(_, context) {
-    const { result } = useCurrentUserQuery()
+    const currentUserRef = useCurrentUserQuery()
     const occupations = useResult(
-      result,
+      currentUserRef.result,
       [],
       (data) => data.currentUser.occupations.nodes
     )
@@ -48,6 +51,16 @@ export default defineComponent({
     const state = reactive({
       blankScheduleId: null
     })
+
+    const blankScheduleRef = useBlankScheduleQuery(() => ({
+      blankScheduleId: state.blankScheduleId
+    }))
+    const blankSchedule = useResult(
+      blankScheduleRef.result,
+      {},
+      (data) => data.blankSchedule
+    )
+
     const { mutate, loading, error, onDone } = useMutation<
       EditBlankScheduleMutation,
       EditBlankScheduleMutationVariables
@@ -78,7 +91,16 @@ export default defineComponent({
       context.root.$router.push({ query: null })
     })
 
-    return { state, submit, loading, error, close, occupations }
+    return {
+      state,
+      submit,
+      loading,
+      error,
+      close,
+      occupations,
+      blankSchedule,
+      blankScheduleRef
+    }
   }
 })
 </script>

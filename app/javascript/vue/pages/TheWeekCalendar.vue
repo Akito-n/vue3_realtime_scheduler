@@ -29,7 +29,7 @@
           <font-awesome-icon icon="chevron-right" />
         </router-link>
       </div>
-      <schedule-creator />
+      <!-- <schedule-creator /> -->
       <schedule-updater />
       <div class="flex row justify-center items-center">
         <div

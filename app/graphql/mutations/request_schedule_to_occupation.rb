@@ -1,7 +1,7 @@
 class Mutations::RequestScheduleToOccupation < Mutations::BaseMutation
   null true
 
-  argument :blank_schedule_id, ID, required: true, loads: Types::Objects::BlankScheduleType
+  argument :blank_schedule_id, ID, required: true, loads: Types::Objects::ScheduleType
   argument :start_at, Types::Scalars::DateTime, required: true
   argument :end_at, Types::Scalars::DateTime, required: true
 
