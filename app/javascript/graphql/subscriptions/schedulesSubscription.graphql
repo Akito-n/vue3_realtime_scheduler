@@ -11,8 +11,8 @@ subscription schedulesSubscription {
         requester {
           id
           name
-          companyName
           color
+          companyName
         }
       }
     }

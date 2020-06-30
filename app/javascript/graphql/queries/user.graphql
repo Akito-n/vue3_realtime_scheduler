@@ -6,5 +6,13 @@ query currentUser {
     color
     name
     companyName
+    isIndividual
+    isCompany
+    occupations {
+      nodes {
+        id
+        subject
+      }
+    }
   }
 }

@@ -9,9 +9,13 @@ class Types::Objects::UserType < Types::BaseObject
   field :name, String, null: true
   field :company_name, String, null: true
   field :color, String, null: false
-  field :role, String, null: false
+  field :occupations, Types::Objects::OccupationType.connection_type, null: false
 
+  field :role, String, null: false
   def role
     User.human_attribute_name("role.#{object.role}")
   end
+
+  field :is_individual, Boolean, method: :individual?, null: false
+  field :is_company, Boolean, method: :company?, null: false
 end

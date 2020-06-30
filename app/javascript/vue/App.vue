@@ -45,7 +45,16 @@
       </ul>
     </template>
     <main class="flex justify-center items-start">
-      <router-view />
+      <template v-if="!loading && result.currentUser">
+        <router-view />
+      </template>
+      <div v-else class="mt-20">
+        サインインしてください
+        <div>
+          <a href="/users/sign_in" class="mr-10">Sign in</a>
+          <a href="/users/sign_up">Sign up</a>
+        </div>
+      </div>
     </main>
   </div>
 </template>

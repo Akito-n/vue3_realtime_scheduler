@@ -1,0 +1,9 @@
+mutation requestScheduleToIndividualUser(
+  $input: RequestScheduleToIndividualUserInput!
+) {
+  requestScheduleToIndividualUser(input: $input) {
+    schedule {
+      id
+    }
+  }
+}

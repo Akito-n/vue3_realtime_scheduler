@@ -1,0 +1,9 @@
+mutation requestScheduleToOccupation(
+  $input: RequestScheduleToOccupationInput!
+) {
+  requestScheduleToOccupation(input: $input) {
+    schedule {
+      id
+    }
+  }
+}

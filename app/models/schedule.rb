@@ -2,29 +2,32 @@
 #
 # Table name: schedules
 #
-#  id           :uuid             not null, primary key
-#  accepted_at  :datetime
-#  approved_at  :datetime
-#  end_at       :datetime
-#  start_at     :datetime
-#  status       :integer          default("pending"), not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  requester_id :uuid             not null
-#  responder_id :uuid             not null
+#  id             :uuid             not null, primary key
+#  accepted_at    :datetime
+#  approved_at    :datetime
+#  end_at         :datetime
+#  requester_type :string           not null
+#  responder_type :string           not null
+#  start_at       :datetime
+#  status         :integer          default("pending"), not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  occupation_id  :uuid             not null
+#  requester_id   :uuid             not null
+#  responder_id   :uuid             not null
 #
 # Indexes
 #
-#  index_schedules_on_requester_id_and_responder_id  (requester_id,responder_id)
+#  index_schedules_on_occupation_id  (occupation_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (requester_id => users.id)
-#  fk_rails_...  (responder_id => users.id)
+#  fk_rails_...  (occupation_id => occupations.id)
 #
 class Schedule < ApplicationRecord
-  belongs_to :requester, class_name: :User
-  belongs_to :responder, class_name: :User
+  belongs_to :requester, polymorphic: true
+  belongs_to :responder, polymorphic: true
+  belongs_to :occupation
 
   enum status: { pending: 0, accept: 1, reject: 2 }, _prefix: true
 
@@ -36,5 +39,17 @@ class Schedule < ApplicationRecord
   def reject!
     status_reject!
     BlankSchedule.hollow_out!(responder, start_at: start_at, end_at: end_at)
+  end
+
+  def authorized?(user)
+    can_request?(user) || can_response?(user)
+  end
+
+  def can_request?(user)
+    user.my_schedulable_array.include?(requester)
+  end
+
+  def can_response?(user)
+    user.my_schedulable_array.include?(responder)
   end
 end

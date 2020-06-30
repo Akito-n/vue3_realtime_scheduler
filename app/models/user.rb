@@ -39,20 +39,29 @@ class User < ApplicationRecord
 
   enum role: { individual: 0, company: 1, admin: 9 }
 
-  has_many :blank_schedules
-  #法人からみる応募状況のこと
+  has_many :blank_schedules, as: :schedulable
+  has_many :occupations
+  #法人からみる応募
   has_many :recruitements, foreign_key: :company_user_id
   has_many :individual_users, through: :recruitements, source: :individual_user
   #個人からのアクション
   has_many :entries, foreign_key: :individual_user_id, class_name: :Recruitement
   has_many :company_users, through: :entries, source: :company_user
+  #個人から応募した会社の案件
+  has_many :company_occupations, through: :entries, source: :occupation
 
-  has_many :request_schedules, class_name: :Schedule, foreign_key: :requester_id
-  has_many :reseived_schedules, class_name: :Schedule, foreign_key: :responder_id
+  has_many :request_schedules, class_name: :Schedule, as: :requester
+  has_many :reseived_schedules, class_name: :Schedule, as: :responder
 
   #FIXME 名前
-  def members_array
-    target_users = individual? ? company_users : individual_users
-    [self, target_users.to_a].flatten.sort
+  def schedulable_array
+    targets = individual? ? company_occupations : individual_users
+    my_schedules = my_schedulable_array
+    [my_schedules, targets.to_a].flatten.sort{|x| x.created_at}
+  end
+
+  #FIXME 名前
+  def my_schedulable_array
+    individual? ? [self] : occupations.to_a
   end
 end

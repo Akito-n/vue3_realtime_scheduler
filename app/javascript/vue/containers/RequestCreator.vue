@@ -5,9 +5,22 @@
 
       <!--Footer-->
       <div class="flex justify-end pt-2">
+        <div
+          v-for="occupation in result.currentUser.occupations.nodes"
+          :key="occupation.id"
+        >
+          <label class="ml-3">
+            <input
+              type="radio"
+              :value="occupation.id"
+              v-model="state.selectedOccupationId"
+            />
+            {{ occupation.subject }}
+          </label>
+        </div>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
-          @click="submit(value.id, startAt, endAt)"
+          @click="submit(value.id, startAt, endAt, state.selectedOccupationId)"
         >
           面接日程をリクエストする
         </button>
@@ -21,10 +34,14 @@ import Vue from 'vue'
 import { defineComponent, reactive, computed } from '@vue/composition-api'
 import { useMutation } from '@vue/apollo-composable'
 import {
+  useCurrentUserQuery,
   BlankSchedule,
-  RequestScheduleMutation,
-  RequestScheduleMutationVariables,
-  RequestScheduleDocument
+  RequestScheduleToIndividualUserMutation,
+  RequestScheduleToIndividualUserMutationVariables,
+  RequestScheduleToIndividualUserDocument,
+  RequestScheduleToOccupationMutation,
+  RequestScheduleToOccupationMutationVariables,
+  RequestScheduleToOccupationDocument
 } from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
 
@@ -42,20 +59,45 @@ export default defineComponent<Props>({
     endAt: Date
   },
   setup(props, context) {
-    const { mutate, loading, error, onDone } = useMutation<
-      RequestScheduleMutation,
-      RequestScheduleMutationVariables
-    >(RequestScheduleDocument)
+    const toIndividualUser = useMutation<
+      RequestScheduleToIndividualUserMutation,
+      RequestScheduleToIndividualUserMutationVariables
+    >(RequestScheduleToIndividualUserDocument)
 
-    const submit = (blankScheduleId: string, startAt: Date, endAt: Date) => {
-      mutate({ input: { blankScheduleId, startAt, endAt } })
+    const toOccupation = useMutation<
+      RequestScheduleToOccupationMutation,
+      RequestScheduleToOccupationMutationVariables
+    >(RequestScheduleToOccupationDocument)
+
+    const state = reactive({
+      selectedOccupationId: ''
+    })
+
+    const { result } = useCurrentUserQuery()
+
+    const submit = (
+      blankScheduleId: string,
+      startAt: Date,
+      endAt: Date,
+      occupationId: string
+    ) => {
+      if (result.value.currentUser.isCompany) {
+        toIndividualUser.mutate({
+          input: { blankScheduleId, startAt, endAt, occupationId }
+        })
+      } else {
+        toOccupation.mutate({ input: { blankScheduleId, startAt, endAt } })
+      }
     }
 
-    onDone(() => {
+    toIndividualUser.onDone(() => {
+      context.emit('input', null)
+    })
+    toOccupation.onDone(() => {
       context.emit('input', null)
     })
 
-    return { submit }
+    return { state, submit, result }
   }
 })
 </script>

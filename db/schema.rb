@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_23_052505) do
+ActiveRecord::Schema.define(version: 2020_06_24_072732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -19,10 +19,20 @@ ActiveRecord::Schema.define(version: 2020_06_23_052505) do
   create_table "blank_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "start_at"
     t.datetime "end_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "schedulable_type", null: false
+    t.uuid "schedulable_id", null: false
+    t.index ["schedulable_type", "schedulable_id"], name: "index_blank_schedules_on_schedulable_type_and_schedulable_id"
+  end
+
+  create_table "occupations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "subject", null: false
+    t.string "color", default: "orange", null: false
     t.uuid "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_blank_schedules_on_user_id"
+    t.index ["user_id"], name: "index_occupations_on_user_id"
   end
 
   create_table "recruitements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -30,12 +40,12 @@ ActiveRecord::Schema.define(version: 2020_06_23_052505) do
     t.uuid "company_user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "occupation_id", null: false
     t.index ["individual_user_id", "company_user_id"], name: "index_recruitements_on_individual_user_id_and_company_user_id"
+    t.index ["occupation_id"], name: "index_recruitements_on_occupation_id"
   end
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "requester_id", null: false
-    t.uuid "responder_id", null: false
     t.datetime "start_at"
     t.datetime "end_at"
     t.datetime "approved_at"
@@ -43,7 +53,12 @@ ActiveRecord::Schema.define(version: 2020_06_23_052505) do
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "accepted_at"
     t.integer "status", default: 0, null: false
-    t.index ["requester_id", "responder_id"], name: "index_schedules_on_requester_id_and_responder_id"
+    t.string "requester_type", null: false
+    t.uuid "requester_id", null: false
+    t.string "responder_type", null: false
+    t.uuid "responder_id", null: false
+    t.uuid "occupation_id", null: false
+    t.index ["occupation_id"], name: "index_schedules_on_occupation_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -72,9 +87,9 @@ ActiveRecord::Schema.define(version: 2020_06_23_052505) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "blank_schedules", "users"
+  add_foreign_key "occupations", "users"
+  add_foreign_key "recruitements", "occupations"
   add_foreign_key "recruitements", "users", column: "company_user_id"
   add_foreign_key "recruitements", "users", column: "individual_user_id"
-  add_foreign_key "schedules", "users", column: "requester_id"
-  add_foreign_key "schedules", "users", column: "responder_id"
+  add_foreign_key "schedules", "occupations"
 end

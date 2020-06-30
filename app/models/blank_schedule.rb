@@ -2,34 +2,31 @@
 #
 # Table name: blank_schedules
 #
-#  id         :uuid             not null, primary key
-#  end_at     :datetime
-#  start_at   :datetime
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :uuid             not null
+#  id               :uuid             not null, primary key
+#  end_at           :datetime
+#  schedulable_type :string           not null
+#  start_at         :datetime
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  schedulable_id   :uuid             not null
 #
 # Indexes
 #
-#  index_blank_schedules_on_user_id  (user_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (user_id => users.id)
+#  index_blank_schedules_on_schedulable_type_and_schedulable_id  (schedulable_type,schedulable_id)
 #
 class BlankSchedule < ApplicationRecord
-  belongs_to :user
+  belongs_to :schedulable, polymorphic: true
 
   validate :check_schedule
   validates_with CheckScheduleValidator
 
-  def self.hollow_out!(users, start_at:, end_at:)
-    where(user: users).find_each do |blank_schedule|
+  def self.hollow_out!(schedulables, start_at:, end_at:)
+    where(schedulable: schedulables).find_each do |blank_schedule|
       #開始時間が既存のレコードのレンジ内にある時
       if blank_schedule.start_at <= start_at && start_at <= blank_schedule.end_at
         blank_schedule.destroy!
         if blank_schedule.start_at < start_at
-          create!(start_at: blank_schedule.start_at, end_at: start_at, user_id: blank_schedule.user_id)
+          create!(start_at: blank_schedule.start_at, end_at: start_at, schedulable: blank_schedule.schedulable)
         end
       end
 
@@ -37,7 +34,7 @@ class BlankSchedule < ApplicationRecord
       if blank_schedule.start_at < end_at && end_at < blank_schedule.end_at
         blank_schedule.destroy!
         if blank_schedule.end_at > end_at
-          create!(start_at: end_at, end_at: blank_schedule.end_at, user_id: blank_schedule.user_id)
+          create!(start_at: end_at, end_at: blank_schedule.end_at, schedulable: blank_schedule.schedulable)
         end
       end
 
@@ -50,11 +47,11 @@ class BlankSchedule < ApplicationRecord
 
   #MEMO: scheduleとメソッドを合わせる
   def requester
-    user
+    schedulable
   end
 
   def requester_id
-    user_id
+    schedulable_id
   end
 
   def check_schedule
@@ -65,5 +62,9 @@ class BlankSchedule < ApplicationRecord
 
   def status
     :pending
+  end
+
+  def authorized?(user)
+    user.schedulable_array.include?(schedulable) || user.schedulable_array.include?(schedulable)
   end
 end

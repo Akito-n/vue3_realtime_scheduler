@@ -3,6 +3,7 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
 
   argument :start_at, Types::Scalars::DateTime, required: true
   argument :end_at, Types::Scalars::DateTime, required: true
+  argument :occupation_id, ID, required: false
 
   field :blank_schedule, Types::Objects::BlankScheduleType, null: true
   #field :user, Types::Objects::UserType, null: true
@@ -11,9 +12,14 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
     context[:user_signed_in]
   end
 
-  def resolve(start_at:, end_at:)
+  def resolve(start_at:, end_at:, occupation_id: nil)
     user = context[:current_user]
-    blank_schedule = BlankSchedule.new(start_at: start_at, end_at: end_at, user: user)
+    if user.individual?
+      blank_schedule = user.blank_schedules.build(start_at: start_at, end_at: end_at)
+    else
+      occupation = AppSchema.object_from_id(occupation_id, context)
+      blank_schedule = occupation.blank_schedules.build(start_at: start_at, end_at: end_at)
+    end
     if blank_schedule.save
       AppSchema.subscriptions.trigger('schedules', {}, {})
       {
