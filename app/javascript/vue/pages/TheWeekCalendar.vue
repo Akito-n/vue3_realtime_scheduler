@@ -30,6 +30,7 @@
         </router-link>
       </div>
       <schedule-creator />
+      <schedule-updater />
       <div class="flex row justify-center items-center">
         <div
           v-for="(day, i) in state.days"
@@ -128,13 +129,19 @@ import {
 import { SchedulesSubscriptionDocument, Schedule } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
+import ScheduleUpdater from '@/vue/containers/ScheduleUpdater.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import RequestCreator from '@/vue/containers/RequestCreator.vue'
 import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
 import { useSubscription } from '@vue/apollo-composable'
 
 export default defineComponent({
-  components: { ScheduleCreator, RequestCreator, RequestAccepter },
+  components: {
+    ScheduleCreator,
+    ScheduleUpdater,
+    RequestCreator,
+    RequestAccepter
+  },
   setup(props, context) {
     const { daysOfWeek, elementalies } = useCalendar()
     const state = reactive({
@@ -198,7 +205,12 @@ export default defineComponent({
       hour: number,
       minute: number
     ) => {
-      if (blankSchedule.mine) return
+      if (blankSchedule.mine) {
+        context.root.$router.push({
+          query: { edit_blank_schedule: blankSchedule.id }
+        })
+        return
+      }
       if (
         blankSchedule.status == '非承認' ||
         blankSchedule.status == '確定済み'

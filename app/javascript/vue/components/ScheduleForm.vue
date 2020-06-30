@@ -63,6 +63,8 @@ import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 
 interface Props {
+  defaultStartAt: Date
+  defaultEndAt: Date
   disabled: boolean
   ocupations: Array<{ id: string; subject: string }>
 }
@@ -70,22 +72,24 @@ interface Props {
 export default defineComponent<Props>({
   components: { VueTimepicker },
   props: {
+    defaultStartAt: Date,
+    defaultEndAt: Date,
     disabled: Boolean,
     ocupations: Array
   },
   setup(props: Props, context) {
     const state = reactive({
-      startDate: format(new Date(), 'yyyy-MM-dd'),
+      startDate: format(props.defaultStartAt || new Date(), 'yyyy-MM-dd'),
       startTime: {
-        HH: format(new Date(), 'HH'),
+        HH: format(props.defaultStartAt || new Date(), 'HH'),
         mm: '00'
       },
       startDateTime: computed(() =>
         settingTime(state.startDate, state.startTime)
       ),
-      endDate: format(new Date(), 'yyyy-MM-dd'),
+      endDate: format(props.defaultEndAt || new Date(), 'yyyy-MM-dd'),
       endTime: {
-        HH: format(addHours(new Date(), 1), 'HH'),
+        HH: format(addHours(props.defaultEndAt || new Date(), 1), 'HH'),
         mm: '00'
       },
       endDateTime: computed(() => settingTime(state.endDate, state.endTime)),
