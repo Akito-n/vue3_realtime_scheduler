@@ -673,7 +673,7 @@
             "deprecationReason": null
           },
           {
-            "name": "subject",
+            "name": "name",
             "description": null,
             "args": [],
             "type": {

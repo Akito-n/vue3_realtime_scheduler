@@ -19,7 +19,7 @@
 #
 class Occupation < ApplicationRecord
   belongs_to :user
-  delegate :company_name, :name, to: :user
+  delegate :company_name, to: :user
 
   has_many :recruitements
 

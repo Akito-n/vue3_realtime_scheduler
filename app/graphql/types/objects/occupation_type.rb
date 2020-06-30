@@ -6,5 +6,5 @@ class Types::Objects::OccupationType < Types::BaseObject
   end
 
   field :id, ID, null: false
-  field :subject, String, null: true
+  field :name, String, null: true
 end
