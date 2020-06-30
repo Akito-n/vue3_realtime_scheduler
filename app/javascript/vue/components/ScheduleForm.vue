@@ -36,7 +36,7 @@
             :value="occupation.id"
             v-model="state.selectedOccupationId"
           />
-          {{ occupation.subject }}
+          {{ occupation.name }}
         </label>
       </div>
       <button

@@ -83,8 +83,11 @@
                     )
                   "
                 >
+                  {{ blankSchedule.requester.companyName }}
                   {{
-                    blankSchedule.isRequest ? blankSchedule.status : '&nbsp;'
+                    blankSchedule.isRequest
+                      ? blankSchedule.status
+                      : blankSchedule.requester.name
                   }}
                 </div>
               </div>
