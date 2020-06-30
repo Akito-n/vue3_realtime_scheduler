@@ -1,0 +1,9 @@
+mutation editBlankSchedule($input: EditBlankScheduleInput!) {
+  editBlankSchedule(input: $input) {
+    blankSchedule {
+      id
+      startAt
+      endAt
+    }
+  }
+}
