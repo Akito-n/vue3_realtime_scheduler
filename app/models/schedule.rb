@@ -41,7 +41,7 @@ class Schedule < ApplicationRecord
     BlankSchedule.hollow_out!(responder, start_at: start_at, end_at: end_at)
   end
 
-  def authorized?(user)
+  def can_read?(user)
     can_request?(user) || can_response?(user)
   end
 
