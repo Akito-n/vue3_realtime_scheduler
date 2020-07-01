@@ -100,7 +100,7 @@ export default defineComponent<Props>({
     watch(
       () => props.defaultStartAt,
       (newStartAt) => {
-        const startAt = new Date(newStartAt || null)
+        const startAt = newStartAt ? new Date(newStartAt) : new Date()
         state.startDate = format(startAt, 'yyyy-MM-dd')
         state.startTime = {
           HH: format(startAt, 'HH'),
@@ -111,7 +111,7 @@ export default defineComponent<Props>({
     watch(
       () => props.defaultEndAt,
       (newEndAt) => {
-        const endAt = new Date(newEndAt || null)
+        const endAt = newEndAt ? new Date(newEndAt) : addHours(new Date(), 1)
         state.endDate = format(endAt, 'yyyy-MM-dd')
         state.endTime = {
           HH: format(endAt, 'HH'),
