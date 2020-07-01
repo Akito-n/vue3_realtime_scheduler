@@ -38,6 +38,7 @@ export type EditBlankScheduleInput = {
   blankScheduleId: Scalars['ID'];
   startAt?: Maybe<Scalars['DateTime']>;
   endAt?: Maybe<Scalars['DateTime']>;
+  occupationId?: Maybe<Scalars['ID']>;
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']>;
 };
