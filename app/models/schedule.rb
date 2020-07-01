@@ -49,6 +49,8 @@ class Schedule < ApplicationRecord
     user.my_schedulable_array.include?(requester)
   end
 
+  alias_method :can_write?, :can_request?
+
   def can_response?(user)
     user.my_schedulable_array.include?(responder)
   end
