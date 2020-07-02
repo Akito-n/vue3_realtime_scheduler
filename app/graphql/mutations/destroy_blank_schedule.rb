@@ -1,22 +1,20 @@
-class Mutations::EditBlankSchedule < Mutations::BaseMutation
+class Mutations::DestroyBlankSchedule < Mutations::BaseMutation
   null true
 
   argument :blank_schedule_id, ID, required: true, loads: Types::Objects::ScheduleType
-  argument :start_at, Types::Scalars::DateTime, required: false
-  argument :end_at, Types::Scalars::DateTime, required: false
-  #argumentにoccupationを追加して更新できるようにするか消すか
 
   field :blank_schedule, Types::Objects::ScheduleType, null: true
+  #field :user, Types::Objects::UserType, null: true
 
   def authorized?(blank_schedule:, **args)
     context[:user_signed_in] && blank_schedule.can_write?(context[:current_user])
   end
 
-  def resolve(blank_schedule:, **input)
-    if blank_schedule.update(input.compact)
+  def resolve(blank_schedule:)
+    if blank_schedule.destroy
       AppSchema.subscriptions.trigger('schedules', {}, {})
       {
-        blank_schedule: blank_schedule
+        blank_schedule: nil
       }
     else
       set_errors(blank_schedule)

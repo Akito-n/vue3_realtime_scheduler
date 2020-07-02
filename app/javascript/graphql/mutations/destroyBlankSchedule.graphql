@@ -1,0 +1,9 @@
+mutation destroyBlankSchedule($input: DestroyBlankScheduleInput!) {
+  destroyBlankSchedule(input: $input) {
+    blankSchedule {
+      id
+      startAt
+      endAt
+    }
+  }
+}

@@ -7,7 +7,16 @@
         :defaultStartAt="blankSchedule.startAt"
         :defaultEndAt="blankSchedule.endAt"
         @submit="submit"
-      />
+      >
+        <template v-slot:delete>
+          <button
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 ml-5"
+            @click="destroySchedule"
+          >
+            削除する
+          </button>
+        </template>
+      </schedule-form>
       <template v-if="error">
         <template v-for="(errorMessage, i) in error.graphQLErrors">
           <p :key="i">{{ errorMessage.message }}</p>
@@ -30,6 +39,9 @@ import {
   EditBlankScheduleMutation,
   EditBlankScheduleDocument,
   EditBlankScheduleMutationVariables,
+  DestroyBlankScheduleMutation,
+  DestroyBlankScheduleDocument,
+  DestroyBlankScheduleMutationVariables,
   useCurrentUserQuery,
   useBlankScheduleQuery
 } from '@/graphql/types'
@@ -76,6 +88,18 @@ export default defineComponent({
       })
     }
 
+    const destroyMutate = useMutation<
+      DestroyBlankScheduleMutation,
+      DestroyBlankScheduleMutationVariables
+    >(DestroyBlankScheduleDocument)
+
+    const destroySchedule = () => {
+      destroyMutate.mutate({
+        input: { blankScheduleId: state.blankScheduleId }
+      })
+      context.root.$router.push({ query: null })
+    }
+
     const close = () => {
       context.root.$router.push({ query: null })
     }
@@ -99,7 +123,8 @@ export default defineComponent({
       close,
       occupations,
       blankSchedule,
-      blankScheduleRef
+      blankScheduleRef,
+      destroySchedule
     }
   }
 })
