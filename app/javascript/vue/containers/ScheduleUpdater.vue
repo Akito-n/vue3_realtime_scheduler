@@ -3,7 +3,7 @@
     <modal :value="!!state.blankScheduleId" @input="close" title="選択した内容">
       <schedule-form
         :disabled="loading"
-        :ocupations="occupations"
+        :ocupations="[]"
         :defaultStartAt="blankSchedule.startAt"
         :defaultEndAt="blankSchedule.endAt"
         :defaultOccupationId="
@@ -63,11 +63,6 @@ export default defineComponent({
       currentUserRef.result,
       false,
       (data) => data.currentUser.isCompany
-    )
-    const occupations = useResult(
-      currentUserRef.result,
-      [],
-      (data) => data.currentUser.occupations.nodes
     )
 
     const state = reactive({
@@ -136,7 +131,6 @@ export default defineComponent({
       loading,
       error,
       close,
-      occupations,
       blankSchedule,
       blankScheduleRef,
       destroySchedule,
