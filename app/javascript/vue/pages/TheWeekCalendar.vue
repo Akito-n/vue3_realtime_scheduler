@@ -84,11 +84,10 @@
                   "
                 >
                   {{ blankSchedule.requester.companyName }}
-                  {{
-                    blankSchedule.isRequest
-                      ? blankSchedule.status
-                      : blankSchedule.requester.name
-                  }}
+                  {{ blankSchedule.requester.name }}
+                  <span v-if="blankSchedule.isRequest">
+                    {{ blankSchedule.status }}
+                  </span>
                 </div>
               </div>
               <div
