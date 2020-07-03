@@ -6,6 +6,11 @@
         :ocupations="occupations"
         :defaultStartAt="blankSchedule.startAt"
         :defaultEndAt="blankSchedule.endAt"
+        :defaultOccupationId="
+          isCompany && blankSchedule.requester
+            ? blankSchedule.requester.id
+            : null
+        "
         @submit="submit"
       >
         <template v-slot:delete>
@@ -54,6 +59,11 @@ export default defineComponent({
   components: { Modal, ScheduleForm },
   setup(_, context) {
     const currentUserRef = useCurrentUserQuery()
+    const isCompany = useResult(
+      currentUserRef.result,
+      false,
+      (data) => data.currentUser.isCompany
+    )
     const occupations = useResult(
       currentUserRef.result,
       [],
@@ -84,7 +94,12 @@ export default defineComponent({
       occupationId: string | null
     ) => {
       mutate({
-        input: { blankScheduleId: state.blankScheduleId, startAt, endAt }
+        input: {
+          blankScheduleId: state.blankScheduleId,
+          startAt,
+          endAt,
+          occupationId
+        }
       })
     }
 
@@ -124,7 +139,8 @@ export default defineComponent({
       occupations,
       blankSchedule,
       blankScheduleRef,
-      destroySchedule
+      destroySchedule,
+      isCompany
     }
   }
 })

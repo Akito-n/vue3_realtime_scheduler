@@ -67,6 +67,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
 interface Props {
   defaultStartAt: string
   defaultEndAt: string
+  defaultOccupationId: string
   disabled: boolean
   ocupations: Array<{ id: string; subject: string }>
 }
@@ -76,6 +77,7 @@ export default defineComponent<Props>({
   props: {
     defaultStartAt: String,
     defaultEndAt: String,
+    defaultOccupationId: String,
     disabled: Boolean,
     ocupations: Array
   },
@@ -118,6 +120,12 @@ export default defineComponent<Props>({
           HH: format(endAt, 'HH'),
           mm: '00'
         }
+      }
+    )
+    watch(
+      () => props.defaultOccupationId,
+      (newOccupationId) => {
+        state.selectedOccupationId = newOccupationId
       }
     )
 
