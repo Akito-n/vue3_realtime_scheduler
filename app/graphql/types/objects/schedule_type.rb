@@ -10,6 +10,7 @@ class Types::Objects::ScheduleType < Types::BaseObject
   field :status, String, null: false
   field :requester, Types::Objects::MemberType, null: false
   field :responder, Types::Objects::MemberType, null: false
+  field :occupation, Types::Objects::OccupationType, null: false
 
   field :is_request, Boolean, null: false
   def is_request

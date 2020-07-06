@@ -7,15 +7,25 @@
     >
       {{ occupation.companyName }}: {{ occupation.name }}
     </div>
-    <p>確定した面接一覧 A株式会社　〇/〇(曜日)開始時間～終了時間</p>
+    <p>面接日を調整する</p>
+    <div
+      v-for="respondingTask in result.individualTasks.respondingTasks.nodes"
+      :key="respondingTask.id"
+    >
+      {{ respondingTask.occupation.companyName }}:
+      {{ respondingTask.occupation.name }}
+      {{ respondingTask.startAt | date('MM/dd(E)HH:mm') }}~
+      {{ respondingTask.endAt | date('HH:mm') }}
+    </div>
+    <p>確定した面接一覧</p>
     <div
       v-for="confirmedScheduleTasks in result.individualTasks
         .confirmedScheduleTasks.nodes"
       :key="confirmedScheduleTasks.id"
     >
-      {{ confirmedScheduleTasks.requester.companyName }}:
-      {{ confirmedScheduleTasks.startAt | date('MM/dd(E)') }}
-      {{ confirmedScheduleTasks }}
+      {{ confirmedScheduleTasks.occupation.companyName }}:
+      {{ confirmedScheduleTasks.startAt | date('MM/dd(E)HH:mm') }}~
+      {{ confirmedScheduleTasks.endAt | date('HH:mm') }}
     </div>
   </div>
 </template>

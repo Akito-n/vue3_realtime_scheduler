@@ -5,13 +5,12 @@ fragment ScheduleItem on Schedule {
   mine
   isRequest
   status
-  requester {
+  occupation {
     id
     name
-    color
     companyName
   }
-  responder {
+  requester {
     id
     name
     color
