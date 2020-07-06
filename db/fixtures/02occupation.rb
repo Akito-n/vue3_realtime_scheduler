@@ -2,7 +2,7 @@ tozawa = User.find_by(email: 'tozawasoken@pca.com')
 kaneko = User.find_by(email: 'kanekotoys@pca.com')
 sawada = User.find_by(email: 'sawadashoten@pca.com')
 
-Occupation.seed(
+Occupation.seed(:user_id,
   #戸澤総研
   {user: tozawa, name: 'ITコンサルタント', color: 'red'},
   {user: tozawa, name: 'PM', color: 'hotpink'},
