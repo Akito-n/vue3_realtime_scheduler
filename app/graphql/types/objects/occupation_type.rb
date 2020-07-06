@@ -7,4 +7,5 @@ class Types::Objects::OccupationType < Types::BaseObject
 
   field :id, ID, null: false
   field :name, String, null: true
+  field :company_name, String, null: true
 end

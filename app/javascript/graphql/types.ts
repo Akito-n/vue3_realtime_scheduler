@@ -190,6 +190,7 @@ export type MutationRespondScheduleArgs = {
 
 export type Occupation = {
   __typename?: 'Occupation';
+  companyName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
 };
@@ -410,6 +411,9 @@ export type ScheduleItemFragment = (
   & { requester: (
     { __typename?: 'Member' }
     & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
+  ), responder: (
+    { __typename?: 'Member' }
+    & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
   ) }
 );
 
@@ -571,7 +575,7 @@ export type IndividualTasksSubscriptionSubscription = (
       { __typename?: 'OccupationConnection' }
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Occupation' }
-        & Pick<Occupation, 'id' | 'name'>
+        & Pick<Occupation, 'id' | 'name' | 'companyName'>
       )>>> }
     ), waitingTasks: (
       { __typename?: 'ScheduleConnection' }
@@ -625,6 +629,12 @@ export const ScheduleItemFragmentDoc = gql`
   isRequest
   status
   requester {
+    id
+    name
+    color
+    companyName
+  }
+  responder {
     id
     name
     color
@@ -942,6 +952,7 @@ export const IndividualTasksSubscriptionDocument = gql`
       nodes {
         id
         name
+        companyName
       }
     }
     waitingTasks {

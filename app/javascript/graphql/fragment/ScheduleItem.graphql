@@ -11,4 +11,10 @@ fragment ScheduleItem on Schedule {
     color
     companyName
   }
+  responder {
+    id
+    name
+    color
+    companyName
+  }
 }

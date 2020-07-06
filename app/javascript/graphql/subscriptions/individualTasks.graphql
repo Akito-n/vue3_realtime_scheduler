@@ -4,6 +4,7 @@ subscription individualTasksSubscription {
       nodes {
         id
         name
+        companyName
       }
     }
     waitingTasks {
