@@ -41,13 +41,15 @@ class Schedule < ApplicationRecord
     BlankSchedule.hollow_out!(responder, start_at: start_at, end_at: end_at)
   end
 
-  def authorized?(user)
+  def can_read?(user)
     can_request?(user) || can_response?(user)
   end
 
   def can_request?(user)
     user.my_schedulable_array.include?(requester)
   end
+
+  alias_method :can_write?, :can_request?
 
   def can_response?(user)
     user.my_schedulable_array.include?(responder)

@@ -4,7 +4,7 @@
 #
 #  id         :uuid             not null, primary key
 #  color      :string           default("orange"), not null
-#  subject    :string           not null
+#  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  user_id    :uuid             not null
@@ -19,7 +19,7 @@
 #
 class Occupation < ApplicationRecord
   belongs_to :user
-  delegate :company_name, :name, to: :user
+  delegate :company_name, to: :user
 
   has_many :recruitements
 

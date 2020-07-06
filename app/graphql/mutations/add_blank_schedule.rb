@@ -5,7 +5,7 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
   argument :end_at, Types::Scalars::DateTime, required: true
   argument :occupation_id, ID, required: false
 
-  field :blank_schedule, Types::Objects::BlankScheduleType, null: true
+  field :blank_schedule, Types::Objects::ScheduleType, null: true
   #field :user, Types::Objects::UserType, null: true
 
   def authorized?(**args)

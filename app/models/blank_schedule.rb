@@ -64,7 +64,12 @@ class BlankSchedule < ApplicationRecord
     :pending
   end
 
-  def authorized?(user)
+  # HACK: punditとかにしたほうが良さそう
+  def can_read?(user)
     user.schedulable_array.include?(schedulable) || user.schedulable_array.include?(schedulable)
+  end
+
+  def can_write?(user)
+    user.my_schedulable_array.include?(schedulable)
   end
 end

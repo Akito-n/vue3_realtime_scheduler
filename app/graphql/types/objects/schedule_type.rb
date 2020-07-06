@@ -1,6 +1,6 @@
 class Types::Objects::ScheduleType < Types::BaseObject
   def self.authorized?(object, context)
-    super and context[:user_signed_in] and object.authorized?(context[:current_user])
+    super and context[:user_signed_in] and object.can_read?(context[:current_user])
   end
 
   field :id, ID, null: false

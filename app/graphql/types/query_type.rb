@@ -17,14 +17,11 @@ module Types
       User.all
     end
 
-    field :blank_schedules, Types::Objects::BlankScheduleType.connection_type, null: false do
-      argument :min_date, Types::Scalars::Date, required: true
-      argument :max_date, Types::Scalars::Date, required: true
+    field :blank_schedule, Types::Objects::ScheduleType, null: true do
+      argument :blank_schedule_id, ID, required: true, loads: Types::Objects::ScheduleType
     end
-    def blank_schedules(min_date:, max_date:)
-      BlankSchedule
-        .where(user: current_user)
-        .where('end_at >= ? AND start_at <= ?', min_date.beginning_of_day, max_date.end_of_day)
+    def blank_schedule(blank_schedule:)
+      blank_schedule
     end
   end
 end

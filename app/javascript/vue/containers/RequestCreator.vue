@@ -15,7 +15,7 @@
               :value="occupation.id"
               v-model="state.selectedOccupationId"
             />
-            {{ occupation.subject }}
+            {{ occupation.name }}
           </label>
         </div>
         <button
@@ -35,7 +35,7 @@ import { defineComponent, reactive, computed } from '@vue/composition-api'
 import { useMutation } from '@vue/apollo-composable'
 import {
   useCurrentUserQuery,
-  BlankSchedule,
+  Schedule,
   RequestScheduleToIndividualUserMutation,
   RequestScheduleToIndividualUserMutationVariables,
   RequestScheduleToIndividualUserDocument,
@@ -46,7 +46,7 @@ import {
 import Modal from '@/vue/components/Modal.vue'
 
 type Props = {
-  value?: BlankSchedule | null
+  value?: Schedule | null
   startAt?: Date
   endAt?: Date
 }

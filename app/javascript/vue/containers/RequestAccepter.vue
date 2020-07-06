@@ -46,7 +46,7 @@ import {
 } from '@vue/composition-api'
 import { useMutation } from '@vue/apollo-composable'
 import {
-  BlankSchedule,
+  Schedule,
   RespondScheduleMutationVariables,
   RespondScheduleDocument,
   RespondScheduleMutation
@@ -55,7 +55,7 @@ import Modal from '@/vue/components/Modal.vue'
 import ConfirmDialog from '@/vue/components/ConfirmDialog.vue'
 
 type Props = {
-  value?: BlankSchedule | null
+  value?: Schedule | null
 }
 
 const initialState = {

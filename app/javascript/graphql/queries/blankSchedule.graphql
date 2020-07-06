@@ -1,0 +1,16 @@
+query blankSchedule($blankScheduleId: ID!) {
+  blankSchedule(blankScheduleId: $blankScheduleId) {
+    id
+    startAt
+    endAt
+    mine
+    isRequest
+    status
+    requester {
+      id
+      name
+      color
+      companyName
+    }
+  }
+}

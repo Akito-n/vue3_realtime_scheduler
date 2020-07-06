@@ -36,9 +36,10 @@
             :value="occupation.id"
             v-model="state.selectedOccupationId"
           />
-          {{ occupation.subject }}
+          {{ occupation.name }}
         </label>
       </div>
+      <slot name="delete"></slot>
       <button
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 ml-5"
         @click="submit"
@@ -57,12 +58,16 @@ import {
   defineComponent,
   reactive,
   computed,
-  watch
+  watch,
+  onMounted
 } from '@vue/composition-api'
 import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 
 interface Props {
+  defaultStartAt: string
+  defaultEndAt: string
+  defaultOccupationId: string
   disabled: boolean
   ocupations: Array<{ id: string; subject: string }>
 }
@@ -70,24 +75,21 @@ interface Props {
 export default defineComponent<Props>({
   components: { VueTimepicker },
   props: {
+    defaultStartAt: String,
+    defaultEndAt: String,
+    defaultOccupationId: String,
     disabled: Boolean,
     ocupations: Array
   },
   setup(props: Props, context) {
     const state = reactive({
-      startDate: format(new Date(), 'yyyy-MM-dd'),
-      startTime: {
-        HH: format(new Date(), 'HH'),
-        mm: '00'
-      },
+      startDate: null,
+      startTime: null,
       startDateTime: computed(() =>
         settingTime(state.startDate, state.startTime)
       ),
-      endDate: format(new Date(), 'yyyy-MM-dd'),
-      endTime: {
-        HH: format(addHours(new Date(), 1), 'HH'),
-        mm: '00'
-      },
+      endDate: null,
+      endTime: null,
       endDateTime: computed(() => settingTime(state.endDate, state.endTime)),
       selectedOccupationId: null
     })
@@ -97,6 +99,35 @@ export default defineComponent<Props>({
         endAt: state.endDateTime
       }
     }))
+
+    watch(
+      () => props.defaultStartAt,
+      (newStartAt) => {
+        const startAt = newStartAt ? new Date(newStartAt) : new Date()
+        state.startDate = format(startAt, 'yyyy-MM-dd')
+        state.startTime = {
+          HH: format(startAt, 'HH'),
+          mm: '00'
+        }
+      }
+    )
+    watch(
+      () => props.defaultEndAt,
+      (newEndAt) => {
+        const endAt = newEndAt ? new Date(newEndAt) : addHours(new Date(), 1)
+        state.endDate = format(endAt, 'yyyy-MM-dd')
+        state.endTime = {
+          HH: format(endAt, 'HH'),
+          mm: '00'
+        }
+      }
+    )
+    watch(
+      () => props.defaultOccupationId,
+      (newOccupationId) => {
+        state.selectedOccupationId = newOccupationId
+      }
+    )
 
     const timepickerOptions = {
       format: 'HH:mm',
