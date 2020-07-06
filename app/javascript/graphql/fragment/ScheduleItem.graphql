@@ -1,0 +1,14 @@
+fragment ScheduleItem on Schedule {
+  id
+  startAt
+  endAt
+  mine
+  isRequest
+  status
+  requester {
+    id
+    name
+    color
+    companyName
+  }
+}

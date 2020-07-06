@@ -1,0 +1,25 @@
+subscription individualTasksSubscription {
+  individualTasks {
+    blankScheduleTasks {
+      nodes {
+        id
+        name
+      }
+    }
+    waitingTasks {
+      nodes {
+        ...ScheduleItem
+      }
+    }
+    respondingTasks {
+      nodes {
+        ...ScheduleItem
+      }
+    }
+    confirmedScheduleTasks {
+      nodes {
+        ...ScheduleItem
+      }
+    }
+  }
+}
