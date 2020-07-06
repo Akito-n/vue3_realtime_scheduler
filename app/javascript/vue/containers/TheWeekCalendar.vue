@@ -227,7 +227,10 @@ export default defineComponent({
       state.selectedStartAt = date
       state.selectedEndAt = addMinutes(date, 30)
       if (blankSchedule.isRequest) {
-        state.selectedRequestedSchedule = blankSchedule
+        context.root.$router.push({
+          query: { requested_schedule_id: blankSchedule.id }
+        })
+        return
       } else {
         state.selectedSchedule = blankSchedule
       }

@@ -1,0 +1,5 @@
+query schedule($scheduleId: ID!) {
+  schedule(scheduleId: $scheduleId) {
+    ...ScheduleItem
+  }
+}

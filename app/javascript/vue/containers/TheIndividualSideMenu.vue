@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <p>自分の空き予定を入力する</p>
     <div
       v-for="occupation in result.individualTasks.blankScheduleTasks.nodes"
@@ -11,6 +11,7 @@
     <div
       v-for="respondingTask in result.individualTasks.respondingTasks.nodes"
       :key="respondingTask.id"
+      @click="select(respondingTask.id)"
     >
       {{ respondingTask.occupation.companyName }}:
       {{ respondingTask.occupation.name }}
@@ -46,9 +47,13 @@ export default defineComponent({
   components: {},
   setup(props, context) {
     const { result, loading } = useIndividualTasksSubscriptionSubscription()
-    console.log(result?.value?.individualTasks)
 
-    return { result, loading }
+    const select = (scheduleId: string) => {
+      context.root.$router.push({
+        query: { requested_schedule_id: scheduleId }
+      })
+    }
+    return { result, loading, select }
   }
 })
 </script>

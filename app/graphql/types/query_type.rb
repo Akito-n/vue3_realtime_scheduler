@@ -23,5 +23,12 @@ module Types
     def blank_schedule(blank_schedule:)
       blank_schedule
     end
+
+    field :schedule, Types::Objects::ScheduleType, null: true do
+      argument :schedule_id, ID, required: true, loads: Types::Objects::ScheduleType
+    end
+    def schedule(schedule:)
+      schedule
+    end
   end
 end

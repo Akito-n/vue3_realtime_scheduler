@@ -233,6 +233,7 @@ export type Query = {
   blankSchedule?: Maybe<Schedule>;
   currentUser?: Maybe<User>;
   id: Scalars['ID'];
+  schedule?: Maybe<Schedule>;
   user?: Maybe<User>;
   users: UserConnection;
 };
@@ -240,6 +241,11 @@ export type Query = {
 
 export type QueryBlankScheduleArgs = {
   blankScheduleId: Scalars['ID'];
+};
+
+
+export type QueryScheduleArgs = {
+  scheduleId: Scalars['ID'];
 };
 
 
@@ -544,6 +550,19 @@ export type BlankScheduleQuery = (
       { __typename?: 'Member' }
       & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
     ) }
+  )> }
+);
+
+export type ScheduleQueryVariables = {
+  scheduleId: Scalars['ID'];
+};
+
+
+export type ScheduleQuery = (
+  { __typename?: 'Query' }
+  & { schedule?: Maybe<(
+    { __typename?: 'Schedule' }
+    & ScheduleItemFragment
   )> }
 );
 
@@ -905,6 +924,34 @@ export function useBlankScheduleQuery(variables: BlankScheduleQueryVariables | V
             return VueApolloComposable.useQuery<BlankScheduleQuery, BlankScheduleQueryVariables>(BlankScheduleDocument, variables, options);
           }
 export type BlankScheduleQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<BlankScheduleQuery, BlankScheduleQueryVariables>;
+export const ScheduleDocument = gql`
+    query schedule($scheduleId: ID!) {
+  schedule(scheduleId: $scheduleId) {
+    ...ScheduleItem
+  }
+}
+    ${ScheduleItemFragmentDoc}`;
+
+/**
+ * __useScheduleQuery__
+ *
+ * To run a query within a Vue component, call `useScheduleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useScheduleQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useScheduleQuery(
+ *   {
+ *      scheduleId: // value for 'scheduleId'
+ *   }
+ * );
+ */
+export function useScheduleQuery(variables: ScheduleQueryVariables | VueCompositionApi.Ref<ScheduleQueryVariables> | ReactiveFunction<ScheduleQueryVariables>, options: VueApolloComposable.UseQueryOptions<ScheduleQuery, ScheduleQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ScheduleQuery, ScheduleQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ScheduleQuery, ScheduleQueryVariables>> = {}) {
+            return VueApolloComposable.useQuery<ScheduleQuery, ScheduleQueryVariables>(ScheduleDocument, variables, options);
+          }
+export type ScheduleQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ScheduleQuery, ScheduleQueryVariables>;
 export const CurrentUserDocument = gql`
     query currentUser {
   currentUser {
