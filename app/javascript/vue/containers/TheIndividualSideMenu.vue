@@ -11,12 +11,17 @@
     <div
       v-for="respondingTask in result.individualTasks.respondingTasks.nodes"
       :key="respondingTask.id"
-      @click="select(respondingTask.id)"
     >
       {{ respondingTask.occupation.companyName }}:
       {{ respondingTask.occupation.name }}
       {{ respondingTask.startAt | date('MM/dd(E)HH:mm') }}~
       {{ respondingTask.endAt | date('HH:mm') }}
+      <button
+        @click="select(respondingTask.id)"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+      >
+        調整する
+      </button>
     </div>
     <p>確定した面接一覧</p>
     <div
