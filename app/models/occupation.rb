@@ -2,12 +2,17 @@
 #
 # Table name: occupations
 #
-#  id         :uuid             not null, primary key
-#  color      :string           default("orange"), not null
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :uuid             not null
+#  id            :uuid             not null, primary key
+#  address       :string
+#  apply_from    :integer          default("egent"), not null
+#  color         :string           default("orange"), not null
+#  item          :string
+#  memo          :text
+#  name          :string           not null
+#  required_time :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  user_id       :uuid             not null
 #
 # Indexes
 #
@@ -22,6 +27,8 @@ class Occupation < ApplicationRecord
   delegate :company_name, to: :user
 
   has_many :recruitements
+
+  enum apply_from: { egent: 0, plus: 1 }
 
   has_many :blank_schedules, as: :schedulable
   has_many :request_schedules, class_name: :Schedule, as: :requester
