@@ -10,6 +10,22 @@
           schedule.endAt | date('HH:mm')
         }}
 
+        <div>
+          <p>案件名</p>
+          <span
+            >{{ schedule.occupation.companyName }}:{{
+              schedule.occupation.name
+            }}</span
+          >
+          <p>応募経路</p>
+          <span>{{ schedule.occupation.applyFrom }}</span>
+          <p>所要時間</p>
+          <span>{{ schedule.occupation.requiredTime }}</span>
+          <p>訪問場所</p>
+          <span>{{ schedule.occupation.address }}</span>
+          <p>持ち物</p>
+          <span>{{ schedule.occupation.item }}</span>
+        </div>
         <!--Footer-->
         <div class="flex justify-between pt-2">
           <button

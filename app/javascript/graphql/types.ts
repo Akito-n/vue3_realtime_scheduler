@@ -422,7 +422,7 @@ export type ScheduleItemFragment = (
   & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'isRequest' | 'status'>
   & { occupation: (
     { __typename?: 'Occupation' }
-    & Pick<Occupation, 'id' | 'name' | 'companyName'>
+    & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
   ), requester: (
     { __typename?: 'Member' }
     & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
@@ -656,7 +656,12 @@ export const ScheduleItemFragmentDoc = gql`
   occupation {
     id
     name
+    address
+    applyFrom
+    memo
+    item
     companyName
+    requiredTime
   }
   requester {
     id
