@@ -30,8 +30,7 @@
         </div>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
-          :disabled="!state.selectedOccupation"
-          @click="submit(value.id, startAt, endAt, state.selectedOccupation.id)"
+          @click="submit(value.id, startAt, endAt, state.selectedOccupationId)"
         >
           面接日程をリクエストする
         </button>
@@ -55,7 +54,7 @@ import {
   RequestScheduleToOccupationDocument
 } from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
-import { Occupation } from 'graphql/types'
+import { Occupation, ScheduleConnection } from 'graphql/types'
 
 type Props = {
   value?: Schedule | null
@@ -82,7 +81,14 @@ export default defineComponent<Props>({
     >(RequestScheduleToOccupationDocument)
 
     const state = reactive({
-      selectedOccupation: null
+      selectedOccupation: null,
+      selectedOccupationId: computed(() => {
+        if (state.selectedOccupation) {
+          return state.selectedOccupation.id
+        } else {
+          return ''
+        }
+      })
     })
 
     const { result } = useCurrentUserQuery()
