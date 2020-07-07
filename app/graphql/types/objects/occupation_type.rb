@@ -6,6 +6,12 @@ class Types::Objects::OccupationType < Types::BaseObject
   end
 
   field :id, ID, null: false
-  field :name, String, null: true
+  field :address, String, null: true
+  field :apply_from, String, null: true
   field :company_name, String, null: true
+  field :name, String, null: true
+  field :memo, String, null: true
+  field :item, String, null: true
+  field :apply_from, String, null: true
+  field :required_time, String, null: true
 end

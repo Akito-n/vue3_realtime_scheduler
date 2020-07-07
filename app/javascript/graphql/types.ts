@@ -190,9 +190,14 @@ export type MutationRespondScheduleArgs = {
 
 export type Occupation = {
   __typename?: 'Occupation';
+  address?: Maybe<Scalars['String']>;
+  applyFrom?: Maybe<Scalars['String']>;
   companyName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  item?: Maybe<Scalars['String']>;
+  memo?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  requiredTime?: Maybe<Scalars['String']>;
 };
 
 /** The connection type for Occupation. */
@@ -578,7 +583,7 @@ export type CurrentUserQuery = (
       { __typename?: 'OccupationConnection' }
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Occupation' }
-        & Pick<Occupation, 'id' | 'name'>
+        & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
       )>>> }
     ) }
   )> }
@@ -967,6 +972,12 @@ export const CurrentUserDocument = gql`
       nodes {
         id
         name
+        address
+        applyFrom
+        memo
+        item
+        companyName
+        requiredTime
       }
     }
   }
