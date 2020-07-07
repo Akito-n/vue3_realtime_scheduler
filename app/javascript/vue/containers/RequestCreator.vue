@@ -85,6 +85,8 @@ export default defineComponent<Props>({
       selectedOccupationId: computed(() => {
         if (state.selectedOccupation) {
           return state.selectedOccupation.id
+        } else {
+          return ''
         }
       })
     })
