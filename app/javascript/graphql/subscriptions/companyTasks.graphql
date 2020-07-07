@@ -1,0 +1,19 @@
+subscription companyTasksSubscription {
+  companyTasks {
+    hasRespondSchedules {
+      nodes {
+        ...ScheduleItem
+      }
+    }
+    waitingSchedules {
+      nodes {
+        ...ScheduleItem
+      }
+    }
+    confirmedScheduleTasks {
+      nodes {
+        ...ScheduleItem
+      }
+    }
+  }
+}
