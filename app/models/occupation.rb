@@ -28,7 +28,7 @@ class Occupation < ApplicationRecord
 
   has_many :recruitements
 
-  enum apply_from: { egent: 0, plus: 1 }
+  enum apply_from: { agent: 0, plus: 1 }
 
   has_many :blank_schedules, as: :schedulable
   has_many :request_schedules, class_name: :Schedule, as: :requester

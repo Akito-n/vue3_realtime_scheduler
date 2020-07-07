@@ -10,7 +10,7 @@
           schedule.endAt | date('HH:mm')
         }}
 
-        <div>
+        <div v-if="schedule.occupation">
           <p>案件名</p>
           <span
             >{{ schedule.occupation.companyName }}:{{
@@ -20,7 +20,7 @@
           <p>応募経路</p>
           <span>{{ schedule.occupation.applyFrom }}</span>
           <p>所要時間</p>
-          <span>{{ schedule.occupation.requiredTime }}</span>
+          <span>{{ schedule.occupation.requiredTime }}時間</span>
           <p>訪問場所</p>
           <span>{{ schedule.occupation.address }}</span>
           <p>持ち物</p>
