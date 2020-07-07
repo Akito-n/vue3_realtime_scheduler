@@ -13,6 +13,7 @@ class Mutations::DestroyBlankSchedule < Mutations::BaseMutation
   def resolve(blank_schedule:)
     if blank_schedule.destroy
       AppSchema.subscriptions.trigger('schedules', {}, {})
+      AppSchema.subscriptions.trigger('individual_tasks', {}, {})
       {
         blank_schedule: nil
       }

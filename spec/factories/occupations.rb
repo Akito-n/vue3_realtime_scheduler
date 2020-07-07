@@ -2,12 +2,17 @@
 #
 # Table name: occupations
 #
-#  id         :uuid             not null, primary key
-#  color      :string           default("orange"), not null
-#  name       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :uuid             not null
+#  id            :uuid             not null, primary key
+#  address       :string
+#  apply_from    :integer          default("egent"), not null
+#  color         :string           default("orange"), not null
+#  item          :string
+#  memo          :text
+#  name          :string           not null
+#  required_time :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  user_id       :uuid             not null
 #
 # Indexes
 #

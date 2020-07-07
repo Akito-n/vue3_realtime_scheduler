@@ -22,6 +22,7 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
     end
     if blank_schedule.save
       AppSchema.subscriptions.trigger('schedules', {}, {})
+      AppSchema.subscriptions.trigger('individual_tasks', {}, {})
       {
         blank_schedule: blank_schedule
       }

@@ -12,15 +12,26 @@
           <label class="ml-3">
             <input
               type="radio"
-              :value="occupation.id"
-              v-model="state.selectedOccupationId"
+              :value="occupation"
+              v-model="state.selectedOccupation"
             />
             {{ occupation.name }}
           </label>
         </div>
+        <div v-if="state.selectedOccupation">
+          <span>応募経路</span>
+          <p>{{ state.selectedOccupation.applyFrom }}</p>
+          <span>所要時間</span>
+          <p>{{ state.selectedOccupation.requiredTime }}</p>
+          <span>訪問場所</span>
+          <p>{{ state.selectedOccupation.address }}</p>
+          <span>持ち物</span>
+          <p>{{ state.selectedOccupation.item }}</p>
+        </div>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
-          @click="submit(value.id, startAt, endAt, state.selectedOccupationId)"
+          :disabled="!state.selectedOccupation"
+          @click="submit(value.id, startAt, endAt, state.selectedOccupation.id)"
         >
           面接日程をリクエストする
         </button>
@@ -44,6 +55,7 @@ import {
   RequestScheduleToOccupationDocument
 } from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
+import { Occupation } from 'graphql/types'
 
 type Props = {
   value?: Schedule | null
@@ -70,7 +82,7 @@ export default defineComponent<Props>({
     >(RequestScheduleToOccupationDocument)
 
     const state = reactive({
-      selectedOccupationId: ''
+      selectedOccupation: null
     })
 
     const { result } = useCurrentUserQuery()
