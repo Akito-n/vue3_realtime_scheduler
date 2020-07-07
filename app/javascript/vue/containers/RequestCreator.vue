@@ -30,6 +30,7 @@
         </div>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
+          :disabled="!state.selectedOccupation"
           @click="submit(value.id, startAt, endAt, state.selectedOccupation.id)"
         >
           面接日程をリクエストする
