@@ -12,7 +12,6 @@
       />
       {{ occupation.name }}
     </label>
-    {{ selected }}
   </div>
 </template>
 
@@ -37,13 +36,6 @@ export default defineComponent({
     const { result, loading } = useCurrentUserQuery()
     const selected = ref(props.value)
 
-    // watch(
-    //   () => selected,
-    //   (newSelected) => {
-    //     console.log(newSelected)
-    //     context.emit('input', newSelected.value)
-    //   }
-    // )
     const change = () => {
       console.log('kousin')
       context.emit('input', selected.value)

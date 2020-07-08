@@ -8,7 +8,12 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
   # end
 
   def subscribe(occupations:)
-    Rails.logger.debug('-------------subscribe----' + occupations.inspect)
+    if occupations.present?
+      entry_users = User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations))
+      return {
+        schedules: BlankSchedule.where(schedulable: entry_users)
+      }
+    end
     blank_schedules = BlankSchedule.where(schedulable: context[:current_user].schedulable_array).to_a
     schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {
@@ -17,7 +22,6 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
   end
 
   def update(occupations:)
-    Rails.logger.debug('-------------update----' + occupations.inspect)
     blank_schedules = BlankSchedule.where(schedulable: context[:current_user].schedulable_array).to_a
     schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {

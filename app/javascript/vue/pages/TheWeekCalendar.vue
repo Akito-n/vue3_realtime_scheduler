@@ -5,7 +5,6 @@
       v-if="result.currentUser.isIndividual"
       class="mr-20"
     />
-    これ{{ selectedOccupationIds }}
     <the-week-calendar :occupationIds="selectedOccupationIds" />
   </div>
 </template>
