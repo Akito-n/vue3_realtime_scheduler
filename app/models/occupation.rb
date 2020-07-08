@@ -4,7 +4,7 @@
 #
 #  id            :uuid             not null, primary key
 #  address       :string
-#  apply_from    :integer          default("egent"), not null
+#  apply_from    :integer          default("agent"), not null
 #  color         :string           default("orange"), not null
 #  item          :string
 #  memo          :text
