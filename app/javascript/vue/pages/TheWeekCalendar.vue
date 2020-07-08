@@ -1,10 +1,12 @@
 <template>
   <div v-if="!loading" class="flex justify-between items-start">
+    <occupation-selctor v-model="selectedOccupationIds" />
     <the-individual-side-menu
       v-if="result.currentUser.isIndividual"
       class="mr-20"
     />
-    <the-week-calendar />
+    これ{{ selectedOccupationIds }}
+    <the-week-calendar :occupationIds="selectedOccupationIds" />
   </div>
 </template>
 
@@ -33,15 +35,19 @@ import { useCurrentUserQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import TheWeekCalendar from '@/vue/containers/TheWeekCalendar.vue'
 import TheIndividualSideMenu from '@/vue/containers/TheIndividualSideMenu.vue'
+import OccupationSelctor from '@/vue/containers/OccupationSelctor.vue'
 
 export default defineComponent({
   components: {
     TheWeekCalendar,
-    TheIndividualSideMenu
+    TheIndividualSideMenu,
+    OccupationSelctor
   },
   setup(props, context) {
+    const selectedOccupationIds = ref([])
     const { result, loading } = useCurrentUserQuery()
-    return { result, loading }
+
+    return { result, loading, selectedOccupationIds }
   }
 })
 </script>

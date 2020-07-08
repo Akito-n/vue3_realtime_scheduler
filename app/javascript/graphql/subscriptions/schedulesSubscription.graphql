@@ -1,5 +1,5 @@
-subscription schedulesSubscription {
-  schedules {
+subscription schedulesSubscription($occupationIds: [ID!]!) {
+  schedules(occupationIds: $occupationIds) {
     schedules {
       nodes {
         id

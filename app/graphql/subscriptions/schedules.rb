@@ -1,5 +1,5 @@
 class Subscriptions::Schedules < Subscriptions::BaseSubscription
-  #argument :question_id, ID, required: true, loads: Types::QueryType
+  argument :occupation_ids, [ID], required: true, loads: Types::Objects::OccupationType
 
   field :schedules, Types::Objects::ScheduleType.connection_type, null: false
 
@@ -7,7 +7,8 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
   #   true
   # end
 
-  def subscribe
+  def subscribe(occupations:)
+    Rails.logger.debug('-------------subscribe----' + occupations.inspect)
     blank_schedules = BlankSchedule.where(schedulable: context[:current_user].schedulable_array).to_a
     schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {
@@ -15,7 +16,8 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
     }
   end
 
-  def update
+  def update(occupations:)
+    Rails.logger.debug('-------------update----' + occupations.inspect)
     blank_schedules = BlankSchedule.where(schedulable: context[:current_user].schedulable_array).to_a
     schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {

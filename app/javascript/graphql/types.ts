@@ -376,6 +376,11 @@ export type Subscription = {
   schedules: SchedulesPayload;
 };
 
+
+export type SubscriptionSchedulesArgs = {
+  occupationIds: Array<Scalars['ID']>;
+};
+
 export type User = {
   __typename?: 'User';
   color: Scalars['String'];
@@ -624,7 +629,9 @@ export type IndividualTasksSubscriptionSubscription = (
   ) }
 );
 
-export type SchedulesSubscriptionSubscriptionVariables = {};
+export type SchedulesSubscriptionSubscriptionVariables = {
+  occupationIds: Array<Scalars['ID']>;
+};
 
 
 export type SchedulesSubscriptionSubscription = (
@@ -1057,8 +1064,8 @@ export function useIndividualTasksSubscriptionSubscription(options: VueApolloCom
         }
 export type IndividualTasksSubscriptionSubscriptionCompositionFunctionResult = VueApolloComposable.UseSubscriptionReturn<IndividualTasksSubscriptionSubscription, IndividualTasksSubscriptionSubscriptionVariables>;
 export const SchedulesSubscriptionDocument = gql`
-    subscription schedulesSubscription {
-  schedules {
+    subscription schedulesSubscription($occupationIds: [ID!]!) {
+  schedules(occupationIds: $occupationIds) {
     schedules {
       nodes {
         id
@@ -1091,10 +1098,11 @@ export const SchedulesSubscriptionDocument = gql`
  * @example
  * const { result, loading, error } = useSchedulesSubscriptionSubscription(
  *   {
+ *      occupationIds: // value for 'occupationIds'
  *   }
  * );
  */
-export function useSchedulesSubscriptionSubscription(options: VueApolloComposable.UseSubscriptionOptions<SchedulesSubscriptionSubscription, SchedulesSubscriptionSubscriptionVariables> | VueCompositionApi.Ref<VueApolloComposable.UseSubscriptionOptions<SchedulesSubscriptionSubscription, SchedulesSubscriptionSubscriptionVariables>> | ReactiveFunction<VueApolloComposable.UseSubscriptionOptions<SchedulesSubscriptionSubscription, SchedulesSubscriptionSubscriptionVariables>> = {}) {
-          return VueApolloComposable.useSubscription<SchedulesSubscriptionSubscription, undefined>(SchedulesSubscriptionDocument, undefined, options);
+export function useSchedulesSubscriptionSubscription(variables: SchedulesSubscriptionSubscriptionVariables | VueCompositionApi.Ref<SchedulesSubscriptionSubscriptionVariables> | ReactiveFunction<SchedulesSubscriptionSubscriptionVariables>, options: VueApolloComposable.UseSubscriptionOptions<SchedulesSubscriptionSubscription, SchedulesSubscriptionSubscriptionVariables> | VueCompositionApi.Ref<VueApolloComposable.UseSubscriptionOptions<SchedulesSubscriptionSubscription, SchedulesSubscriptionSubscriptionVariables>> | ReactiveFunction<VueApolloComposable.UseSubscriptionOptions<SchedulesSubscriptionSubscription, SchedulesSubscriptionSubscriptionVariables>> = {}) {
+          return VueApolloComposable.useSubscription<SchedulesSubscriptionSubscription, SchedulesSubscriptionSubscriptionVariables>(SchedulesSubscriptionDocument, variables, options);
         }
 export type SchedulesSubscriptionSubscriptionCompositionFunctionResult = VueApolloComposable.UseSubscriptionReturn<SchedulesSubscriptionSubscription, SchedulesSubscriptionSubscriptionVariables>;

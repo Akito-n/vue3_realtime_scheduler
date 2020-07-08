@@ -127,9 +127,14 @@ import {
   defineComponent,
   watch,
   reactive,
-  computed
+  computed,
+  PropType
 } from '@vue/composition-api'
-import { SchedulesSubscriptionDocument, Schedule } from '@/graphql/types'
+import {
+  SchedulesSubscriptionDocument,
+  Schedule,
+  useSchedulesSubscriptionSubscription
+} from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import ScheduleUpdater from '@/vue/containers/ScheduleUpdater.vue'
@@ -139,6 +144,12 @@ import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
 import { useSubscription } from '@vue/apollo-composable'
 
 export default defineComponent({
+  props: {
+    occupationIds: {
+      type: Array as PropType<any[]>,
+      required: false
+    }
+  },
   components: {
     ScheduleCreator,
     ScheduleUpdater,
@@ -158,7 +169,14 @@ export default defineComponent({
       selectedEndAt: null
     })
 
-    const { result, loading } = useSubscription(SchedulesSubscriptionDocument)
+    const { result, loading, restart } = useSchedulesSubscriptionSubscription(
+      () => {
+        console.log(props.occupationIds)
+        return {
+          occupationIds: props.occupationIds
+        }
+      }
+    )
 
     const schedules = ref([])
 
@@ -199,6 +217,14 @@ export default defineComponent({
       (r) => {
         const { year, month, day } = r.params
         load(year, month, day)
+      }
+    )
+
+    watch(
+      () => props.occupationIds,
+      (newIds) => {
+        console.log(newIds)
+        restart()
       }
     )
 
