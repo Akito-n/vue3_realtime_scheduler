@@ -1,5 +1,19 @@
 subscription companyTasksSubscription {
   companyTasks {
+    nonactiveRecruitements {
+      nodes {
+        id
+        createdAt
+        individualUser {
+          id
+          name
+        }
+        occupation {
+          id
+          name
+        }
+      }
+    }
     hasRespondSchedules {
       nodes {
         ...ScheduleItem

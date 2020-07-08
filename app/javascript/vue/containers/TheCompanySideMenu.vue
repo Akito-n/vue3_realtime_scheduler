@@ -2,7 +2,7 @@
   <div>
     <p v-if="loading">loading</p>
     <div v-else>
-      <p>aaa</p>
+      <p>load終わり</p>
       {{ result }}
     </div>
   </div>
