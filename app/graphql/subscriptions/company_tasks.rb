@@ -23,7 +23,7 @@ class Subscriptions::CompanyTasks < Subscriptions::BaseSubscription
     recruitements = context[:current_user].recruitements
     #お互いに未対応なリクルートメントを返す
     nonactive_recruitements = recruitements.select { |recruitement|
-      Schedule.where('occupation_id = ? and  requester_id = ? or responder_id = ?', recruitement.occupation_id, recruitement.individual_user_id, recruitement.individual_user_id).empty? 
+      Schedule.where('occupation_id = ? and  requester_id = ? or responder_id = ?', recruitement.occupation_id, recruitement.individual_user_id, recruitement.individual_user_id).empty?
     }
     #自分のスケジュール
     schedules = Schedule.status_pending.where(requester: context[:current_user].occupations).or(Schedule.status_pending.where(responder: context[:current_user].occupations)).order(created_at: :asc)
