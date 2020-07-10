@@ -16,9 +16,17 @@ fragment ScheduleItem on Schedule {
     requiredTime
   }
   requester {
-    id
-    name
-    color
-    companyName
+    __typename
+    ... on Member {
+      id
+      name
+      color
+      companyName
+    }
+    ... on Occupation {
+      id
+      name
+      companyName
+    }
   }
 }

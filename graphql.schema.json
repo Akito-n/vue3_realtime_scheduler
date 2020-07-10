@@ -1900,13 +1900,9 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Occupation",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "Occupation",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1919,8 +1915,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "OBJECT",
-                "name": "Member",
+                "kind": "UNION",
+                "name": "ScheduleRequester",
                 "ofType": null
               }
             },
@@ -2074,6 +2070,27 @@
         "interfaces": [],
         "enumValues": null,
         "possibleTypes": null
+      },
+      {
+        "kind": "UNION",
+        "name": "ScheduleRequester",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "Member",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Occupation",
+            "ofType": null
+          }
+        ]
       },
       {
         "kind": "OBJECT",

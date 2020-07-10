@@ -8,9 +8,9 @@ class Types::Objects::ScheduleType < Types::BaseObject
   field :end_at, Types::Scalars::DateTime, null: true
   field :mine, Boolean, null: false
   field :status, String, null: false
-  field :requester, Types::Objects::MemberType, null: false
+  field :requester, Types::Unions::ScheduleRequester, null: false
   field :responder, Types::Objects::MemberType, null: false
-  field :occupation, Types::Objects::OccupationType, null: false
+  field :occupation, Types::Objects::OccupationType, null: true
 
   field :is_request, Boolean, null: false
   def is_request

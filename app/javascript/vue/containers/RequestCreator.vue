@@ -2,6 +2,7 @@
   <modal :value="!!value" @input="$emit('input', null)" title="選択した内容">
     <template v-if="value">
       {{ startAt | date('M/d(E) HH:mm') }}～{{ endAt | date('HH:mm') }}
+      {{ value }}
 
       <!--Footer-->
       <div class="flex justify-end pt-2">
