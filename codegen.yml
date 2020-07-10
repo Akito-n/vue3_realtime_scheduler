@@ -1,5 +1,5 @@
 overwrite: true
-schema: "http://app:3000/schema"
+schema: 'http://app:3000/schema'
 documents:
   - ./app/javascript/graphql/**/*.graphql
 generates:
@@ -12,4 +12,7 @@ generates:
       withCompositionFunctions: true
   ./graphql.schema.json:
     plugins:
-      - "introspection"
+      - 'introspection'
+  ./fragmentTypes.json:
+    plugins:
+      - 'fragment-matcher'
