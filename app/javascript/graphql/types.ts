@@ -192,6 +192,7 @@ export type Occupation = {
   __typename?: 'Occupation';
   address?: Maybe<Scalars['String']>;
   applyFrom?: Maybe<Scalars['String']>;
+  color: Scalars['String'];
   companyName?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   item?: Maybe<Scalars['String']>;
@@ -656,7 +657,7 @@ export type SchedulesSubscriptionSubscription = (
           & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
         ) | (
           { __typename: 'Occupation' }
-          & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+          & Pick<Occupation, 'id' | 'name' | 'color' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
         ) }
       )>>> }
     ) }
@@ -1112,6 +1113,7 @@ export const SchedulesSubscriptionDocument = gql`
           ... on Occupation {
             id
             name
+            color
             address
             applyFrom
             memo

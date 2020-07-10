@@ -19,6 +19,7 @@ subscription schedulesSubscription($occupationIds: [ID!]!) {
           ... on Occupation {
             id
             name
+            color
             address
             applyFrom
             memo
