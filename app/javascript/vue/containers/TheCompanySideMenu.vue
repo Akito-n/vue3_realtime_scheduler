@@ -39,6 +39,13 @@
           class="table-auto"
           v-if="result.companyTasks.hasRespondSchedules.nodes.length != 0"
         >
+          <thead>
+            <tr>
+              <th class="px-4 py-2">候補者指名</th>
+              <th class="px-4 py-2">リクエスト日</th>
+              <th class="px-4 py-2">職種</th>
+            </tr>
+          </thead>
           <tbody>
             <tr
               v-for="requestedSchedule in result.companyTasks
@@ -49,7 +56,7 @@
                 {{ requestedSchedule.requester.name }}
               </td>
               <td class="border px-4 py-2">
-                {{ requestedSchedule.createdAt | date('yyyy/MM/dd') }}
+                {{ requestedSchedule.startAt | date('yyyy/MM/dd') }}
               </td>
               <td class="border px-4 py-2">
                 {{ requestedSchedule.occupation.name }}
@@ -73,7 +80,7 @@
                 {{ waitingSchedule.responder.name }}
               </td>
               <td class="border px-4 py-2">
-                {{ waitingSchedule.createdAt | date('yyyy/MM/dd') }}
+                {{ waitingSchedule.startAt | date('yyyy/MM/dd') }}
               </td>
               <td class="border px-4 py-2">
                 {{ waitingSchedule.occupation.name }}
@@ -87,6 +94,13 @@
           class="table-auto"
           v-if="result.companyTasks.confirmedScheduleTasks.nodes.length != 0"
         >
+          <thead>
+            <tr>
+              <th class="px-4 py-2">候補者指名</th>
+              <th class="px-4 py-2">面接日</th>
+              <th class="px-4 py-2">職種</th>
+            </tr>
+          </thead>
           <tbody>
             <tr
               v-for="confirmedSchedule in result.companyTasks
@@ -97,7 +111,7 @@
                 {{ confirmedSchedule.responder.name }}
               </td>
               <td class="border px-4 py-2">
-                {{ confirmedSchedule.createdAt | date('yyyy/MM/dd') }}
+                {{ confirmedSchedule.startAt | date('yyyy/MM/dd') }}
               </td>
               <td class="border px-4 py-2">
                 {{ confirmedSchedule.occupation.name }}

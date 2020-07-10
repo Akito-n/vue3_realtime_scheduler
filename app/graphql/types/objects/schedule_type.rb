@@ -7,6 +7,7 @@ class Types::Objects::ScheduleType < Types::BaseObject
   field :start_at, Types::Scalars::DateTime, null: true
   field :end_at, Types::Scalars::DateTime, null: true
   field :created_at, Types::Scalars::DateTime, null: true
+  field :accepted_at, Types::Scalars::DateTime, null: true
   field :mine, Boolean, null: false
   field :status, String, null: false
   field :requester, Types::Objects::MemberType, null: false

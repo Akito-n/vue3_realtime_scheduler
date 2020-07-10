@@ -399,6 +399,7 @@ export type RespondSchedulePayload = {
 
 export type Schedule = {
   __typename?: 'Schedule';
+  acceptedAt?: Maybe<Scalars['DateTime']>;
   createdAt?: Maybe<Scalars['DateTime']>;
   endAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
@@ -498,7 +499,7 @@ export type UserEdge = {
 
 export type ScheduleItemFragment = (
   { __typename?: 'Schedule' }
-  & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'createdAt' | 'isRequest' | 'status'>
+  & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'createdAt' | 'acceptedAt' | 'isRequest' | 'status'>
   & { occupation: (
     { __typename?: 'Occupation' }
     & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
@@ -776,6 +777,7 @@ export const ScheduleItemFragmentDoc = gql`
   endAt
   mine
   createdAt
+  acceptedAt
   isRequest
   status
   occupation {

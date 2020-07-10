@@ -4,6 +4,7 @@ fragment ScheduleItem on Schedule {
   endAt
   mine
   createdAt
+  acceptedAt
   isRequest
   status
   occupation {

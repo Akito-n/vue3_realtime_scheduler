@@ -32,7 +32,7 @@ class Subscriptions::CompanyTasks < Subscriptions::BaseSubscription
     # #リクエスト送信済みn
     waiting_schedules = Schedule.status_pending.where(requester: context[:current_user].occupations).order(created_at: :asc)
     # #確定済みの予定
-    confirmed_schedule_tasks = Schedule.status_accept.where(requester: context[:current_user]).or(Schedule.status_accept.where(responder: context[:current_user])).order(created_at: :asc)
+    confirmed_schedule_tasks = Schedule.status_accept.where(requester: context[:current_user].occupations).or(Schedule.status_accept.where(responder: context[:current_user].occupations)).order(created_at: :asc)
 
     {
       nonactive_recruitements: nonactive_recruitements,
