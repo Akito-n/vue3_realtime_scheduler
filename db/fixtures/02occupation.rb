@@ -2,7 +2,7 @@ tozawa = User.find_by(email: 'tozawasoken@pca.com')
 kaneko = User.find_by(email: 'kanekotoys@pca.com')
 sawada = User.find_by(email: 'sawadashoten@pca.com')
 
-Occupation.seed(
+Occupation.seed(:user_id,
   #戸澤総研
   {user: tozawa, name: 'ITコンサルタント', color: 'red', address: 'Web（Zoom）', apply_from: 1 , item: 'なし', memo: '面接官は3名で対応します。', required_time: 1 },
   {user: tozawa, name: 'PM', color: 'pink', address: '東京都千代田区丸の内2-4-1 丸の内ビルディング27F', apply_from: 0, item: '履歴書、職務経歴書、筆記用具', memo: 'これまで携わったプロジェクトについて詳細をお伺いします。', required_time: 1},
