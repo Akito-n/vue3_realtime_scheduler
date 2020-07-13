@@ -30,7 +30,9 @@
         </div>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
-          @click="submit(value.id, startAt, endAt, state.selectedOccupationId)"
+          @click="
+            submit(blankSchedule.id, startAt, endAt, state.selectedOccupationId)
+          "
         >
           面接日程をリクエストする
         </button>
@@ -41,7 +43,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { defineComponent, reactive, computed } from '@vue/composition-api'
+import {
+  defineComponent,
+  reactive,
+  computed,
+  PropType
+} from '@vue/composition-api'
 import { useMutation } from '@vue/apollo-composable'
 import {
   useCurrentUserQuery,
@@ -56,18 +63,13 @@ import {
 import Modal from '@/vue/components/Modal.vue'
 import { Occupation, ScheduleConnection } from 'graphql/types'
 
-type Props = {
-  value?: Schedule | null
-  startAt?: Date
-  endAt?: Date
-}
-
-export default defineComponent<Props>({
+export default defineComponent({
   components: { Modal },
   props: {
-    value: Object,
-    startAt: Date,
-    endAt: Date
+    value: { type: Boolean as PropType<boolean>, required: true },
+    startAt: { type: Date as PropType<Date> },
+    endAt: { type: Date as PropType<Date> },
+    blankSchedule: { type: Object as PropType<Schedule> }
   },
   setup(props, context) {
     const { mutate, onDone } = useMutation<

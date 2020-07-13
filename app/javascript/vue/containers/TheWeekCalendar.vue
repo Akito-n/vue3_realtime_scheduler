@@ -59,6 +59,14 @@
             <div
               :key="minute"
               v-for="minute in [0, 30]"
+              @click="
+                select(
+                  null,
+                  format(day, 'yyyy-MM-dd', { locale: jaLocale }),
+                  hour,
+                  minute
+                )
+              "
               class="bg-gray-200 w-40 h-5 schedule-cell relative"
               :class="`day-${day} hour-${hour} ${
                 minute === 0 ? 'border-b-0' : ''
@@ -74,7 +82,7 @@
                   :key="i"
                   class="schedule-cell--blank min-h-full flex-grow"
                   :class="`bg-${blankSchedule.requester.color}-400`"
-                  @click="
+                  @click.stop="
                     select(
                       blankSchedule,
                       format(day, 'yyyy-MM-dd', { locale: jaLocale }),
@@ -101,13 +109,15 @@
     </div>
     <request-to-individual-creator
       v-if="currentUserQuery.result.value.currentUser.isCompany"
-      v-model="state.selectedSchedule"
+      v-model="state.isRequested"
+      :blankSchedule="state.selectedSchedule"
       :startAt="state.selectedStartAt"
       :endAt="state.selectedEndAt"
     />
     <request-to-occupation-creator
       v-else
-      v-model="state.selectedSchedule"
+      v-model="state.isRequested"
+      :blankSchedule.sync="state.selectedSchedule"
       :startAt="state.selectedStartAt"
       :endAt="state.selectedEndAt"
     />
@@ -177,7 +187,8 @@ export default defineComponent({
       selectedSchedule: null,
       selectedRequestedSchedule: null,
       selectedStartAt: null,
-      selectedEndAt: null
+      selectedEndAt: null,
+      isRequested: false
     })
 
     const { result, loading, restart } = useSchedulesSubscriptionSubscription(
@@ -245,17 +256,6 @@ export default defineComponent({
       hour: number,
       minute: number
     ) => {
-      if (blankSchedule.mine) {
-        context.root.$router.push({
-          query: { edit_blank_schedule: blankSchedule.id }
-        })
-        return
-      }
-      if (
-        blankSchedule.status == '非承認' ||
-        blankSchedule.status == '確定済み'
-      )
-        return
       const date = parse(
         `${dateString} ${hour}:${minute}`,
         'yyyy-MM-dd HH:mm',
@@ -263,13 +263,33 @@ export default defineComponent({
       )
       state.selectedStartAt = date
       state.selectedEndAt = addMinutes(date, 30)
+      if (!blankSchedule) {
+        state.isRequested = true
+        return
+      }
+      //自分のリクエストだった場合、編集モーダルを出す
+      if (blankSchedule.mine) {
+        context.root.$router.push({
+          query: { edit_blank_schedule: blankSchedule.id }
+        })
+        return
+      }
+      //非承認か確定ずみの場合は
+      if (
+        blankSchedule.status == '非承認' ||
+        blankSchedule.status == '確定済み'
+      )
+        return
+
+      //予定がリクエストだった場合、アクセプターを出す
       if (blankSchedule.isRequest) {
         context.root.$router.push({
           query: { requested_schedule_id: blankSchedule.id }
         })
         return
+        //相手の空き予定の場合は選択したblankScheduleをstateに入れてリクエストモーダルを出す
       } else {
-        console.log(blankSchedule)
+        state.isRequested = true
         state.selectedSchedule = blankSchedule
       }
     }

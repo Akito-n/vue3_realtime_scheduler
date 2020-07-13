@@ -388,6 +388,7 @@ export type User = {
   __typename?: 'User';
   color: Scalars['String'];
   companyName?: Maybe<Scalars['String']>;
+  companyOccupations: OccupationConnection;
   email?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   isCompany: Scalars['Boolean'];
@@ -395,6 +396,14 @@ export type User = {
   name?: Maybe<Scalars['String']>;
   occupations: OccupationConnection;
   role: Scalars['String'];
+};
+
+
+export type UserCompanyOccupationsArgs = {
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
 };
 
 
@@ -594,6 +603,12 @@ export type CurrentUserQuery = (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'email' | 'role' | 'color' | 'name' | 'companyName' | 'isIndividual' | 'isCompany'>
     & { occupations: (
+      { __typename?: 'OccupationConnection' }
+      & { nodes?: Maybe<Array<Maybe<(
+        { __typename?: 'Occupation' }
+        & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+      )>>> }
+    ), companyOccupations: (
       { __typename?: 'OccupationConnection' }
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Occupation' }
@@ -1009,6 +1024,18 @@ export const CurrentUserDocument = gql`
     isIndividual
     isCompany
     occupations {
+      nodes {
+        id
+        name
+        address
+        applyFrom
+        memo
+        item
+        companyName
+        requiredTime
+      }
+    }
+    companyOccupations {
       nodes {
         id
         name

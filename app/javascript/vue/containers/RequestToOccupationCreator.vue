@@ -1,32 +1,31 @@
 <template>
-  <modal :value="!!value" @input="$emit('input', null)" title="選択した内容">
+  <modal :value="!!value" @input="close" title="選択した内容">
     <template v-if="value">
       {{ startAt | date('M/d(E) HH:mm') }}～{{ endAt | date('HH:mm') }}
 
       <!--Footer-->
       <div class="flex justify-end pt-2">
-        <div
-          v-for="occupation in result.currentUser.occupations.nodes"
-          :key="occupation.id"
-        >
-          <label class="ml-3">
-            <input
-              type="radio"
-              :value="occupation.id"
-              v-model="state.selectedOccupationId"
-            />
-            {{ occupation.name }}
-          </label>
-        </div>
-        <div v-if="value.requester.__typename == 'Occupation'">
-          <span>応募経路</span>
-          <p>{{ value.requester.applyFrom }}</p>
-          <span>所要時間</span>
-          <p>{{ value.requester.requiredTime }}時間</p>
-          <span>訪問場所</span>
-          <p>{{ value.requester.address }}</p>
-          <span>持ち物</span>
-          <p>{{ value.requester.item }}</p>
+        <div v-if="!blankSchedule">
+          <div v-for="entry in entries" :key="entry.id">
+            <label class="ml-3">
+              <input
+                type="radio"
+                :value="entry.id"
+                v-model="state.selectedOccupationId"
+              />
+              {{ entry.companyName }}:{{ entry.name }}
+            </label>
+          </div>
+          <div v-if="state.selectedOccupation">
+            <span>応募経路</span>
+            <p>{{ state.selectedOccupation.applyFrom }}</p>
+            <span>所要時間</span>
+            <p>{{ state.selectedOccupation.requiredTime }}時間</p>
+            <span>訪問場所</span>
+            <p>{{ state.selectedOccupation.address }}</p>
+            <span>持ち物</span>
+            <p>{{ state.selectedOccupation.item }}</p>
+          </div>
         </div>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
@@ -34,7 +33,7 @@
             submit(
               startAt,
               endAt,
-              state.selectedOccupationId || value.requester.id
+              state.selectedOccupationId || blankSchedule.requester.id
             )
           "
         >
@@ -47,8 +46,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { defineComponent, reactive, computed } from '@vue/composition-api'
-import { useMutation } from '@vue/apollo-composable'
+import {
+  defineComponent,
+  reactive,
+  computed,
+  PropType
+} from '@vue/composition-api'
+import { useMutation, useResult } from '@vue/apollo-composable'
 import {
   useCurrentUserQuery,
   Schedule,
@@ -57,20 +61,19 @@ import {
   RequestScheduleToOccupationDocument
 } from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
-import { Occupation, ScheduleConnection } from 'graphql/types'
+import {
+  Occupation,
+  ScheduleConnection,
+  BlankScheduleDocument
+} from 'graphql/types'
 
-type Props = {
-  value?: Schedule | null
-  startAt?: Date
-  endAt?: Date
-}
-
-export default defineComponent<Props>({
+export default defineComponent({
   components: { Modal },
   props: {
-    value: Object,
-    startAt: Date,
-    endAt: Date
+    value: { type: Boolean as PropType<boolean>, required: true },
+    startAt: { type: Date as PropType<Date> },
+    endAt: { type: Date as PropType<Date> },
+    blankSchedule: { type: Object as PropType<Schedule> }
   },
   setup(props, context) {
     const { mutate, onDone } = useMutation<
@@ -80,8 +83,21 @@ export default defineComponent<Props>({
 
     const { result } = useCurrentUserQuery()
 
+    const entries = useResult(
+      result,
+      null,
+      (data) => data.currentUser.companyOccupations.nodes
+    )
+
     const state = reactive({
-      selectedOccupationId: null
+      selectedOccupationId: null,
+      selectedOccupation: computed(() => {
+        if (state.selectedOccupationId) {
+          return result.value.currentUser.companyOccupations.nodes.find(
+            (e) => e.id == state.selectedOccupationId
+          )
+        }
+      })
     })
 
     const submit = (startAt: Date, endAt: Date, occupationId: string) => {
@@ -90,10 +106,15 @@ export default defineComponent<Props>({
       })
     }
     onDone(() => {
-      context.emit('input', null)
+      close
     })
 
-    return { state, submit, result }
+    const close = () => {
+      context.emit('update:blankSchedule', null)
+      context.emit('input', false)
+    }
+
+    return { state, submit, result, close, entries }
   }
 })
 </script>

@@ -10,6 +10,7 @@ class Types::Objects::UserType < Types::BaseObject
   field :company_name, String, null: true
   field :color, String, null: false
   field :occupations, Types::Objects::OccupationType.connection_type, null: false
+  field :company_occupations, Types::Objects::OccupationType.connection_type, null: false
 
   field :role, String, null: false
   def role
