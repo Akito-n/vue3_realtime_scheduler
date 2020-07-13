@@ -193,7 +193,6 @@ export default defineComponent({
 
     const { result, loading, restart } = useSchedulesSubscriptionSubscription(
       () => {
-        console.log(props.occupationIds)
         return {
           occupationIds: props.occupationIds
         }
