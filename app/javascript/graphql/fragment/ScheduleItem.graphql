@@ -3,8 +3,6 @@ fragment ScheduleItem on Schedule {
   startAt
   endAt
   mine
-  createdAt
-  acceptedAt
   isRequest
   status
   occupation {
@@ -18,12 +16,6 @@ fragment ScheduleItem on Schedule {
     requiredTime
   }
   requester {
-    id
-    name
-    color
-    companyName
-  }
-  responder {
     id
     name
     color
