@@ -5,6 +5,7 @@
       class="mr-20"
     />
     <the-week-calendar />
+    <the-company-side-menu v-if="result.currentUser.isCompany" class="ml-20" />
   </div>
 </template>
 
@@ -33,11 +34,13 @@ import { useCurrentUserQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import TheWeekCalendar from '@/vue/containers/TheWeekCalendar.vue'
 import TheIndividualSideMenu from '@/vue/containers/TheIndividualSideMenu.vue'
+import TheCompanySideMenu from '@/vue/containers/TheCompanySideMenu.vue'
 
 export default defineComponent({
   components: {
     TheWeekCalendar,
-    TheIndividualSideMenu
+    TheIndividualSideMenu,
+    TheCompanySideMenu
   },
   setup(props, context) {
     const { result, loading } = useCurrentUserQuery()
