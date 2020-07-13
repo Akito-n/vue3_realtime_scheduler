@@ -32,5 +32,11 @@ query currentUser {
         requiredTime
       }
     }
+    individualUsers {
+      nodes {
+        id
+        name
+      }
+    }
   }
 }

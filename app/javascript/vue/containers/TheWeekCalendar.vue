@@ -110,7 +110,7 @@
     <request-to-individual-creator
       v-if="currentUserQuery.result.value.currentUser.isCompany"
       v-model="state.isRequested"
-      :blankSchedule="state.selectedSchedule"
+      :blankSchedule.sync="state.selectedSchedule"
       :startAt="state.selectedStartAt"
       :endAt="state.selectedEndAt"
     />

@@ -1,5 +1,5 @@
 <template>
-  <modal :value="!!value" @input="$emit('input', null)" title="選択した内容">
+  <modal :value="!!value" @input="close" title="選択した内容">
     <template v-if="value">
       {{ startAt | date('M/d(E) HH:mm') }}～{{ endAt | date('HH:mm') }}
 
@@ -18,20 +18,40 @@
             {{ occupation.name }}
           </label>
         </div>
-        <div v-if="value.requester.__typename == 'Occupation'">
+        <div v-if="state.selectedOccupation">
           <span>応募経路</span>
-          <p>{{ value.requester.applyFrom }}</p>
+          <p>{{ state.selectedOccupation.applyFrom }}</p>
           <span>所要時間</span>
-          <p>{{ value.requester.requiredTime }}時間</p>
+          <p>{{ state.selectedOccupation.requiredTime }}時間</p>
           <span>訪問場所</span>
-          <p>{{ value.requester.address }}</p>
+          <p>{{ state.selectedOccupation.address }}</p>
           <span>持ち物</span>
-          <p>{{ value.requester.item }}</p>
+          <p>{{ state.selectedOccupation.item }}</p>
         </div>
+        <template v-if="!blankSchedule">
+          <div
+            v-for="entryUsers in result.currentUser.individualUsers.nodes"
+            :key="entryUsers.id"
+          >
+            <label class="ml-3">
+              <input
+                type="radio"
+                :value="entryUsers.id"
+                v-model="state.selectedIndividualUserId"
+              />
+              {{ entryUsers.name }}
+            </label>
+          </div>
+        </template>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
           @click="
-            submit(blankSchedule.id, startAt, endAt, state.selectedOccupationId)
+            submit(
+              state.selectedIndividualUserId || blankSchedule.requester.id,
+              startAt,
+              endAt,
+              state.selectedOccupationId
+            )
           "
         >
           面接日程をリクエストする
@@ -80,25 +100,38 @@ export default defineComponent({
     const { result } = useCurrentUserQuery()
 
     const state = reactive({
-      selectedOccupationId: null
+      selectedOccupationId: null,
+      selectedIndividualUserId: null,
+      selectedOccupation: computed(() => {
+        if (state.selectedOccupationId) {
+          return result.value.currentUser.occupations.nodes.find(
+            (e) => e.id == state.selectedOccupationId
+          )
+        }
+      })
     })
 
     const submit = (
-      blankScheduleId: string,
+      individualUserId: string,
       startAt: Date,
       endAt: Date,
       occupationId: string
     ) => {
       mutate({
-        input: { blankScheduleId, startAt, endAt, occupationId }
+        input: { individualUserId, startAt, endAt, occupationId }
       })
     }
 
     onDone(() => {
-      context.emit('input', null)
+      close
     })
 
-    return { state, submit, result }
+    const close = () => {
+      context.emit('update:blankSchedule', null)
+      context.emit('input', false)
+    }
+
+    return { state, submit, result, close }
   }
 })
 </script>
