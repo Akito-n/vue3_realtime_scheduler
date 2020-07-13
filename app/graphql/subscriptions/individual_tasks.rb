@@ -3,7 +3,6 @@ class Subscriptions::IndividualTasks < Subscriptions::BaseSubscription
   field :waiting_tasks, Types::Objects::ScheduleType.connection_type, null: false
   field :responding_tasks, Types::Objects::ScheduleType.connection_type, null: false
   field :confirmed_schedule_tasks, Types::Objects::ScheduleType.connection_type, null: false
-  field :entry_occupations, Types::Objects::OccupationType.connection_type, null: false
 
   def authorized?(**args)
     context[:current_user].individual?
@@ -20,14 +19,12 @@ class Subscriptions::IndividualTasks < Subscriptions::BaseSubscription
   private
 
   def make_results
-    occupations = context[:current_user].company_occupations.order(created_at: :asc)
     has_blank_schedule_task = context[:current_user].blank_schedules.exists?(start_at: Time.current..Float::INFINITY)
     waiting_tasks = context[:current_user].request_schedules.status_pending.order(created_at: :asc)
     responding_tasks = context[:current_user].reseived_schedules.status_pending.order(created_at: :asc)
     confirmed_schedule_tasks = Schedule.where.not(status: :pending).where(requester: context[:current_user]).or(Schedule.where.not(status: :pending).where(responder: context[:current_user])).order(created_at: :asc)
 
     {
-      entry_occupations: occupations,
       blank_schedule_tasks: has_blank_schedule_task ? [] : occupations, # TODO: 確定済の案件どうする?
       waiting_tasks: waiting_tasks,
       responding_tasks: responding_tasks,

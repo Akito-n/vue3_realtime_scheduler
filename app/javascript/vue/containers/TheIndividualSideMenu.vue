@@ -1,12 +1,5 @@
 <template>
   <div v-if="!loading">
-    <p>応募した企業案件一覧</p>
-    <div
-      v-for="entry in result.individualTasks.entryOccupations.nodes"
-      :key="entry.id"
-    >
-      {{ entry.companyName }}: {{ entry.name }}
-    </div>
     <p>自分の空き予定を入力する</p>
     <div
       v-for="occupation in result.individualTasks.blankScheduleTasks.nodes"

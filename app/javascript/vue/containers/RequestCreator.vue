@@ -80,11 +80,18 @@ export default defineComponent<Props>({
       RequestScheduleToOccupationMutationVariables
     >(RequestScheduleToOccupationDocument)
 
+    const { result } = useCurrentUserQuery()
+
     const state = reactive({
       selectedOccupationId: ''
+      // selectedOccupation: computed(() => {
+      //   if (state.selectedOccupationId.length != 0) {
+      //     return result.currentUser.occupations.nodes.find((o) => {
+      //       o.id == state.selectedOccupationId
+      //     })
+      //   }
+      // })
     })
-
-    const { result } = useCurrentUserQuery()
 
     const submit = (
       blankScheduleId: string,
