@@ -27,7 +27,7 @@
         />
       </div>
     </div>
-    <div class="" v-else-if="result">
+    <div v-else>
       <div class="flex row justify-around items-center">
         <div v-for="(elementaly, i) in elementalies" :key="i">
           <div class="border-l border-t border-r text-center pt-2 w-40 h-10">
@@ -75,8 +75,8 @@ import Vue from 'vue'
 import { defineComponent, reactive, watch, ref } from '@vue/composition-api'
 import {
   SchedulesSubscriptionDocument,
-  Schedule,
-  BlankSchedule
+  useSchedulesSubscriptionSubscription,
+  Schedule
 } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
@@ -104,7 +104,13 @@ export default defineComponent({
 
     const { daysOfWeek, elementalies } = useCalendar()
 
-    const { result, loading } = useSubscription(SchedulesSubscriptionDocument)
+    const { result, loading, restart } = useSchedulesSubscriptionSubscription(
+      () => {
+        return {
+          occupationIds: []
+        }
+      }
+    )
 
     const load = (year: string, month: string) => {
       const current = parse(`${year}-${month}-01`, 'yyyy-MM-dd', new Date())
@@ -127,8 +133,6 @@ export default defineComponent({
       state.days = tempdays
     }
 
-    const schedules = ref([])
-
     //名前変えたい
     const setSchedule = (day) => {
       const _day = day
@@ -145,7 +149,7 @@ export default defineComponent({
       })
     }
     // 名前
-    const scheduleFormatter = (schedule: BlankSchedule) => {
+    const scheduleFormatter = (schedule: Schedule) => {
       const startAt = format(Date.parse(schedule.startAt), 'ah:mm', {
         locale: jaLocale
       })
