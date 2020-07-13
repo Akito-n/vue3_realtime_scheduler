@@ -99,7 +99,14 @@
         </div>
       </div>
     </div>
-    <request-creator
+    <request-to-individual-creator
+      v-if="currentUserQuery.result.value.currentUser.isCompany"
+      v-model="state.selectedSchedule"
+      :startAt="state.selectedStartAt"
+      :endAt="state.selectedEndAt"
+    />
+    <request-to-occupation-creator
+      v-else
       v-model="state.selectedSchedule"
       :startAt="state.selectedStartAt"
       :endAt="state.selectedEndAt"
@@ -133,13 +140,15 @@ import {
 import {
   SchedulesSubscriptionDocument,
   Schedule,
-  useSchedulesSubscriptionSubscription
+  useSchedulesSubscriptionSubscription,
+  useCurrentUserQuery
 } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import ScheduleUpdater from '@/vue/containers/ScheduleUpdater.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
-import RequestCreator from '@/vue/containers/RequestCreator.vue'
+import RequestToIndividualCreator from '@/vue/containers/RequestToIndividualCreator.vue'
+import RequestToOccupationCreator from '@/vue/containers/RequestToOccupationCreator.vue'
 import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
 import { useSubscription } from '@vue/apollo-composable'
 
@@ -153,10 +162,12 @@ export default defineComponent({
   components: {
     ScheduleCreator,
     ScheduleUpdater,
-    RequestCreator,
+    RequestToIndividualCreator,
+    RequestToOccupationCreator,
     RequestAccepter
   },
   setup(props, context) {
+    const currentUserQuery = useCurrentUserQuery()
     const { daysOfWeek, elementalies } = useCalendar()
     const state = reactive({
       currentWeek: '',
@@ -258,6 +269,7 @@ export default defineComponent({
         })
         return
       } else {
+        console.log(blankSchedule)
         state.selectedSchedule = blankSchedule
       }
     }
@@ -271,7 +283,8 @@ export default defineComponent({
       getBlankSchedules,
       format,
       jaLocale,
-      select
+      select,
+      currentUserQuery
     }
   }
 })

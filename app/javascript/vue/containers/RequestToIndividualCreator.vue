@@ -70,27 +70,15 @@ export default defineComponent<Props>({
     endAt: Date
   },
   setup(props, context) {
-    const toIndividualUser = useMutation<
+    const { mutate, onDone } = useMutation<
       RequestScheduleToIndividualUserMutation,
       RequestScheduleToIndividualUserMutationVariables
     >(RequestScheduleToIndividualUserDocument)
 
-    const toOccupation = useMutation<
-      RequestScheduleToOccupationMutation,
-      RequestScheduleToOccupationMutationVariables
-    >(RequestScheduleToOccupationDocument)
-
     const { result } = useCurrentUserQuery()
 
     const state = reactive({
-      selectedOccupationId: ''
-      // selectedOccupation: computed(() => {
-      //   if (state.selectedOccupationId.length != 0) {
-      //     return result.currentUser.occupations.nodes.find((o) => {
-      //       o.id == state.selectedOccupationId
-      //     })
-      //   }
-      // })
+      selectedOccupationId: null
     })
 
     const submit = (
@@ -99,19 +87,12 @@ export default defineComponent<Props>({
       endAt: Date,
       occupationId: string
     ) => {
-      if (result.value.currentUser.isCompany) {
-        toIndividualUser.mutate({
-          input: { blankScheduleId, startAt, endAt, occupationId }
-        })
-      } else {
-        toOccupation.mutate({ input: { blankScheduleId, startAt, endAt } })
-      }
+      mutate({
+        input: { blankScheduleId, startAt, endAt, occupationId }
+      })
     }
 
-    toIndividualUser.onDone(() => {
-      context.emit('input', null)
-    })
-    toOccupation.onDone(() => {
+    onDone(() => {
       context.emit('input', null)
     })
 

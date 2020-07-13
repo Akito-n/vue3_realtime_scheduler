@@ -1643,7 +1643,7 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "blankScheduleId",
+            "name": "occupationId",
             "description": null,
             "type": {
               "kind": "NON_NULL",
