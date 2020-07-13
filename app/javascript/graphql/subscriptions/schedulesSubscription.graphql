@@ -1,5 +1,5 @@
-subscription schedulesSubscription {
-  schedules {
+subscription schedulesSubscription($occupationIds: [ID!]!) {
+  schedules(occupationIds: $occupationIds) {
     schedules {
       nodes {
         id
@@ -9,10 +9,24 @@ subscription schedulesSubscription {
         isRequest
         status
         requester {
-          id
-          name
-          color
-          companyName
+          __typename
+          ... on Member {
+            id
+            name
+            color
+            companyName
+          }
+          ... on Occupation {
+            id
+            name
+            color
+            address
+            applyFrom
+            memo
+            item
+            companyName
+            requiredTime
+          }
         }
       }
     }

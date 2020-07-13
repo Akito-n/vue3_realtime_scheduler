@@ -2,10 +2,14 @@ import Rails from '@rails/ujs'
 import * as ActionCable from 'actioncable'
 import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import {
+  InMemoryCache,
+  IntrospectionFragmentMatcher
+} from 'apollo-cache-inmemory'
 import { ApolloLink } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
 import { ActionCableLink } from 'graphql-ruby-client'
+import introspectionQueryResultData from '../../../fragmentTypes.json'
 
 const cable = ActionCable.createConsumer()
 
@@ -36,7 +40,11 @@ const link = ApolloLink.split(
   })
 )
 
-const cache = new InMemoryCache()
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData
+})
+
+const cache = new InMemoryCache({ fragmentMatcher })
 
 export const apolloClient = new ApolloClient({
   link: ApolloLink.from([authLink.concat(link)]),

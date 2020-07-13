@@ -12,21 +12,21 @@
           <label class="ml-3">
             <input
               type="radio"
-              :value="occupation"
-              v-model="state.selectedOccupation"
+              :value="occupation.id"
+              v-model="state.selectedOccupationId"
             />
             {{ occupation.name }}
           </label>
         </div>
-        <div v-if="state.selectedOccupation">
+        <div v-if="value.requester.__typename == 'Occupation'">
           <span>応募経路</span>
-          <p>{{ state.selectedOccupation.applyFrom }}</p>
+          <p>{{ value.requester.applyFrom }}</p>
           <span>所要時間</span>
-          <p>{{ state.selectedOccupation.requiredTime }}</p>
+          <p>{{ value.requester.requiredTime }}時間</p>
           <span>訪問場所</span>
-          <p>{{ state.selectedOccupation.address }}</p>
+          <p>{{ value.requester.address }}</p>
           <span>持ち物</span>
-          <p>{{ state.selectedOccupation.item }}</p>
+          <p>{{ value.requester.item }}</p>
         </div>
         <button
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
@@ -80,18 +80,18 @@ export default defineComponent<Props>({
       RequestScheduleToOccupationMutationVariables
     >(RequestScheduleToOccupationDocument)
 
-    const state = reactive({
-      selectedOccupation: null,
-      selectedOccupationId: computed(() => {
-        if (state.selectedOccupation) {
-          return state.selectedOccupation.id
-        } else {
-          return ''
-        }
-      })
-    })
-
     const { result } = useCurrentUserQuery()
+
+    const state = reactive({
+      selectedOccupationId: ''
+      // selectedOccupation: computed(() => {
+      //   if (state.selectedOccupationId.length != 0) {
+      //     return result.currentUser.occupations.nodes.find((o) => {
+      //       o.id == state.selectedOccupationId
+      //     })
+      //   }
+      // })
+    })
 
     const submit = (
       blankScheduleId: string,

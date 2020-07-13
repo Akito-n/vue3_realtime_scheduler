@@ -1,5 +1,5 @@
 class Subscriptions::Schedules < Subscriptions::BaseSubscription
-  #argument :question_id, ID, required: true, loads: Types::QueryType
+  argument :occupation_ids, [ID], required: true, loads: Types::Objects::OccupationType
 
   field :schedules, Types::Objects::ScheduleType.connection_type, null: false
 
@@ -7,7 +7,13 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
   #   true
   # end
 
-  def subscribe
+  def subscribe(occupations:)
+    if occupations.present?
+      entry_users = User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations))
+      return {
+        schedules: BlankSchedule.where(schedulable: entry_users)
+      }
+    end
     blank_schedules = BlankSchedule.where(schedulable: context[:current_user].schedulable_array).to_a
     schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {
@@ -15,7 +21,7 @@ class Subscriptions::Schedules < Subscriptions::BaseSubscription
     }
   end
 
-  def update
+  def update(occupations:)
     blank_schedules = BlankSchedule.where(schedulable: context[:current_user].schedulable_array).to_a
     schedules = Schedule.where(requester: context[:current_user].my_schedulable_array).or(Schedule.where(responder: context[:current_user].my_schedulable_array)).to_a
     {

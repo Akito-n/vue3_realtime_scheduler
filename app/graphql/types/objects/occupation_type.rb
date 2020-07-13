@@ -9,6 +9,7 @@ class Types::Objects::OccupationType < Types::BaseObject
   field :address, String, null: true
   field :company_name, String, null: true
   field :name, String, null: true
+  field :color, String, null: false
   field :memo, String, null: true
   field :item, String, null: true
   field :apply_from, String, null: true

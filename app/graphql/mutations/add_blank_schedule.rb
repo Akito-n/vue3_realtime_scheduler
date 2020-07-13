@@ -21,7 +21,7 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
       blank_schedule = occupation.blank_schedules.build(start_at: start_at, end_at: end_at)
     end
     if blank_schedule.save
-      AppSchema.subscriptions.trigger('schedules', {}, {})
+      AppSchema.subscriptions.trigger('schedules', { occupation_ids: [] }, {})
       AppSchema.subscriptions.trigger('individual_tasks', {}, {})
       {
         blank_schedule: blank_schedule
