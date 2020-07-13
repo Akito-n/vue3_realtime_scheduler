@@ -1,5 +1,5 @@
 <template>
-  <modal :value="!!value" @input="close" title="選択した内容">
+  <modal :value="!!value" @input="close" title="リクエストする">
     <template v-if="value">
       {{ startAt | date('M/d(E) HH:mm') }}～{{ endAt | date('HH:mm') }}
 
@@ -25,6 +25,18 @@
             <p>{{ state.selectedOccupation.address }}</p>
             <span>持ち物</span>
             <p>{{ state.selectedOccupation.item }}</p>
+          </div>
+        </div>
+        <div v-else>
+          <div>
+            <span>応募経路</span>
+            <p>{{ blankSchedule.requester.applyFrom }}</p>
+            <span>所要時間</span>
+            <p>{{ blankSchedule.requester.requiredTime }}時間</p>
+            <span>訪問場所</span>
+            <p>{{ blankSchedule.requester.address }}</p>
+            <span>持ち物</span>
+            <p>{{ blankSchedule.requester.item }}</p>
           </div>
         </div>
         <button
