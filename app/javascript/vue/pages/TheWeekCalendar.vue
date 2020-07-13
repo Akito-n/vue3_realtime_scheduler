@@ -6,6 +6,7 @@
       class="mr-20"
     />
     <the-week-calendar :occupationIds="selectedOccupationIds" />
+    <the-company-side-menu v-if="result.currentUser.isCompany" class="ml-20" />
   </div>
 </template>
 
@@ -35,12 +36,14 @@ import { routes } from 'vue/routes'
 import TheWeekCalendar from '@/vue/containers/TheWeekCalendar.vue'
 import TheIndividualSideMenu from '@/vue/containers/TheIndividualSideMenu.vue'
 import OccupationSelctor from '@/vue/containers/OccupationSelctor.vue'
+import TheCompanySideMenu from '@/vue/containers/TheCompanySideMenu.vue'
 
 export default defineComponent({
   components: {
     TheWeekCalendar,
     TheIndividualSideMenu,
-    OccupationSelctor
+    OccupationSelctor,
+    TheCompanySideMenu
   },
   setup(props, context) {
     const selectedOccupationIds = ref([])
