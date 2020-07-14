@@ -19,14 +19,6 @@
       </div>
     </div>
     <request-to-individual-creator
-      v-if="currentUserQuery.result.value.currentUser.isCompany"
-      v-model="state.isRequested"
-      :blankSchedule.sync="state.selectedSchedule"
-      :startAt="state.selectedStartAt"
-      :endAt="state.selectedEndAt"
-    />
-    <request-to-occupation-creator
-      v-else
       v-model="state.isRequested"
       :blankSchedule.sync="state.selectedSchedule"
       :startAt="state.selectedStartAt"
@@ -60,7 +52,6 @@ import {
 } from '@vue/composition-api'
 import {
   Schedule,
-  useIndividualSchedulesSubscription,
   useCompanySchedulesSubscription,
   useCurrentUserQuery
 } from '@/graphql/types'
@@ -69,7 +60,6 @@ import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import ScheduleUpdater from '@/vue/containers/ScheduleUpdater.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import RequestToIndividualCreator from '@/vue/containers/RequestToIndividualCreator.vue'
-import RequestToOccupationCreator from '@/vue/containers/RequestToOccupationCreator.vue'
 import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
 import { useSubscription } from '@vue/apollo-composable'
 import WeekCalendar from '../components/WeekCalendar.vue'
@@ -85,7 +75,6 @@ export default defineComponent({
     ScheduleCreator,
     ScheduleUpdater,
     RequestToIndividualCreator,
-    RequestToOccupationCreator,
     RequestAccepter,
     WeekCalendar
   },

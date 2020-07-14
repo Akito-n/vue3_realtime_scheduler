@@ -15,7 +15,9 @@ class Mutations::RequestScheduleToOccupation < Mutations::BaseMutation
     user = context[:current_user]
     schedule = user.request_schedules.build(start_at: start_at, end_at: end_at, responder: occupation, occupation: occupation)
     if schedule.save
-      AppSchema.subscriptions.trigger('schedules', { occupation_ids: [] }, {})
+      AppSchema.subscriptions.trigger('individual_schedules', {}, {})
+      AppSchema.subscriptions.trigger('company_schedules', { occupation_ids: [] }, {})
+      AppSchema.subscriptions.trigger('individual_tasks', {}, {})
       AppSchema.subscriptions.trigger('individual_tasks', {}, {})
       {
         schedule: schedule

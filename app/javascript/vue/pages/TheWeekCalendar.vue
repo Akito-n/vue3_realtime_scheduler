@@ -1,12 +1,17 @@
 <template>
   <div v-if="!loading" class="flex justify-between items-start">
-    <occupation-selctor v-model="selectedOccupationIds" />
-    <the-individual-side-menu
-      v-if="result.currentUser.isIndividual"
-      class="mr-20"
-    />
-    <the-company-week-calendar :occupationIds="selectedOccupationIds" />
-    <the-company-side-menu v-if="result.currentUser.isCompany" class="ml-20" />
+    <template v-if="result.currentUser.isIndividual">
+      <the-individual-week-calendar />
+      <the-individual-side-menu class="mr-20" />
+    </template>
+    <template v-else>
+      <occupation-selctor v-model="selectedOccupationIds" />
+      <the-company-week-calendar :occupationIds="selectedOccupationIds" />
+      <the-company-side-menu
+        v-if="result.currentUser.isCompany"
+        class="ml-20"
+      />
+    </template>
   </div>
 </template>
 
@@ -33,6 +38,7 @@ import {
 } from '@vue/composition-api'
 import { useCurrentUserQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
+import TheIndividualWeekCalendar from '@/vue/containers/TheIndividualWeekCalendar.vue'
 import TheCompanyWeekCalendar from '@/vue/containers/TheCompanyWeekCalendar.vue'
 import TheIndividualSideMenu from '@/vue/containers/TheIndividualSideMenu.vue'
 import OccupationSelctor from '@/vue/containers/OccupationSelctor.vue'
@@ -40,6 +46,7 @@ import TheCompanySideMenu from '@/vue/containers/TheCompanySideMenu.vue'
 
 export default defineComponent({
   components: {
+    TheIndividualWeekCalendar,
     TheCompanyWeekCalendar,
     TheIndividualSideMenu,
     OccupationSelctor,
