@@ -1,19 +1,19 @@
 class Mutations::RequestScheduleToOccupation < Mutations::BaseMutation
   null true
 
-  argument :blank_schedule_id, ID, required: true, loads: Types::Objects::ScheduleType
+  argument :occupation_id, ID, required: true, loads: Types::Objects::OccupationType
   argument :start_at, Types::Scalars::DateTime, required: true
   argument :end_at, Types::Scalars::DateTime, required: true
 
   field :schedule, Types::Objects::ScheduleType, null: true
 
-  def authorized?(blank_schedule:, **args)
-    context[:user_signed_in] && context[:current_user].individual? && blank_schedule.present?
+  def authorized?(occupation:, **args)
+    context[:user_signed_in] && context[:current_user].individual? && occupation.present? && context[:current_user].company_occupations.exists?(occupation.id)
   end
 
-  def resolve(blank_schedule:, start_at:, end_at:, **args)
+  def resolve(occupation:, start_at:, end_at:, **args)
     user = context[:current_user]
-    schedule = user.request_schedules.build(start_at: start_at, end_at: end_at, responder: blank_schedule.schedulable, occupation: blank_schedule.schedulable)
+    schedule = user.request_schedules.build(start_at: start_at, end_at: end_at, responder: occupation, occupation: occupation)
     if schedule.save
       AppSchema.subscriptions.trigger('schedules', { occupation_ids: [] }, {})
       AppSchema.subscriptions.trigger('individual_tasks', {}, {})

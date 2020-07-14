@@ -10,6 +10,13 @@ class Types::Objects::UserType < Types::BaseObject
   field :company_name, String, null: true
   field :color, String, null: false
   field :occupations, Types::Objects::OccupationType.connection_type, null: false
+  field :company_occupations, Types::Objects::OccupationType.connection_type, null: false
+
+  field :individual_users, Types::Objects::MemberType.connection_type, null: false
+  def individual_users
+    object.individual_users.uniq
+  end
+
 
   field :role, String, null: false
   def role

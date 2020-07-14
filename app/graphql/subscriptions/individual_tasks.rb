@@ -19,6 +19,7 @@ class Subscriptions::IndividualTasks < Subscriptions::BaseSubscription
   private
 
   def make_results
+    occupations = context[:current_user].company_occupations
     has_blank_schedule_task = context[:current_user].blank_schedules.exists?(start_at: Time.current..Float::INFINITY)
     waiting_tasks = context[:current_user].request_schedules.status_pending.order(created_at: :asc)
     responding_tasks = context[:current_user].reseived_schedules.status_pending.order(created_at: :asc)

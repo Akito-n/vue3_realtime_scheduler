@@ -20,5 +20,23 @@ query currentUser {
         requiredTime
       }
     }
+    companyOccupations {
+      nodes {
+        id
+        name
+        address
+        applyFrom
+        memo
+        item
+        companyName
+        requiredTime
+      }
+    }
+    individualUsers {
+      nodes {
+        id
+        name
+      }
+    }
   }
 }
