@@ -9,7 +9,7 @@ class Mutations::RequestScheduleToIndividualUser < Mutations::BaseMutation
   field :schedule, Types::Objects::ScheduleType, null: true
 
   def authorized?(individual_user:, occupation:, **args)
-    context[:user_signed_in] && context[:current_user].company? && occupation.present?
+    context[:user_signed_in] && context[:current_user].company? && occupation.present? && context[:current_user].individual_users.exists?(individual_user.id)
   end
 
   def resolve(individual_user:, occupation:, start_at:, end_at:, **args)
