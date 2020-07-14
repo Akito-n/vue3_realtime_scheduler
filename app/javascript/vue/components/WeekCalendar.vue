@@ -121,9 +121,6 @@ import { useCalendar } from '@/vue/composition-funcs/calendar'
 
 export default defineComponent({
   props: {
-    year: { type: String as PropType<string>, required: true },
-    month: { type: String as PropType<string>, required: true },
-    day: { type: String as PropType<string>, required: true },
     getSchedules: Function as PropType<
       (day: Date, hours: number, minutes: number) => any[]
     >
@@ -152,6 +149,7 @@ export default defineComponent({
       const current = parse(`${year}-${month}-${day}`, 'yyyy-MM-dd', new Date())
       state.lastWeek = format(addWeeks(current, -1), 'yyyy/MM/dd')
       state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
+      console.log(state)
 
       state.days = daysOfWeek(current)
       state.currentWeek = `${format(current, 'M月')} ${format(
@@ -161,9 +159,9 @@ export default defineComponent({
     }
 
     watch(
-      () => props,
-      (newProps) => {
-        const { year, month, day } = newProps
+      () => context.root.$route,
+      (r) => {
+        const { year, month, day } = r.params
         load(year, month, day)
       }
     )

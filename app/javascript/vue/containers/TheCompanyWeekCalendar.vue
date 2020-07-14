@@ -2,13 +2,7 @@
   <div>
     <schedule-creator />
     <schedule-updater />
-    <week-calendar
-      :getSchedules="getSchedules"
-      :year="params.year"
-      :month="params.month"
-      :day="params.day"
-      @select="select"
-    />
+    <week-calendar :getSchedules="getSchedules" @select="select" />
     <div v-if="loading">
       <div class="mt-20">
         <vue-loading
@@ -118,14 +112,6 @@ export default defineComponent({
       times.push(i)
     }
 
-    // watch(
-    //   () => context.root.$route,
-    //   (r) => {
-    //     const { year, month, day } = r.params
-    //     load(year, month, day)
-    //   }
-    // )
-
     watch(
       () => props.occupationIds,
       (newIds) => {
@@ -185,10 +171,9 @@ export default defineComponent({
 
     return {
       times,
-      params: context.root.$route.params,
-      state,
       loading,
       result,
+      state,
       getSchedules,
       format,
       jaLocale,
