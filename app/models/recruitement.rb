@@ -27,7 +27,5 @@ class Recruitement < ApplicationRecord
   belongs_to :company_user, class_name: :User
   belongs_to :occupation, dependent: :destroy
 
-  enum stage: { first: 1, second: 2 }, _prefix: true
-
   validates :individual_user_id, uniqueness: { scope: :company_user_id }
 end

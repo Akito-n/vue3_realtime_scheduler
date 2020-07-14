@@ -46,10 +46,10 @@ class User < ApplicationRecord
   has_many :individual_users, through: :recruitements, source: :individual_user
   #法人からみる応募された会社の案件
   has_many :individual_occupations, through: :recruitements, source: :occupation
-  #1次面接の応募
-  has_many :first_stage_recruitements, -> { where(stage: :first) }, foreign_key: :company_user_id, class_name: :Recruitement
-  has_many :first_stage_individual_users, through: :first_stage_recruitements, source: :individual_user
-  has_many :first_stage_individual_occupations, through: :first_stage_recruitements, source: :occupation
+  #面談日程確定済みの応募
+  has_many :fixed_recruitements, -> { where(is_fixed: true) }, foreign_key: :company_user_id, class_name: :Recruitement
+  has_many :fixed_individual_users, through: :fixed_recruitements, source: :individual_user
+  has_many :fixed_individual_occupations, through: :fixed_individual_users, source: :occupation
   #個人からのアクション
   has_many :entries, foreign_key: :individual_user_id, class_name: :Recruitement
   has_many :company_users, through: :entries, source: :company_user
