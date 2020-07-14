@@ -73,11 +73,7 @@ import {
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
 import { defineComponent, reactive, watch, ref } from '@vue/composition-api'
-import {
-  SchedulesSubscriptionDocument,
-  useSchedulesSubscriptionSubscription,
-  Schedule
-} from '@/graphql/types'
+import { useCompanySchedulesSubscription, Schedule } from '@/graphql/types'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import { routes } from 'vue/routes'
@@ -104,13 +100,11 @@ export default defineComponent({
 
     const { daysOfWeek, elementalies } = useCalendar()
 
-    const { result, loading, restart } = useSchedulesSubscriptionSubscription(
-      () => {
-        return {
-          occupationIds: []
-        }
+    const { result, loading, restart } = useCompanySchedulesSubscription(() => {
+      return {
+        occupationIds: []
       }
-    )
+    })
 
     const load = (year: string, month: string) => {
       const current = parse(`${year}-${month}-01`, 'yyyy-MM-dd', new Date())
@@ -138,15 +132,17 @@ export default defineComponent({
       const _day = day
       const scheduleList = []
 
-      return result.value.schedules.schedules.nodes.filter((schedule) => {
-        return areIntervalsOverlapping(
-          {
-            start: new Date(schedule.startAt),
-            end: new Date(schedule.endAt)
-          },
-          { start: day, end: addDays(day, 1) }
-        )
-      })
+      return result.value.companySchedules.schedules.nodes.filter(
+        (schedule) => {
+          return areIntervalsOverlapping(
+            {
+              start: new Date(schedule.startAt),
+              end: new Date(schedule.endAt)
+            },
+            { start: day, end: addDays(day, 1) }
+          )
+        }
+      )
     }
     // 名前
     const scheduleFormatter = (schedule: Schedule) => {

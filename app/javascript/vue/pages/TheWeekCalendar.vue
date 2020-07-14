@@ -5,7 +5,7 @@
       v-if="result.currentUser.isIndividual"
       class="mr-20"
     />
-    <the-week-calendar :occupationIds="selectedOccupationIds" />
+    <the-company-week-calendar :occupationIds="selectedOccupationIds" />
     <the-company-side-menu v-if="result.currentUser.isCompany" class="ml-20" />
   </div>
 </template>
@@ -33,14 +33,14 @@ import {
 } from '@vue/composition-api'
 import { useCurrentUserQuery } from '@/graphql/types'
 import { routes } from 'vue/routes'
-import TheWeekCalendar from '@/vue/containers/TheWeekCalendar.vue'
+import TheCompanyWeekCalendar from '@/vue/containers/TheCompanyWeekCalendar.vue'
 import TheIndividualSideMenu from '@/vue/containers/TheIndividualSideMenu.vue'
 import OccupationSelctor from '@/vue/containers/OccupationSelctor.vue'
 import TheCompanySideMenu from '@/vue/containers/TheCompanySideMenu.vue'
 
 export default defineComponent({
   components: {
-    TheWeekCalendar,
+    TheCompanyWeekCalendar,
     TheIndividualSideMenu,
     OccupationSelctor,
     TheCompanySideMenu
