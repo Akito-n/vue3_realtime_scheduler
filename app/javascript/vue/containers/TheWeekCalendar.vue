@@ -148,9 +148,9 @@ import {
   PropType
 } from '@vue/composition-api'
 import {
-  SchedulesSubscriptionDocument,
   Schedule,
-  useSchedulesSubscriptionSubscription,
+  useIndividualSchedulesSubscription,
+  useCompanySchedulesSubscription,
   useCurrentUserQuery
 } from '@/graphql/types'
 import { routes } from 'vue/routes'
@@ -191,13 +191,12 @@ export default defineComponent({
       isRequested: false
     })
 
-    const { result, loading, restart } = useSchedulesSubscriptionSubscription(
-      () => {
-        return {
-          occupationIds: props.occupationIds
-        }
+    const companySchedules = useCompanySchedulesSubscription(() => {
+      return {
+        occupationIds: props.occupationIds
       }
-    )
+    })
+    const individualSchedules = useIndividualSchedulesSubscription()
 
     const schedules = ref([])
 
