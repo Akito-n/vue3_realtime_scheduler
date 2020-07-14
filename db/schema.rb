@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_06_140209) do
+ActiveRecord::Schema.define(version: 2020_07_14_062943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2020_07_06_140209) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "occupation_id", null: false
+    t.integer "stage", default: 1, null: false, comment: "応募の状態（1次面接通過など）"
     t.index ["individual_user_id", "company_user_id"], name: "index_recruitements_on_individual_user_id_and_company_user_id"
     t.index ["occupation_id"], name: "index_recruitements_on_occupation_id"
   end

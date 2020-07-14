@@ -2,12 +2,13 @@
 #
 # Table name: recruitements
 #
-#  id                 :uuid             not null, primary key
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  company_user_id    :uuid             not null
-#  individual_user_id :uuid             not null
-#  occupation_id      :uuid             not null
+#  id                                   :uuid             not null, primary key
+#  stage(応募の状態（1次面接通過など）) :integer          default("first"), not null
+#  created_at                           :datetime         not null
+#  updated_at                           :datetime         not null
+#  company_user_id                      :uuid             not null
+#  individual_user_id                   :uuid             not null
+#  occupation_id                        :uuid             not null
 #
 # Indexes
 #
