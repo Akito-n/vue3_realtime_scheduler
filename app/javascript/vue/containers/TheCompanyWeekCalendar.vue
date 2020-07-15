@@ -2,16 +2,11 @@
   <div>
     <schedule-creator />
     <schedule-updater />
-    <week-calendar :getSchedules="getSchedules" @select="select" />
-    <div v-if="loading">
-      <div class="mt-20">
-        <vue-loading
-          type="spiningDubbles"
-          color="#40e0d0"
-          :size="{ width: '300px', height: '300px' }"
-        />
-      </div>
-    </div>
+    <week-calendar
+      :getSchedules="getSchedules"
+      :loading="loading"
+      @select="select"
+    />
     <request-to-individual-creator
       v-model="state.isRequested"
       :blankSchedule.sync="state.selectedSchedule"
