@@ -3,6 +3,42 @@
     <p v-if="loading"></p>
     <div v-else>
       <div class="mr-5">
+        <p>応募者一覧</p>
+        <table
+          class="table-auto"
+          v-if="result.companyTasks.recruitements.nodes"
+        >
+          <thead>
+            <tr>
+              <th class="px-4 py-2">候補者指名</th>
+              <th class="px-4 py-2">職種</th>
+              <th class="px-4 py-2">次の選考に進める</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="recruitement in result.companyTasks.recruitements.nodes"
+              :key="recruitement.id"
+            >
+              <td class="border px-4 py-2">
+                {{ recruitement.individualUser.name }}
+              </td>
+              <td class="border px-4 py-2">
+                {{ recruitement.occupation.name }}
+              </td>
+              <td class="border px-4 py-2" v-if="recruitement.isFixed">
+                <button
+                  class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                >
+                  {{ recruitement.stageCount + 1 }}次面接の調整を開始する
+                </button>
+              </td>
+              <td class="border px-4 py-2" v-else>
+                まだ面談予定が確定していません
+              </td>
+            </tr>
+          </tbody>
+        </table>
         <p>アクションを取っていない人一覧（双方未リクエストである）</p>
         <table
           class="table-auto"
@@ -17,18 +53,18 @@
           </thead>
           <tbody>
             <tr
-              v-for="recruitement in result.companyTasks.nonactiveRecruitements
-                .nodes"
-              :key="recruitement.id"
+              v-for="nonActiveRecruitement in result.companyTasks
+                .nonactiveRecruitements.nodes"
+              :key="nonActiveRecruitement.id"
             >
               <td class="border px-4 py-2">
-                {{ recruitement.individualUser.name }}
+                {{ nonActiveRecruitement.individualUser.name }}
               </td>
               <td class="border px-4 py-2">
-                {{ recruitement.createdAt | date('yyyy/MM/dd') }}
+                {{ nonActiveRecruitement.createdAt | date('yyyy/MM/dd') }}
               </td>
               <td class="border px-4 py-2">
-                {{ recruitement.occupation.name }}
+                {{ nonActiveRecruitement.occupation.name }}
               </td>
             </tr>
           </tbody>
@@ -70,6 +106,13 @@
           class="table-auto"
           v-if="result.companyTasks.waitingSchedules.nodes.length != 0"
         >
+          <thead>
+            <tr>
+              <th class="px-4 py-2">候補者指名</th>
+              <th class="px-4 py-2">面接希望日</th>
+              <th class="px-4 py-2">職種</th>
+            </tr>
+          </thead>
           <tbody>
             <tr
               v-for="waitingSchedule in result.companyTasks.waitingSchedules
