@@ -27,8 +27,8 @@ class Subscriptions::CompanySchedules < Subscriptions::BaseSubscription
   def make_results
     user = context[:current_user]
 
-    filtered_occupations = user.first_stage_individual_occupations.to_a # TODO: ここでフラグによっては全部のoccupationをとってくる
-    filtered_individual_users = user.first_stage_individual_users.to_a # TODO: ここでフラグによっては全部のindividual_userをとってくる
+    filtered_occupations = user.unsettled_individual_occupations.to_a # TODO: ここでフラグによっては全部のoccupationをとってくる
+    filtered_individual_users = user.unsettled_individual_users.to_a # TODO: ここでフラグによっては全部のindividual_userをとってくる
     blank_schedules = BlankSchedule.where(schedulable: filtered_occupations + filtered_individual_users).to_a
     schedules = Schedule.where(requester: filtered_occupations).or(Schedule.where(responder: filtered_occupations)).to_a
     {
