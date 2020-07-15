@@ -27,5 +27,5 @@ class Recruitement < ApplicationRecord
   belongs_to :company_user, class_name: :User
   belongs_to :occupation, dependent: :destroy
 
-  validates :individual_user_id, uniqueness: { scope: :company_user_id }
+  validates :individual_user_id, uniqueness: { scope: :company_user_id }, on: :create
 end
