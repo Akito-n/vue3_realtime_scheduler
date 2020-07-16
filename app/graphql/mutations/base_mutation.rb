@@ -8,7 +8,7 @@ module Mutations
 
     def subscription_trigger
       AppSchema.subscriptions.trigger('individual_schedules', {}, {})
-      AppSchema.subscriptions.trigger('company_schedules', { occupation_ids: [] }, {})
+      AppSchema.subscriptions.trigger('company_schedules', { occupation_ids: [], user_ids: [] }, {})
       AppSchema.subscriptions.trigger('individual_tasks', {}, {})
       AppSchema.subscriptions.trigger('company_tasks', {}, {})
     end
