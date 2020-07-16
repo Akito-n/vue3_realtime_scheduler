@@ -4,5 +4,13 @@ module Mutations
     field_class Types::BaseField
     input_object_class Types::BaseInputObject
     object_class Types::BaseObject
+
+
+    def subscription_trigger
+      AppSchema.subscriptions.trigger('individual_schedules', {}, {})
+      AppSchema.subscriptions.trigger('company_schedules', { occupation_ids: [] }, {})
+      AppSchema.subscriptions.trigger('individual_tasks', {}, {})
+      AppSchema.subscriptions.trigger('company_tasks', {}, {})
+    end
   end
 end
