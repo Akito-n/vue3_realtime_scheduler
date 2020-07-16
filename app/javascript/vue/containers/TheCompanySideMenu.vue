@@ -29,6 +29,7 @@
               <td class="border px-4 py-2" v-if="recruitement.isFixed">
                 <button
                   class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                  @click="proceed(recruitement.id)"
                 >
                   {{ recruitement.stageCount + 1 }}次面接の調整を開始する
                 </button>
@@ -176,9 +177,13 @@ import {
   reactive,
   computed
 } from '@vue/composition-api'
-import { useSubscription } from '@vue/apollo-composable'
+import { useSubscription, useMutation } from '@vue/apollo-composable'
+import { Recruitement } from 'graphql/types'
 import {
   useCompanyTasksSubscriptionSubscription,
+  ProceedRecruitementDocument,
+  ProceedRecruitementMutationVariables,
+  ProceedRecruitementMutation,
   Schedule
 } from '@/graphql/types'
 export default defineComponent({
@@ -191,7 +196,16 @@ export default defineComponent({
         return schedule.requester.name
       }
     }
-    return { result, loading, displayEntryUser }
+
+    const { mutate } = useMutation<
+      ProceedRecruitementMutation,
+      ProceedRecruitementMutationVariables
+    >(ProceedRecruitementDocument)
+
+    const proceed = (recruitementId: string) => {
+      mutate({ input: { recruitementId } })
+    }
+    return { result, loading, displayEntryUser, proceed }
   }
 })
 </script>

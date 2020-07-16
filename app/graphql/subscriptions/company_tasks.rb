@@ -21,7 +21,8 @@ class Subscriptions::CompanyTasks < Subscriptions::BaseSubscription
   private
 
   def make_results
-    recruitements = context[:current_user].recruitements
+    # キャッシュ対策のreload
+    recruitements = context[:current_user].recruitements.reload
     #お互いに未対応なリクルートメントを返す
     nonactive_recruitements = recruitements.select { |recruitement|
       Schedule.where('occupation_id = ? and  requester_id = ? or responder_id = ?', recruitement.occupation_id, recruitement.individual_user_id, recruitement.individual_user_id).empty?
