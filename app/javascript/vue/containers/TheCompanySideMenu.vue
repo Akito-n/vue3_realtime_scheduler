@@ -10,6 +10,7 @@
         >
           <thead>
             <tr>
+              <th class="px-4 py-2"></th>
               <th class="px-4 py-2">候補者指名</th>
               <th class="px-4 py-2">職種</th>
               <th class="px-4 py-2">次の選考に進める</th>
@@ -20,6 +21,14 @@
               v-for="recruitement in result.companyTasks.recruitements.nodes"
               :key="recruitement.id"
             >
+              <td class="border px-4 py-2">
+                <input
+                  type="checkbox"
+                  :value="recruitement.individualUser.id"
+                  v-model="selected"
+                  @change="change"
+                />
+              </td>
               <td class="border px-4 py-2">
                 {{ recruitement.individualUser.name }}
               </td>
@@ -175,7 +184,8 @@ import {
   defineComponent,
   watch,
   reactive,
-  computed
+  computed,
+  PropType
 } from '@vue/composition-api'
 import { useSubscription, useMutation } from '@vue/apollo-composable'
 import { Recruitement } from 'graphql/types'
@@ -187,8 +197,12 @@ import {
   Schedule
 } from '@/graphql/types'
 export default defineComponent({
+  props: {
+    value: Array as PropType<string[]>
+  },
   setup(props, context) {
     const { result, loading } = useCompanyTasksSubscriptionSubscription()
+    const selected = ref(props.value)
     const displayEntryUser = (schedule: Schedule) => {
       if (schedule.requester.__typename == 'Occupation') {
         return schedule.responder.name
@@ -205,7 +219,11 @@ export default defineComponent({
     const proceed = (recruitementId: string) => {
       mutate({ input: { recruitementId } })
     }
-    return { result, loading, displayEntryUser, proceed }
+
+    const change = () => {
+      context.emit('input', selected.value)
+    }
+    return { result, loading, displayEntryUser, proceed, selected, change }
   }
 })
 </script>

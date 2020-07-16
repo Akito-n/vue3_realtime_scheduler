@@ -1,14 +1,18 @@
 <template>
   <div v-if="!loading" class="flex justify-between items-start">
     <template v-if="result.currentUser.isIndividual">
-      <the-individual-week-calendar />
       <the-individual-side-menu class="mr-20" />
+      <the-individual-week-calendar />
     </template>
     <template v-else>
       <occupation-selctor v-model="selectedOccupationIds" />
-      <the-company-week-calendar :occupationIds="selectedOccupationIds" />
+      <the-company-week-calendar
+        :occupationIds="selectedOccupationIds"
+        :userIds="selectedUserIds"
+      />
       <the-company-side-menu
         v-if="result.currentUser.isCompany"
+        v-model="selectedUserIds"
         class="ml-20"
       />
     </template>
@@ -54,9 +58,10 @@ export default defineComponent({
   },
   setup(props, context) {
     const selectedOccupationIds = ref([])
+    const selectedUserIds = ref([])
     const { result, loading } = useCurrentUserQuery()
 
-    return { result, loading, selectedOccupationIds }
+    return { result, loading, selectedOccupationIds, selectedUserIds }
   }
 })
 </script>

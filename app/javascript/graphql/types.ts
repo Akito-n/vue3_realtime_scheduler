@@ -533,6 +533,7 @@ export type Subscription = {
 
 export type SubscriptionCompanySchedulesArgs = {
   occupationIds: Array<Scalars['ID']>;
+  userIds: Array<Scalars['ID']>;
 };
 
 export type User = {
@@ -805,6 +806,7 @@ export type CurrentUserQuery = (
 
 export type CompanySchedulesSubscriptionVariables = {
   occupationIds: Array<Scalars['ID']>;
+  userIds: Array<Scalars['ID']>;
 };
 
 
@@ -1380,8 +1382,8 @@ export function useCurrentUserQuery(options: VueApolloComposable.UseQueryOptions
           }
 export type CurrentUserQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<CurrentUserQuery, CurrentUserQueryVariables>;
 export const CompanySchedulesDocument = gql`
-    subscription companySchedules($occupationIds: [ID!]!) {
-  companySchedules(occupationIds: $occupationIds) {
+    subscription companySchedules($occupationIds: [ID!]!, $userIds: [ID!]!) {
+  companySchedules(occupationIds: $occupationIds, userIds: $userIds) {
     schedules {
       nodes {
         id
@@ -1429,6 +1431,7 @@ export const CompanySchedulesDocument = gql`
  * const { result, loading, error } = useCompanySchedulesSubscription(
  *   {
  *      occupationIds: // value for 'occupationIds'
+ *      userIds: // value for 'userIds'
  *   }
  * );
  */

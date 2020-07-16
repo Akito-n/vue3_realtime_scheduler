@@ -1,5 +1,6 @@
 class Subscriptions::CompanySchedules < Subscriptions::BaseSubscription
   argument :occupation_ids, [ID], required: true, loads: Types::Objects::OccupationType
+  argument :user_ids, [ID], required: true, loads: Types::Objects::MemberType
 
   field :schedules, Types::Objects::ScheduleType.connection_type, null: false
 
@@ -7,9 +8,15 @@ class Subscriptions::CompanySchedules < Subscriptions::BaseSubscription
     context[:current_user].company?
   end
 
-  def subscribe(occupations:)
-    if occupations.present?
-      entry_users = User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations))
+  def subscribe(occupations:, users:)
+    if occupations.present? || users.present?
+      entry_users = if occupations.present? && !users.present?
+                      User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations))
+                    elsif !occupations.present? && users.present?
+                      users
+                    elsif occupations.present? && users.present?
+                      User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations)).where(id: users)
+                    end
       return {
         schedules: BlankSchedule.where(schedulable: entry_users)
       }

@@ -58,6 +58,10 @@ export default defineComponent({
     occupationIds: {
       type: Array as PropType<any[]>,
       required: false
+    },
+    userIds: {
+      type: Array as PropType<any[]>,
+      required: false
     }
   },
   components: {
@@ -72,7 +76,8 @@ export default defineComponent({
 
     const { result, loading, restart } = useCompanySchedulesSubscription(() => {
       return {
-        occupationIds: props.occupationIds
+        occupationIds: props.occupationIds,
+        userIds: props.userIds
       }
     })
 
@@ -109,6 +114,14 @@ export default defineComponent({
 
     watch(
       () => props.occupationIds,
+      (newIds) => {
+        console.log(newIds)
+        restart()
+      }
+    )
+
+    watch(
+      () => props.userIds,
       (newIds) => {
         console.log(newIds)
         restart()
