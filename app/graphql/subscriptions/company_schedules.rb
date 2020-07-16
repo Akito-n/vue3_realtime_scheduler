@@ -10,7 +10,6 @@ class Subscriptions::CompanySchedules < Subscriptions::BaseSubscription
 
   def subscribe(occupations:, users:)
     if occupations.present? || users.present?
-      byebug
       entry_users = if occupations.present? && !users.present?
                       User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations))
                     elsif !occupations.present? && users.present?
