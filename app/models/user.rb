@@ -59,28 +59,19 @@ class User < ApplicationRecord
   has_many :request_schedules, class_name: :Schedule, as: :requester
   has_many :reseived_schedules, class_name: :Schedule, as: :responder
 
-  #FIXME 名前
-  def schedulable_array
-    targets = individual? ? company_occupations : individual_users
-    my_schedules = my_schedulable_array
-    [my_schedules, targets.to_a].flatten.sort{|x| x.created_at}
+  def individual_schedulables
+    [self, company_occupations.to_a].flatten.sort{|x| x.created_at}
   end
 
-  def company_schedulable_array(all: false)
-    if all
-      [individual_occupations.to_a, individual_users.to_a].flatten.sort{|x| x.created_at}
-    else
-      [first_stage_individual_occupations.to_a, first_stage_individual_users.to_a].flatten.sort{|x| x.created_at}
-    end
+  def company_schedulables
+    [individual_occupations.to_a, individual_users.to_a].flatten.sort{|x| x.created_at}
   end
 
-  def first_stage_schedulable_array
-    targets = individual? ? company_occupations : individual_users
-    my_schedules = my_schedulable_array
-    [my_schedules, targets.to_a].flatten.sort{|x| x.created_at}
+  def can_schedulable?(object)
+    schedulable = individual? ? individual_schedulables : company_schedulables
+    schedulable.include?(object)
   end
 
-  #FIXME 名前
   def my_schedulable_array
     individual? ? [self] : occupations.to_a
   end
