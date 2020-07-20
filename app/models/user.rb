@@ -46,14 +46,18 @@ class User < ApplicationRecord
   has_many :individual_users, through: :recruitements, source: :individual_user
   #法人からみる応募された会社の案件
   has_many :individual_occupations, through: :recruitements, source: :occupation
-  #面談日程未確定の応募
+  #法人視点: 面談日程未確定の応募
   has_many :unsettled_recruitements, -> { where(is_fixed: false) }, foreign_key: :company_user_id, class_name: :Recruitement
   has_many :unsettled_individual_users, through: :unsettled_recruitements, source: :individual_user
   has_many :unsettled_individual_occupations, through: :unsettled_individual_users, source: :company_occupations
+  #個人視点: 面接日未確定の応募
+  has_many :unsettled_entries, -> { where(is_fixed: false) }, foreign_key: :individual_user_id, class_name: :Recruitement
+  has_many :unsettled_company_users, through: :unsettled_entries, source: :company_user
+  has_many :unsettled_company_occupations, through: :unsettled_entries, source: :occupation
+
   #個人からのアクション
   has_many :entries, foreign_key: :individual_user_id, class_name: :Recruitement
   has_many :company_users, through: :entries, source: :company_user
-  #個人から応募した会社の案件
   has_many :company_occupations, through: :entries, source: :occupation
 
   has_many :request_schedules, class_name: :Schedule, as: :requester
