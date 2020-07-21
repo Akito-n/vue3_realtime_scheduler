@@ -32,8 +32,12 @@ class Schedule < ApplicationRecord
   enum status: { pending: 0, accept: 1, reject: 2 }, _prefix: true
 
   def accept!
-    update!(accepted_at: Time.zone.now, status: :accept)
-    BlankSchedule.hollow_out!([requester, responder], start_at: start_at, end_at: end_at)
+    ActiveRecord::Base.transaction do
+      recruitement = occupation.recruitements.find_by(individual_user_id: self.respond_individual_user_id)
+      recruitement.update!(stage_count: recruitement.stage_count + 1, is_fixed: true )
+      update!(accepted_at: Time.zone.now, status: :accept)
+      BlankSchedule.hollow_out!([requester, responder], start_at: start_at, end_at: end_at)
+    end
   end
 
   def reject!
@@ -53,5 +57,9 @@ class Schedule < ApplicationRecord
 
   def can_response?(user)
     user.my_schedulable_array.include?(responder)
+  end
+
+  def respond_individual_user_id
+    requester_type == 'User' ? requester_id : responder_id
   end
 end

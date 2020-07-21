@@ -2,7 +2,7 @@
 class Types::Objects::MemberType < Types::BaseObject
   def self.authorized?(object, context)
     # only show it to users with the secret_feature enabled
-    super and context[:user_signed_in] and context[:current_user].schedulable_array.include?(object)
+    super and context[:user_signed_in] and context[:current_user].can_schedulable?(object)
   end
 
   field :id, ID, null: false

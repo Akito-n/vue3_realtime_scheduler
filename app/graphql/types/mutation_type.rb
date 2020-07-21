@@ -7,5 +7,6 @@ module Types
     field :request_schedule_to_occupation, mutation: Mutations::RequestScheduleToOccupation
     field :request_schedule_to_individual_user, mutation: Mutations::RequestScheduleToIndividualUser
     field :respond_schedule, mutation: Mutations::RespondSchedule
+    field :proceed_recruitement, mutation: Mutations::ProceedRecruitement
   end
 end

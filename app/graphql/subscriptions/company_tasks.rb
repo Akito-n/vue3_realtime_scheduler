@@ -4,6 +4,7 @@ class Subscriptions::CompanyTasks < Subscriptions::BaseSubscription
   field :waiting_schedules, Types::Objects::ScheduleType.connection_type, null: false
   field :confirmed_schedule_tasks, Types::Objects::ScheduleType.connection_type, null: false
   field :nonactive_recruitements, Types::Objects::RecruitementType.connection_type, null: false
+  field :recruitements, Types::Objects::RecruitementType.connection_type, null: false
 
   def authorized?(**args)
     context[:current_user].company?
@@ -20,7 +21,8 @@ class Subscriptions::CompanyTasks < Subscriptions::BaseSubscription
   private
 
   def make_results
-    recruitements = context[:current_user].recruitements
+    # キャッシュ対策のreload
+    recruitements = context[:current_user].recruitements.reload
     #お互いに未対応なリクルートメントを返す
     nonactive_recruitements = recruitements.select { |recruitement|
       Schedule.where('occupation_id = ? and  requester_id = ? or responder_id = ?', recruitement.occupation_id, recruitement.individual_user_id, recruitement.individual_user_id).empty?
@@ -35,6 +37,7 @@ class Subscriptions::CompanyTasks < Subscriptions::BaseSubscription
     confirmed_schedule_tasks = Schedule.status_accept.where(requester: context[:current_user].occupations).or(Schedule.status_accept.where(responder: context[:current_user].occupations)).order(created_at: :asc)
 
     {
+      recruitements: recruitements,
       nonactive_recruitements: nonactive_recruitements,
       has_respond_schedules: has_respond_schedules,
       waiting_schedules: waiting_schedules,

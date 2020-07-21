@@ -15,8 +15,7 @@ class Mutations::EditBlankSchedule < Mutations::BaseMutation
   def resolve(blank_schedule:, occupation_id: nil, **input)
     occupation = occupation_id.present? ? AppSchema.object_from_id(occupation_id, context) : nil
     if blank_schedule.update(input.merge(schedulable: occupation).compact)
-      AppSchema.subscriptions.trigger('schedules', {}, {})
-      AppSchema.subscriptions.trigger('individual_tasks', {}, {})
+      subscription_trigger
       {
         blank_schedule: blank_schedule
       }

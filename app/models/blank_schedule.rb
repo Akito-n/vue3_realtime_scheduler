@@ -66,7 +66,7 @@ class BlankSchedule < ApplicationRecord
 
   # HACK: punditとかにしたほうが良さそう
   def can_read?(user)
-    user.schedulable_array.include?(schedulable) || user.schedulable_array.include?(schedulable)
+    user.can_schedulable?(schedulable)
   end
 
   def can_write?(user)

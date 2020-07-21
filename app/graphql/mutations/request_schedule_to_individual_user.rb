@@ -15,8 +15,7 @@ class Mutations::RequestScheduleToIndividualUser < Mutations::BaseMutation
   def resolve(individual_user:, occupation:, start_at:, end_at:, **args)
     schedule = occupation.request_schedules.build(start_at: start_at, end_at: end_at, responder: individual_user, occupation: occupation)
     if schedule.save
-      AppSchema.subscriptions.trigger('schedules', { occupation_ids: [] }, {})
-      AppSchema.subscriptions.trigger('individual_tasks', {}, {})
+      subscription_trigger
       {
         schedule: schedule
       }

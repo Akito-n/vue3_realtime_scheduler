@@ -6,6 +6,8 @@ class Types::Objects::RecruitementType < Types::BaseObject
   field :id, ID, null: false
   field :created_at, Types::Scalars::DateTime, null: true
   field :start_at, Types::Scalars::DateTime, null: true
+  field :is_fixed, Boolean, null: false
+  field :stage_count, Int, null: false
   field :end_at, Types::Scalars::DateTime, null: true
   field :individual_user, Types::Objects::MemberType, null: false
   def individual_user
