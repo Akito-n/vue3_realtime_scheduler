@@ -16,16 +16,8 @@
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  defineComponent,
-  watch,
-  reactive,
-  computed,
-  PropType
-} from '@vue/composition-api'
+import { ref, defineComponent, PropType } from '@vue/composition-api'
 import { useCurrentUserQuery } from '@/graphql/types'
-import { useAddBlankScheduleMutation } from 'graphql/types'
 
 export default defineComponent({
   components: {},

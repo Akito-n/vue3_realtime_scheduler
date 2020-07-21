@@ -6,82 +6,68 @@
       <!--Footer-->
       <div class="flex justify-end pt-2">
         <div
-          v-for="occupation in result.currentUser.occupations.nodes"
-          :key="occupation.id"
+          v-for="recruitment in recruitments"
+          :key="'radio-' + recruitment.id"
         >
           <label class="ml-3">
             <input
               type="radio"
-              :value="occupation.id"
-              v-model="state.selectedOccupationId"
+              :value="recruitment.id"
+              v-model="state.selectedRecruitmentId"
             />
-            {{ occupation.name }}
+            {{ recruitment.occupation.name }}/{{
+              recruitment.individualUser.name
+            }}
           </label>
         </div>
-        <div v-if="state.selectedOccupation">
-          <span>応募経路</span>
-          <p>{{ state.selectedOccupation.applyFrom }}</p>
-          <span>所要時間</span>
-          <p>{{ state.selectedOccupation.requiredTime }}時間</p>
-          <span>訪問場所</span>
-          <p>{{ state.selectedOccupation.address }}</p>
-          <span>持ち物</span>
-          <p>{{ state.selectedOccupation.item }}</p>
-        </div>
-        <template v-if="!blankSchedule">
-          <div
-            v-for="entryUsers in result.currentUser.individualUsers.nodes"
-            :key="entryUsers.id"
-          >
-            <label class="ml-3">
-              <input
-                type="radio"
-                :value="entryUsers.id"
-                v-model="state.selectedIndividualUserId"
-              />
-              {{ entryUsers.name }}
-            </label>
+        <div v-for="recruitment in recruitments" :key="recruitment.id">
+          <div v-if="state.selectedRecruitmentId === recruitment.id">
+            <span>応募経路</span>
+            <p>{{ recruitment.occupation.applyFrom }}</p>
+            <span>所要時間</span>
+            <p>{{ recruitment.occupation.requiredTime }}時間</p>
+            <span>訪問場所</span>
+            <p>{{ recruitment.occupation.address }}</p>
+            <span>持ち物</span>
+            <p>{{ recruitment.occupation.item }}</p>
           </div>
-        </template>
-        <button
-          class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
-          @click="
-            submit(
-              state.selectedIndividualUserId || blankSchedule.requester.id,
-              startAt,
-              endAt,
-              state.selectedOccupationId
-            )
-          "
-        >
-          面接日程をリクエストする
-        </button>
+          <div v-if="state.selectedRecruitmentId === recruitment.id">
+            <button
+              class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
+              @click="
+                submit(
+                  recruitment.individualUser.id,
+                  startAt,
+                  endAt,
+                  recruitment.occupation.id
+                )
+              "
+            >
+              面接日程をリクエストする
+            </button>
+          </div>
+        </div>
       </div>
     </template>
   </modal>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import {
   defineComponent,
   reactive,
-  computed,
-  PropType
+  PropType,
+  watch
 } from '@vue/composition-api'
-import { useMutation } from '@vue/apollo-composable'
+import { useMutation, useResult } from '@vue/apollo-composable'
 import {
   useCurrentUserQuery,
   Schedule,
   RequestScheduleToIndividualUserMutation,
   RequestScheduleToIndividualUserMutationVariables,
-  RequestScheduleToIndividualUserDocument,
-  RequestScheduleToOccupationMutation,
-  RequestScheduleToOccupationMutationVariables,
-  RequestScheduleToOccupationDocument
+  RequestScheduleToIndividualUserDocument
 } from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
-import { Occupation, ScheduleConnection } from 'graphql/types'
 
 export default defineComponent({
   components: { Modal },
@@ -98,17 +84,21 @@ export default defineComponent({
     >(RequestScheduleToIndividualUserDocument)
 
     const { result } = useCurrentUserQuery()
+    const recruitments = useResult(result, [], (data) =>
+      data.currentUser.recruitements.nodes.filter(
+        (it) =>
+          !props.blankSchedule ||
+          it.individualUser.id === props.blankSchedule.requester.id
+      )
+    )
 
     const state = reactive({
-      selectedOccupationId: null,
-      selectedIndividualUserId: null,
-      selectedOccupation: computed(() => {
-        if (state.selectedOccupationId) {
-          return result.value.currentUser.occupations.nodes.find(
-            (e) => e.id == state.selectedOccupationId
-          )
-        }
-      })
+      selectedRecruitmentId: null,
+      selectedIndividualUserId: null
+    })
+
+    watch(recruitments, (data) => {
+      state.selectedRecruitmentId = data[0]?.id
     })
 
     const submit = (
@@ -131,7 +121,7 @@ export default defineComponent({
       context.emit('input', false)
     }
 
-    return { state, submit, result, close }
+    return { state, submit, recruitments, close }
   }
 })
 </script>
