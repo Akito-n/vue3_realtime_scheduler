@@ -15,8 +15,7 @@ class Mutations::RespondSchedule < Mutations::BaseMutation
     user = context[:current_user]
     ActiveRecord::Base.transaction do
       is_accept ? schedule.accept! : schedule.reject!
-      AppSchema.subscriptions.trigger('schedules', { occupation_ids: [] }, {})
-      AppSchema.subscriptions.trigger('individual_tasks', {}, {})
+      subscription_trigger
       {
         schedule: schedule
       }

@@ -1,5 +1,21 @@
 subscription companyTasksSubscription {
   companyTasks {
+    recruitements {
+      nodes {
+        id
+        createdAt
+        stageCount
+        isFixed
+        individualUser {
+          id
+          name
+        }
+        occupation {
+          id
+          name
+        }
+      }
+    }
     nonactiveRecruitements {
       nodes {
         id

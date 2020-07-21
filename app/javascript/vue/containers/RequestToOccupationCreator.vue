@@ -118,7 +118,7 @@ export default defineComponent({
       })
     }
     onDone(() => {
-      close
+      close()
     })
 
     const close = () => {

@@ -1,0 +1,7 @@
+mutation proceedRecruitement($input: ProceedRecruitementInput!) {
+  proceedRecruitement(input: $input) {
+    recruitement {
+      id
+    }
+  }
+}

@@ -37,7 +37,6 @@ export default defineComponent({
     const selected = ref(props.value)
 
     const change = () => {
-      console.log('kousin')
       context.emit('input', selected.value)
     }
 
