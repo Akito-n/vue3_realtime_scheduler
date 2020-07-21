@@ -229,26 +229,6 @@ export type Member = {
   role: Scalars['String'];
 };
 
-/** The connection type for Member. */
-export type MemberConnection = {
-  __typename?: 'MemberConnection';
-  /** A list of edges. */
-  edges?: Maybe<Array<Maybe<MemberEdge>>>;
-  /** A list of nodes. */
-  nodes?: Maybe<Array<Maybe<Member>>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-};
-
-/** An edge in a connection. */
-export type MemberEdge = {
-  __typename?: 'MemberEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node?: Maybe<Member>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   addBlankSchedule?: Maybe<AddBlankSchedulePayload>;
@@ -543,11 +523,11 @@ export type User = {
   companyOccupations: OccupationConnection;
   email?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  individualUsers: MemberConnection;
   isCompany: Scalars['Boolean'];
   isIndividual: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
   occupations: OccupationConnection;
+  recruitements: RecruitementConnection;
   role: Scalars['String'];
 };
 
@@ -560,7 +540,7 @@ export type UserCompanyOccupationsArgs = {
 };
 
 
-export type UserIndividualUsersArgs = {
+export type UserOccupationsArgs = {
   after?: Maybe<Scalars['String']>;
   before?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
@@ -568,7 +548,7 @@ export type UserIndividualUsersArgs = {
 };
 
 
-export type UserOccupationsArgs = {
+export type UserRecruitementsArgs = {
   after?: Maybe<Scalars['String']>;
   before?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
@@ -794,11 +774,18 @@ export type CurrentUserQuery = (
         { __typename?: 'Occupation' }
         & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
       )>>> }
-    ), individualUsers: (
-      { __typename?: 'MemberConnection' }
+    ), recruitements: (
+      { __typename?: 'RecruitementConnection' }
       & { nodes?: Maybe<Array<Maybe<(
-        { __typename?: 'Member' }
-        & Pick<Member, 'id' | 'name'>
+        { __typename?: 'Recruitement' }
+        & Pick<Recruitement, 'id'>
+        & { individualUser: (
+          { __typename?: 'Member' }
+          & Pick<Member, 'id' | 'name'>
+        ), occupation: (
+          { __typename?: 'Occupation' }
+          & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+        ) }
       )>>> }
     ) }
   )> }
@@ -1352,10 +1339,23 @@ export const CurrentUserDocument = gql`
         requiredTime
       }
     }
-    individualUsers {
+    recruitements {
       nodes {
         id
-        name
+        individualUser {
+          id
+          name
+        }
+        occupation {
+          id
+          name
+          address
+          applyFrom
+          memo
+          item
+          companyName
+          requiredTime
+        }
       }
     }
   }

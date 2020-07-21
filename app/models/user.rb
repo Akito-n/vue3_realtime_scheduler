@@ -40,6 +40,7 @@ class User < ApplicationRecord
   enum role: { individual: 0, company: 1, admin: 9 }
 
   has_many :blank_schedules, as: :schedulable
+  #管理できる案件
   has_many :occupations
   #法人からみる応募
   has_many :recruitements, foreign_key: :company_user_id
