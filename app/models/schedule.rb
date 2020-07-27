@@ -36,6 +36,7 @@ class Schedule < ApplicationRecord
       recruitement = occupation.recruitements.find_by(individual_user_id: self.respond_individual_user_id)
       recruitement.update!(stage_count: recruitement.stage_count + 1, is_fixed: true )
       update!(accepted_at: Time.zone.now, status: :accept)
+      Schedule.not_status_accept.where(requester: requester, responder: responder).or(Schedule.not_status_accept.where(responder: requester, requester: responder)).delete_all
       BlankSchedule.hollow_out!([requester, responder], start_at: start_at, end_at: end_at)
     end
   end
