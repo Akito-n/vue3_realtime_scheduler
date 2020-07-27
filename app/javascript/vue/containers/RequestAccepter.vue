@@ -11,6 +11,10 @@
         }}
 
         <div v-if="schedule.occupation">
+          <template v-if="currentUser.isCompany">
+            <p>応募者名</p>
+            <span>{{ schedule | userName() }}</span>
+          </template>
           <p>案件名</p>
           <span
             >{{ schedule.occupation.companyName }}:{{
@@ -66,7 +70,8 @@ import {
   RespondScheduleMutationVariables,
   RespondScheduleDocument,
   RespondScheduleMutation,
-  useScheduleQuery
+  useScheduleQuery,
+  useCurrentUserQuery
 } from '@/graphql/types'
 import Modal from '@/vue/components/Modal.vue'
 import ConfirmDialog from '@/vue/components/ConfirmDialog.vue'
@@ -91,6 +96,13 @@ export default defineComponent({
       RespondScheduleMutation,
       RespondScheduleMutationVariables
     >(RespondScheduleDocument)
+
+    const currentUserRef = useCurrentUserQuery()
+    const currentUser = useResult(
+      currentUserRef.result,
+      {},
+      (data) => data.currentUser
+    )
 
     const submit = (scheduleId: string) => {
       console.log(scheduleId)
@@ -120,7 +132,7 @@ export default defineComponent({
       }
     )
 
-    return { submit, cancel, state, schedule, close }
+    return { currentUser, submit, cancel, state, schedule, close }
   }
 })
 </script>

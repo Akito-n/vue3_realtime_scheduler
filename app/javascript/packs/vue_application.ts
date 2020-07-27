@@ -7,12 +7,14 @@ import { DefaultApolloClient } from '@vue/apollo-composable'
 import VueRouter from 'vue-router'
 import { routes } from '@/vue/routes'
 import { dateFilter } from '@/vue/filters/date'
+import { scheduleFilter } from '@/vue/filters/schedule'
 
 Vue.use(VueApollo)
 Vue.use(VueCompositionApi)
 Vue.use(VueRouter)
 
 dateFilter()
+scheduleFilter()
 
 const router = new VueRouter({
   mode: 'history',
