@@ -18,7 +18,7 @@ class Subscriptions::CompanySchedules < Subscriptions::BaseSubscription
         schedules = Schedule.where(requester: users, responder: context[:current_user].occupations).or(Schedule.where(requester: context[:current_user].occupations, responder: users)).to_a
       elsif occupations.present?
         entry_users = User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations))
-        schedules = Schedule.where(requester: users, responder: context[:current_user].occupations).or(Schedule.where(requester: context[:current_user].occupations, responder: users)).to_a
+        schedules = Schedule.where(requester: entry_users, responder: context[:current_user].occupations).or(Schedule.where(requester: context[:current_user].occupations, responder: entry_users)).to_a
       end
       blank_schedules = BlankSchedule.where(schedulable: entry_users).to_a
       return {
