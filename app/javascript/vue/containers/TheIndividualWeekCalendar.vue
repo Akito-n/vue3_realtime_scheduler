@@ -27,7 +27,8 @@ import {
   addWeeks,
   addHours,
   addMinutes,
-  areIntervalsOverlapping
+  areIntervalsOverlapping,
+  differenceInHours
 } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
@@ -98,14 +99,6 @@ export default defineComponent({
       times.push(i)
     }
 
-    // watch(
-    //   () => context.root.$route,
-    //   (r) => {
-    //     const { year, month, day } = r.params
-    //     load(year, month, day)
-    //   }
-    // )
-
     const select = ({
       blankSchedule,
       dateString,
@@ -123,10 +116,22 @@ export default defineComponent({
         new Date()
       )
       state.selectedStartAt = date
-      state.selectedEndAt = addMinutes(date, 30)
+      state.selectedEndAt = addHours(date, 1)
       if (!blankSchedule) {
         state.isRequested = true
         return
+      } else {
+        state.selectedStartAt = new Date(blankSchedule.startAt)
+        if (
+          differenceInHours(
+            new Date(blankSchedule.endAt),
+            new Date(blankSchedule.startAt)
+          ) < 2
+        ) {
+          state.selectedEndAt = new Date(blankSchedule.endAt)
+        } else {
+          state.selectedEndAt = addHours(new Date(blankSchedule.startAt), 1)
+        }
       }
       //自分のリクエストだった場合、編集モーダルを出す
       if (blankSchedule.mine) {
