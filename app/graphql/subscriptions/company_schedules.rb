@@ -10,15 +10,19 @@ class Subscriptions::CompanySchedules < Subscriptions::BaseSubscription
 
   def subscribe(occupations:, users:)
     if occupations.present? || users.present?
-      entry_users = if occupations.present? && !users.present?
-                      User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations))
-                    elsif !occupations.present? && users.present?
-                      users
-                    elsif occupations.present? && users.present?
-                      User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations)).where(id: users)
-                    end
+      if occupations.present? && users.present?
+        entry_users = User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations)).where(id: users)
+        schedules = Schedule.where(requester: users, responder: occupations).or(Schedule.where(requester: occupations, responder: users)).to_a
+      elsif users.present?
+        entry_users = users
+        schedules = Schedule.where(requester: users, responder: context[:current_user].occupations).or(Schedule.where(requester: context[:current_user].occupations, responder: users)).to_a
+      elsif occupations.present?
+        entry_users = User.where(entries: Recruitement.joins(:individual_user).where(occupation: occupations))
+        schedules = Schedule.where(requester: entry_users, responder: context[:current_user].occupations).or(Schedule.where(requester: context[:current_user].occupations, responder: entry_users)).to_a
+      end
+      blank_schedules = BlankSchedule.where(schedulable: entry_users).to_a
       return {
-        schedules: BlankSchedule.where(schedulable: entry_users)
+        schedules: blank_schedules + schedules
       }
     end
 
