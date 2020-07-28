@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { Schedule } from 'graphql/types'
+import { differenceInMinutes } from 'date-fns'
 
 export const scheduleFilter = () => {
   Vue.filter('requestIndividualName', (value: Schedule) => {
@@ -10,8 +11,10 @@ export const scheduleFilter = () => {
       return value.responder.name
     }
   })
-  Vue.filter('excludeMySchedules', (value: Schedule) => {
+  Vue.filter('sample', (value: Schedule) => {
     if (!value) return ''
-    return value.mine
+    return (
+      differenceInMinutes(new Date(value.endAt), new Date(value.startAt)) / 30
+    )
   })
 }

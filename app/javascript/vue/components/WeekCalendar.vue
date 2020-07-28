@@ -39,7 +39,7 @@
           <div
             v-for="(day, i) in state.days"
             :key="i"
-            class="w-40 h-10 text-center"
+            class="w-32 h-10 text-center"
           >
             {{ format(day, 'dd(E)', { locale: jaLocale }) }}
           </div>
@@ -65,7 +65,7 @@
                     minute
                   )
                 "
-                class="bg-gray-100 w-40 h-10 schedule-cell relative"
+                class="bg-gray-100 w-32 h-10 schedule-cell relative"
                 :class="`day-${day} hour-${hour} ${
                   minute === 0 ? 'border-b-0' : ''
                 }`"
@@ -87,10 +87,9 @@
                   >
                     <span
                       v-if="displayableInformation(schedule, day, hour, minute)"
-                      class="text-sm"
+                      class="text-sm text-white"
                     >
-                      {{ schedule.requester.companyName }}
-                      {{ schedule.isRequest ? schedule.status : '面接可能' }}
+                      {{ schedule | sample() }}
                     </span>
                   </div>
                 </div>
