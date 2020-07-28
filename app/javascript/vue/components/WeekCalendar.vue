@@ -74,7 +74,7 @@
                   <div
                     v-for="(schedule, i) in getSchedules(day, hour, minute)"
                     :key="i"
-                    class="schedule-cell--blank max-w-3/4 min-h-full flex-grow h-48 z-10 overflow-visible"
+                    class="schedule-cell--blank max-w-3/4 min-h-full flex-grow h-10 z-10 overflow-visible"
                     :class="`bg-${schedule.requester.color}-400`"
                     @click.stop="
                       select(

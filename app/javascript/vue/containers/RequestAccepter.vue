@@ -13,7 +13,7 @@
         <div v-if="schedule.occupation">
           <template v-if="currentUser.isCompany">
             <p>応募者名</p>
-            <span>{{ schedule | userName() }}</span>
+            <span>{{ schedule | requestIndividualName() }}</span>
           </template>
           <p>案件名</p>
           <span
