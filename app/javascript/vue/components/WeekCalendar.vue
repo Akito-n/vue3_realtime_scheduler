@@ -14,9 +14,9 @@
         <div
           v-for="(time, t) in times"
           :key="`time-${t}`"
-          class="w-3 h-10 flex justify-end items-end border-b-2"
+          class="w-3 h-20 flex justify-end items-end border-b-2"
         >
-          <span class="-mb-2 mr-4 whitespace-no-wrap">{{ time }}時</span>
+          <span class="-mb-2 mr-4 whitespace-no-wrap">{{ time }}:00</span>
         </div>
       </div>
       <div>
@@ -26,14 +26,12 @@
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             <font-awesome-icon icon="chevron-left" />
-            前週
           </router-link>
           {{ state.currentWeek }}
           <router-link
             :to="`/calendar/week/${state.nextWeek}`"
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            翌週
             <font-awesome-icon icon="chevron-right" />
           </router-link>
         </div>
@@ -67,36 +65,37 @@
                     minute
                   )
                 "
-                class="bg-gray-200 w-40 h-5 schedule-cell relative"
+                class="bg-gray-100 w-40 h-10 schedule-cell relative"
                 :class="`day-${day} hour-${hour} ${
                   minute === 0 ? 'border-b-0' : ''
                 }`"
               >
                 <div class="flex row justify-start">
                   <div
-                    v-for="(blankSchedule, i) in getSchedules(
-                      day,
-                      hour,
-                      minute
-                    )"
+                    v-for="(schedule, i) in getSchedules(day, hour, minute)"
                     :key="i"
-                    class="schedule-cell--blank min-h-full flex-grow"
-                    :class="`bg-${blankSchedule.requester.color}-400`"
+                    class="schedule-cell--blank max-w-3/4 min-h-full flex-grow h-10 z-10"
+                    :class="`bg-${schedule.requester.color}-400`"
                     @click.stop="
                       select(
-                        blankSchedule,
+                        schedule,
                         format(day, 'yyyy-MM-dd', { locale: jaLocale }),
                         hour,
                         minute
                       )
                     "
                   >
-                    {{ blankSchedule.requester.companyName }}
-                    {{
-                      blankSchedule.isRequest
-                        ? blankSchedule.status
-                        : blankSchedule.requester.name
-                    }}
+                    <span
+                      v-if="displayableInformation(schedule, day, hour, minute)"
+                      class="text-sm"
+                    >
+                      {{ schedule.requester.companyName }}
+                      {{
+                        schedule.isRequest
+                          ? schedule.status
+                          : schedule.requester.name
+                      }}
+                    </span>
                   </div>
                 </div>
                 <div
@@ -168,13 +167,33 @@ export default defineComponent({
       const current = parse(`${year}-${month}-${day}`, 'yyyy-MM-dd', new Date())
       state.lastWeek = format(addWeeks(current, -1), 'yyyy/MM/dd')
       state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
-      console.log(state)
 
       state.days = daysOfWeek(current)
       state.currentWeek = `${format(current, 'M月')} ${format(
         state.days[0],
         'dd'
       )}～${format(state.days[6], 'dd')}日`
+    }
+
+    const displayableInformation = (
+      schedule: Schedule,
+      day: number | Date,
+      hours: number,
+      minutes: number
+    ) => {
+      if (!schedule && !day && !hours && !minutes) return ''
+
+      let criteriaTime = addHours(day, hours)
+      criteriaTime = addMinutes(criteriaTime, minutes)
+      const endTime = addMinutes(new Date(schedule.startAt), 10)
+
+      return areIntervalsOverlapping(
+        {
+          start: new Date(schedule.startAt),
+          end: endTime
+        },
+        { start: criteriaTime, end: addMinutes(criteriaTime, 30) }
+      )
     }
 
     watch(
@@ -199,7 +218,8 @@ export default defineComponent({
       state,
       format,
       jaLocale,
-      select
+      select,
+      displayableInformation
     }
   }
 })
