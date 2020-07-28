@@ -58,12 +58,14 @@ export default defineComponent({
 
       return result.value.companySchedules.schedules.nodes.filter(
         (schedule) => {
-          return areIntervalsOverlapping(
-            {
-              start: new Date(schedule.startAt),
-              end: new Date(schedule.endAt)
-            },
-            { start: day, end: addDays(day, 1) }
+          return (
+            areIntervalsOverlapping(
+              {
+                start: new Date(schedule.startAt),
+                end: new Date(schedule.endAt)
+              },
+              { start: day, end: addDays(day, 1) }
+            ) && !schedule.mine
           )
         }
       )

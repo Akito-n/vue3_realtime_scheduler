@@ -6,14 +6,12 @@
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         <font-awesome-icon icon="chevron-left" />
-        前月
       </router-link>
       <div>{{ state.currentMonth | date('M') }}月</div>
       <router-link
         :to="`/calendar/month/${state.next}`"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        翌月
         <font-awesome-icon icon="chevron-right" />
       </router-link>
     </div>
@@ -51,9 +49,9 @@
                 class="calender__schedule-circle calender__schedule-circle--inline"
                 :class="`bg-${schedule.requester.color}-400`"
               ></span>
-              <span class="calender__schedule-font--month">{{
-                scheduleFormatter(schedule)
-              }}</span>
+              <span class="calender__schedule-font--month">
+                {{ schedule.requester.name }}
+              </span>
             </div>
           </div>
         </div>
@@ -81,6 +79,7 @@ import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import { routes } from 'vue/routes'
 import { useSubscription } from '@vue/apollo-composable'
+import { Occupation } from 'graphql/types'
 
 interface State {
   currentMonth: Date
@@ -128,7 +127,6 @@ export default defineComponent({
       state.days = tempdays
     }
 
-    // // 名前
     const scheduleFormatter = (schedule: Schedule) => {
       const startAt = format(Date.parse(schedule.startAt), 'ah:mm', {
         locale: jaLocale
