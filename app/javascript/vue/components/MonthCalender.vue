@@ -164,9 +164,9 @@ export default defineComponent({
     }
   }
   &__schedule-circle {
-    height: 10px
-    width: 10px
-    border-radius: 50%
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
 
 
     &--inline {
