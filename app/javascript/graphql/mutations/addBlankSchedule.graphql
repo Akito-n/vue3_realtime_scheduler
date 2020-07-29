@@ -1,6 +1,6 @@
 mutation addBlankSchedule($input: AddBlankScheduleInput!) {
   addBlankSchedule(input: $input) {
-    blankSchedule {
+    blankSchedules {
       id
       startAt
       endAt
