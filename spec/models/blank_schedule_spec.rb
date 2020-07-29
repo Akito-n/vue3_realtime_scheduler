@@ -83,4 +83,46 @@ RSpec.describe BlankSchedule, type: :model do
       end
     end
   end
+
+  describe '#create_from_range!' do
+    include_context '転職活動者と応募企業'
+
+    subject { -> { BlankSchedule.create_from_range!(schedulable: user, start_at: start_at, end_at: end_at) } }
+    context 'その日' do
+      let(:start_at) { Time.zone.parse('2020-07-29 10:30') }
+      let(:end_at) { Time.zone.parse('2020-07-29 17:30') }
+
+      it '1つだけ作られる' do
+        is_expected.to change{ BlankSchedule.count }.by 1
+        expect(BlankSchedule.order(:created_at).first.start_at).to eq(start_at)
+        expect(BlankSchedule.order(:created_at).first.end_at).to eq(end_at)
+      end
+    end
+
+    context 'その日から翌日' do
+      let(:start_at) { Time.zone.parse('2020-07-29 15:30') }
+      let(:end_at) { Time.zone.parse('2020-07-30 9:30') }
+
+      it '2つ作られる' do
+        is_expected.to change{ BlankSchedule.count }.by 2
+        expect(BlankSchedule.order(:created_at).first.start_at).to eq(start_at)
+        expect(BlankSchedule.order(:created_at).first.end_at).to eq(Time.zone.parse('2020-07-30 00:00'))
+        expect(BlankSchedule.order(:created_at).second.start_at).to eq(Time.zone.parse('2020-07-30 00:00'))
+        expect(BlankSchedule.order(:created_at).second.end_at).to eq(end_at)
+      end
+    end
+
+    context 'その日から1週間' do
+      let(:start_at) { Time.zone.parse('2020-07-29 12:30') }
+      let(:end_at) { Time.zone.parse('2020-08-04 8:30') }
+
+      it '7つ作られる' do
+        is_expected.to change{ BlankSchedule.count }.by 7
+        expect(BlankSchedule.order(:created_at).first.start_at).to eq(start_at)
+        expect(BlankSchedule.order(:created_at).first.end_at).to eq(Time.zone.parse('2020-07-30 00:00'))
+        expect(BlankSchedule.order(:created_at).last.start_at).to eq(Time.zone.parse('2020-08-04 00:00'))
+        expect(BlankSchedule.order(:created_at).last.end_at).to eq(end_at)
+      end
+    end
+  end
 end
