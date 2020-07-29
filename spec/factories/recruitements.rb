@@ -24,7 +24,7 @@
 #
 FactoryBot.define do
   factory :recruitement do
-    user { nil }
+    individual_user { nil }
     company_user { nil }
   end
 end
