@@ -71,27 +71,39 @@
                 }`"
               >
                 <div class="flex row justify-start">
-                  <div
+                  <template
                     v-for="(schedule, i) in getSchedules(day, hour, minute)"
-                    :key="i"
-                    class="schedule-cell--blank max-w-3/4 min-h-full flex-grow h-10 z-10 overflow-visible"
-                    :class="`bg-${schedule.requester.color}-400`"
-                    @click.stop="
-                      select(
-                        schedule,
-                        format(day, 'yyyy-MM-dd', { locale: jaLocale }),
-                        hour,
-                        minute
-                      )
-                    "
                   >
-                    <span
+                    <div
                       v-if="displayableInformation(schedule, day, hour, minute)"
-                      class="text-sm text-white"
+                      :key="i"
+                      class="max-w-3/4 min-h-full flex-grow z-10 items-center justify-center flex mr-2"
+                      :class="`bg-${
+                        schedule.requester.color
+                      }-400 cell-h-${scheduleCellCounts(schedule)}`"
+                      @click.stop="
+                        select(
+                          schedule,
+                          format(day, 'yyyy-MM-dd', { locale: jaLocale }),
+                          hour,
+                          minute
+                        )
+                      "
                     >
-                      {{ schedule | sample() }}
-                    </span>
-                  </div>
+                      <div
+                        v-if="
+                          displayableInformation(schedule, day, hour, minute)
+                        "
+                        class="text-sm text-white text-center"
+                      >
+                        {{
+                          schedule.requester.companyName ||
+                          schedule.requester.name
+                        }}
+                        {{ schedule.isRequest ? schedule.status : '' }}
+                      </div>
+                    </div>
+                  </template>
                 </div>
                 <div
                   class="schedule-cell--border inset-0 absolute pointer-events-none"
@@ -115,7 +127,8 @@ import {
   addWeeks,
   addHours,
   addMinutes,
-  areIntervalsOverlapping
+  areIntervalsOverlapping,
+  differenceInMinutes
 } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
@@ -208,13 +221,23 @@ export default defineComponent({
       context.emit('select', { blankSchedule, dateString, hour, minute })
     }
 
+    const scheduleCellCounts = (schedule: Schedule) => {
+      return (
+        differenceInMinutes(
+          new Date(schedule.endAt),
+          new Date(schedule.startAt)
+        ) / 30
+      )
+    }
+
     return {
       times,
       state,
       format,
       jaLocale,
       select,
-      displayableInformation
+      displayableInformation,
+      scheduleCellCounts
     }
   }
 })
