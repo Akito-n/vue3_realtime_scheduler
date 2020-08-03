@@ -806,13 +806,19 @@ export type CompanySchedulesSubscription = (
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Schedule' }
         & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'isRequest' | 'status'>
-        & { requester: (
+        & { occupation?: Maybe<(
+          { __typename?: 'Occupation' }
+          & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+        )>, requester: (
           { __typename: 'Member' }
           & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
         ) | (
           { __typename: 'Occupation' }
           & Pick<Occupation, 'id' | 'name' | 'color' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
-        ) }
+        ), responder?: Maybe<(
+          { __typename?: 'Member' }
+          & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
+        )> }
       )>>> }
     ) }
   ) }
@@ -1398,6 +1404,16 @@ export const CompanySchedulesDocument = gql`
         mine
         isRequest
         status
+        occupation {
+          id
+          name
+          address
+          applyFrom
+          memo
+          item
+          companyName
+          requiredTime
+        }
         requester {
           __typename
           ... on Member {
@@ -1417,6 +1433,12 @@ export const CompanySchedulesDocument = gql`
             companyName
             requiredTime
           }
+        }
+        responder {
+          id
+          name
+          color
+          companyName
         }
       }
     }
