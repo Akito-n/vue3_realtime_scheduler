@@ -24,14 +24,18 @@ export const scheduleFilter = () => {
         return '【面接可能】'
       }
     } else {
+      const name =
+        value.requester.__typename == 'Member'
+          ? value.requester.name
+          : value.responder.name
       if (value.isRequest && value.status == '確定済み') {
-        return '【面接】' + value.responder.companyName
+        return '【面接】' + name + '様'
       } else if (value.isRequest && value.mine) {
-        return '【リクエスト送信】' + value.responder.companyName
+        return '【リクエスト送信】' + value.occupation.name
       } else if (value.isRequest && !value.mine) {
-        return '【リクエスト受信】' + value.responder.companyName
+        return '【リクエスト受信】' + name + '様'
       } else {
-        return '【面接可能】'
+        return '【面接可能】' + name + '様'
       }
     }
   })
