@@ -2,14 +2,12 @@
   <div>
     <schedule-creator />
     <schedule-updater />
-    <template v-if="currentUserQuery.loading">
-      <week-calendar
-        :getSchedules="getSchedules"
-        :loading="loading"
-        :currentUser="currentUser"
-        @select="select"
-      />
-    </template>
+    <week-calendar
+      :getSchedules="getSchedules"
+      :loading="loading"
+      :currentUser="currentUser"
+      @select="select"
+    />
     <request-to-occupation-creator
       v-model="state.isRequested"
       :blankSchedule.sync="state.selectedSchedule"
@@ -177,7 +175,6 @@ export default defineComponent({
       format,
       jaLocale,
       select,
-      currentUserQuery,
       currentUser
     }
   }
