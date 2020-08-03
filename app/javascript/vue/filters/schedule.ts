@@ -30,6 +30,7 @@ export const scheduleFilter = () => {
         if (value.mine) {
           return '【面接枠】' + value.requester.name
         } else {
+          //MEMO: 表示数の制限をかけたいとの希望でsliceしている。ダミーデータは二文字の苗字しかないので対応可能だが、それ以外のケースを存在させる場合はsliceは取る必要がある
           return '【面接可能】' + value.requester.name.slice(0, 2) + '様'
         }
       } else {
