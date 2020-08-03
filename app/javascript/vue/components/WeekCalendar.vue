@@ -77,7 +77,7 @@
                     <div
                       v-if="displayableInformation(schedule, day, hour, minute)"
                       :key="i"
-                      class="max-w-3/4 min-h-full flex-grow z-10 items-center justify-center flex mr-2"
+                      class="max-w-3/4 min-h-full flex-grow z-10 items-center justify-center flex mr-2 rounded-md"
                       :class="`bg-${
                         schedule.requester.color
                       }-400 cell-h-${scheduleCellCounts(schedule)}`"

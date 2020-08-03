@@ -27,8 +27,12 @@
     </div>
     <div v-else>
       <div class="flex row justify-around items-center">
-        <div v-for="(elementaly, i) in elementalies" :key="i">
-          <div class="border-l border-t border-r text-center pt-2 w-40 h-10">
+        <div
+          v-for="(elementaly, i) in elementalies"
+          :key="i"
+          class="w-40 h-10 pt-2"
+        >
+          <div class="border-l border-t border-r text-center">
             {{ elementaly }}
           </div>
         </div>
@@ -39,8 +43,10 @@
         :key="`week-${i}`"
       >
         <div v-for="(day, j) in week" :key="`day-${j}`">
-          <div class="border text-center w-40 h-20">
-            {{ day | date('dd') }}
+          <div class="border text-center w-40 h-32">
+            <div class="text-right text-gray-600 pr-3">
+              {{ day | date('dd') }}
+            </div>
             <div
               v-for="(schedule, i) in getSchedules(day).slice(0, 2)"
               :key="i"
