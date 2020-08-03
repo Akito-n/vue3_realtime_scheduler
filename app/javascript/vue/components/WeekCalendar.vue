@@ -94,7 +94,8 @@
                         v-if="
                           displayableInformation(schedule, day, hour, minute)
                         "
-                        class="text-sm text-white text-center"
+                        class="text-sm text-white text-center items-center justify-center flex"
+                        :class="`cell-h-${scheduleCellCounts(schedule)}`"
                       >
                         {{ schedule | calenderInformation(currentUser) }}
                       </div>
