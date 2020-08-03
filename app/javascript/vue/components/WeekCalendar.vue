@@ -96,11 +96,7 @@
                         "
                         class="text-sm text-white text-center"
                       >
-                        {{
-                          schedule.requester.companyName ||
-                          schedule.requester.name
-                        }}
-                        {{ schedule.isRequest ? schedule.status : '' }}
+                        {{ schedule | calenderInformation(currentUser) }}
                       </div>
                     </div>
                   </template>
@@ -140,7 +136,7 @@ import {
   computed,
   PropType
 } from '@vue/composition-api'
-import { Schedule } from '@/graphql/types'
+import { Schedule, User } from '@/graphql/types'
 import { routes } from 'vue/routes'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 
@@ -149,7 +145,8 @@ export default defineComponent({
     getSchedules: Function as PropType<
       (day: Date, hours: number, minutes: number) => any[]
     >,
-    loading: Boolean as PropType<boolean>
+    loading: Boolean as PropType<boolean>,
+    currentUser: Object as PropType<User>
   },
   components: {},
   setup(props, context) {
