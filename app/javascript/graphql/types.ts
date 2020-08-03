@@ -474,7 +474,7 @@ export type Schedule = {
   mine: Scalars['Boolean'];
   occupation?: Maybe<Occupation>;
   requester: ScheduleRequester;
-  responder: Member;
+  responder?: Maybe<Member>;
   startAt?: Maybe<Scalars['DateTime']>;
   status: Scalars['String'];
 };
@@ -587,10 +587,10 @@ export type ScheduleItemFragment = (
   ) | (
     { __typename: 'Occupation' }
     & Pick<Occupation, 'id' | 'name' | 'companyName'>
-  ), responder: (
+  ), responder?: Maybe<(
     { __typename?: 'Member' }
     & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
-  ) }
+  )> }
 );
 
 export type AddBlankScheduleMutationVariables = {
@@ -884,7 +884,20 @@ export type IndividualSchedulesSubscription = (
       { __typename?: 'ScheduleConnection' }
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Schedule' }
-        & ScheduleItemFragment
+        & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'isRequest' | 'status'>
+        & { occupation?: Maybe<(
+          { __typename?: 'Occupation' }
+          & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+        )>, requester: (
+          { __typename: 'Member' }
+          & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
+        ) | (
+          { __typename: 'Occupation' }
+          & Pick<Occupation, 'id' | 'name' | 'color' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+        ), responder?: Maybe<(
+          { __typename?: 'Member' }
+          & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
+        )> }
       )>>> }
     ) }
   ) }
@@ -1508,12 +1521,53 @@ export const IndividualSchedulesDocument = gql`
   individualSchedules {
     schedules {
       nodes {
-        ...ScheduleItem
+        id
+        startAt
+        endAt
+        mine
+        isRequest
+        status
+        occupation {
+          id
+          name
+          address
+          applyFrom
+          memo
+          item
+          companyName
+          requiredTime
+        }
+        requester {
+          __typename
+          ... on Member {
+            id
+            name
+            color
+            companyName
+          }
+          ... on Occupation {
+            id
+            name
+            color
+            address
+            applyFrom
+            memo
+            item
+            companyName
+            requiredTime
+          }
+        }
+        responder {
+          id
+          name
+          color
+          companyName
+        }
       }
     }
   }
 }
-    ${ScheduleItemFragmentDoc}`;
+    `;
 
 /**
  * __useIndividualSchedulesSubscription__
