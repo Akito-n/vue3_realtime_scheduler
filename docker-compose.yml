@@ -22,7 +22,6 @@ services:
     environment:
       - LANG=C.UTF-8
       - BUNDLE_PATH=vendor/bundle
-      - RAILS_ENV=development
       - WEBPACKER_DEV_SERVER_HOST=webpacker
       - WEBPACKER_DEV_SERVER_PUBLIC=webpacker:3035
     env_file: ./.env

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "GraphQL::Autotest" do
-  it do
+  xit do
     expect {
       runner = GraphQL::Autotest::Runner.new(
         schema: AppSchema,

@@ -72,4 +72,15 @@ class BlankSchedule < ApplicationRecord
   def can_write?(user)
     user.my_schedulable_array.include?(schedulable)
   end
+
+  def self.create_from_range!(schedulable:, start_at:, end_at:)
+    time = start_at
+    results = []
+    while time < end_at do
+      end_of_day = time.tomorrow.beginning_of_day
+      results << schedulable.blank_schedules.create!(start_at: time, end_at: end_of_day < end_at ? end_of_day : end_at)
+      time = end_of_day
+    end
+    results
+  end
 end

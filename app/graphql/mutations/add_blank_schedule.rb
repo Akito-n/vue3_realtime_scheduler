@@ -5,7 +5,7 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
   argument :end_at, Types::Scalars::DateTime, required: true
   argument :occupation_id, ID, required: false
 
-  field :blank_schedule, Types::Objects::ScheduleType, null: true
+  field :blank_schedules, [Types::Objects::ScheduleType], null: true
   #field :user, Types::Objects::UserType, null: true
 
   def authorized?(**args)
@@ -15,24 +15,21 @@ class Mutations::AddBlankSchedule < Mutations::BaseMutation
   def resolve(start_at:, end_at:, occupation_id: nil)
     user = context[:current_user]
     if user.individual?
-      blank_schedule = user.blank_schedules.build(start_at: start_at, end_at: end_at)
+      schedulable = user
     else
-      occupation = AppSchema.object_from_id(occupation_id, context)
-      blank_schedule = occupation.blank_schedules.build(start_at: start_at, end_at: end_at)
+      schedulable = AppSchema.object_from_id(occupation_id, context)
     end
-    if blank_schedule.save
+
+    ActiveRecord::Base.transaction do
+      blank_schedules = BlankSchedule.create_from_range!(schedulable: schedulable, start_at: start_at, end_at: end_at)
+
       subscription_trigger
       {
-        blank_schedule: blank_schedule
+        blank_schedules: blank_schedules
       }
-    else
-      set_errors(blank_schedule)
-      return
     end
-  end
-
-  def set_errors(blank_schedule)
-    message = blank_schedule.errors.full_messages.join(', ')
+  rescue => e
+    message = e.record.errors.full_messages.join(', ')
     context.add_error(GraphQL::ExecutionError.new(message))
   end
 end
