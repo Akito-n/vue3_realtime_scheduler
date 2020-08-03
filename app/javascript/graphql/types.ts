@@ -884,14 +884,7 @@ export type IndividualSchedulesSubscription = (
       { __typename?: 'ScheduleConnection' }
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Schedule' }
-        & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'isRequest' | 'status'>
-        & { requester: (
-          { __typename: 'Member' }
-          & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
-        ) | (
-          { __typename: 'Occupation' }
-          & Pick<Occupation, 'id' | 'name' | 'color' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
-        ) }
+        & ScheduleItemFragment
       )>>> }
     ) }
   ) }
@@ -1515,37 +1508,12 @@ export const IndividualSchedulesDocument = gql`
   individualSchedules {
     schedules {
       nodes {
-        id
-        startAt
-        endAt
-        mine
-        isRequest
-        status
-        requester {
-          __typename
-          ... on Member {
-            id
-            name
-            color
-            companyName
-          }
-          ... on Occupation {
-            id
-            name
-            color
-            address
-            applyFrom
-            memo
-            item
-            companyName
-            requiredTime
-          }
-        }
+        ...ScheduleItem
       }
     }
   }
 }
-    `;
+    ${ScheduleItemFragmentDoc}`;
 
 /**
  * __useIndividualSchedulesSubscription__

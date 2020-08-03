@@ -2,32 +2,7 @@ subscription individualSchedules {
   individualSchedules {
     schedules {
       nodes {
-        id
-        startAt
-        endAt
-        mine
-        isRequest
-        status
-        requester {
-          __typename
-          ... on Member {
-            id
-            name
-            color
-            companyName
-          }
-          ... on Occupation {
-            id
-            name
-            color
-            address
-            applyFrom
-            memo
-            item
-            companyName
-            requiredTime
-          }
-        }
+        ...ScheduleItem
       }
     }
   }
