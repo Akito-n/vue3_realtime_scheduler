@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import { Schedule, User, Occupation } from 'graphql/types'
-import { differenceInMinutes } from 'date-fns'
 
 export const scheduleFilter = () => {
   Vue.filter('requestIndividualName', (value: Schedule) => {
