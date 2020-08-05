@@ -90,7 +90,7 @@
                         )
                       "
                     >
-                      <div
+                      <span
                         v-if="
                           displayableInformation(schedule, day, hour, minute)
                         "
@@ -101,7 +101,7 @@
                           schedule.requester.name
                         }}
                         {{ schedule.isRequest ? schedule.status : '' }}
-                      </div>
+                      </span>
                     </div>
                   </template>
                 </div>
@@ -213,12 +213,12 @@ export default defineComponent({
     )
 
     const select = (
-      blankSchedule: Schedule,
+      schedule: Schedule,
       dateString: string,
       hour: number,
       minute: number
     ) => {
-      context.emit('select', { blankSchedule, dateString, hour, minute })
+      context.emit('select', { schedule, dateString, hour, minute })
     }
 
     const scheduleCellCounts = (schedule: Schedule) => {
