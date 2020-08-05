@@ -1,7 +1,26 @@
 <template>
   <modal :value="!!value" @input="close" title="リクエストする">
     <template v-if="value">
-      {{ startAt | date('M/d(E) HH:mm') }}～{{ endAt | date('HH:mm') }}
+      <vue-timepicker
+        :format="timepickerOptions.format"
+        :placeholder="timepickerOptions.placeholder"
+        :minute-interval="timepickerOptions.interval"
+        :hour-label="timepickerOptions.hourLabel"
+        :minute-label="timepickerOptions.minuteLabel"
+        :default-value="timepickerOptions.defaultValue"
+        v-model="state.startTime"
+        hide-clear-button
+      />
+      <vue-timepicker
+        :format="timepickerOptions.format"
+        :placeholder="timepickerOptions.placeholder"
+        :minute-interval="timepickerOptions.interval"
+        :hour-label="timepickerOptions.hourLabel"
+        :minute-label="timepickerOptions.minuteLabel"
+        :default-value="timepickerOptions.defaultValue"
+        v-model="state.endTime"
+        hide-clear-button
+      />
 
       <!--Footer-->
       <div class="flex justify-end pt-2">
@@ -43,8 +62,8 @@
           class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
           @click="
             submit(
-              startAt,
-              endAt,
+              state.startDateTime,
+              state.endDateTime,
               state.selectedOccupationId || blankSchedule.requester.id
             )
           "
@@ -59,10 +78,23 @@
 <script lang="ts">
 import Vue from 'vue'
 import {
+  addDays,
+  format,
+  startOfWeek,
+  startOfMonth,
+  parse,
+  addWeeks,
+  addHours,
+  addMinutes,
+  areIntervalsOverlapping,
+  differenceInHours
+} from 'date-fns'
+import {
   defineComponent,
   reactive,
   computed,
-  PropType
+  PropType,
+  watch
 } from '@vue/composition-api'
 import { useMutation, useResult } from '@vue/apollo-composable'
 import {
@@ -78,9 +110,10 @@ import {
   ScheduleConnection,
   BlankScheduleDocument
 } from 'graphql/types'
+import VueTimepicker from 'vue2-timepicker'
 
 export default defineComponent({
-  components: { Modal },
+  components: { Modal, VueTimepicker },
   props: {
     value: { type: Boolean as PropType<boolean>, required: true },
     startAt: { type: Date as PropType<Date> },
@@ -102,6 +135,21 @@ export default defineComponent({
     )
 
     const state = reactive({
+      startTime: null,
+      endTime: null,
+      sceduleDay: null,
+      startDateTime: computed(() =>
+        settingTime(
+          format(new Date(props.startAt), 'yyyy-MM-dd'),
+          state.startTime
+        )
+      ),
+      endDateTime: computed(() =>
+        settingTime(
+          format(new Date(props.startAt), 'yyyy-MM-dd'),
+          state.endTime
+        )
+      ),
       selectedOccupationId: null,
       selectedOccupation: computed(() => {
         if (state.selectedOccupationId) {
@@ -113,6 +161,8 @@ export default defineComponent({
     })
 
     const submit = (startAt: Date, endAt: Date, occupationId: string) => {
+      console.log(typeof startAt)
+      console.log(startAt)
       mutate({
         input: { startAt, endAt, occupationId }
       })
@@ -126,7 +176,48 @@ export default defineComponent({
       context.emit('input', false)
     }
 
-    return { state, submit, result, close, entries }
+    const timepickerOptions = {
+      format: 'HH:mm',
+      interval: '30',
+      placeholder: ' ',
+      hourLabel: '時間',
+      minuteLabel: '分'
+    }
+
+    watch(
+      () => props.startAt,
+      (newStartAt) => {
+        const startAt = newStartAt ? newStartAt : new Date()
+        state.startTime = {
+          HH: format(startAt, 'HH'),
+          mm: format(startAt, 'mm')
+        }
+      }
+    )
+    watch(
+      () => props.endAt,
+      (newEndAt) => {
+        const endAt = newEndAt ? newEndAt : new Date()
+        state.endTime = {
+          HH: format(endAt, 'HH'),
+          mm: format(endAt, 'mm')
+        }
+      }
+    )
+
+    const settingTime = (
+      dateString: string,
+      time: { HH: StringConstructor; mm: StringConstructor }
+    ) => {
+      const _dateTime = parse(
+        dateString + '-' + time.HH + time.mm,
+        'yyyy-MM-dd-HHmm',
+        new Date()
+      )
+      return _dateTime
+    }
+
+    return { state, submit, result, close, entries, timepickerOptions }
   }
 })
 </script>

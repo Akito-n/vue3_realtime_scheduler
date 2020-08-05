@@ -2,6 +2,7 @@
   <div>
     <schedule-creator />
     <schedule-updater />
+    <schedule-confirmer />
     <week-calendar
       :getSchedules="getSchedules"
       :loading="loading"
@@ -48,6 +49,7 @@ import {
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import ScheduleUpdater from '@/vue/containers/ScheduleUpdater.vue'
+import ScheduleConfirmer from '@/vue/containers/ScheduleConfirmer.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import RequestToIndividualCreator from '@/vue/containers/RequestToIndividualCreator.vue'
 import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
@@ -68,6 +70,7 @@ export default defineComponent({
   components: {
     ScheduleCreator,
     ScheduleUpdater,
+    ScheduleConfirmer,
     RequestToIndividualCreator,
     RequestAccepter,
     WeekCalendar
@@ -130,12 +133,12 @@ export default defineComponent({
     )
 
     const select = ({
-      blankSchedule,
+      schedule,
       dateString,
       hour,
       minute
     }: {
-      blankSchedule: Schedule
+      schedule: Schedule
       dateString: string
       hour: number
       minute: number
@@ -147,46 +150,51 @@ export default defineComponent({
       )
       state.selectedStartAt = date
       state.selectedEndAt = addHours(date, 1)
-      if (!blankSchedule) {
+      if (!schedule) {
         state.isRequested = true
         return
       } else {
-        state.selectedStartAt = new Date(blankSchedule.startAt)
+        console.log('companyStart')
+        state.selectedStartAt = new Date(schedule.startAt)
         if (
           differenceInHours(
-            new Date(blankSchedule.endAt),
-            new Date(blankSchedule.startAt)
+            new Date(schedule.endAt),
+            new Date(schedule.startAt)
           ) < 2
         ) {
-          state.selectedEndAt = new Date(blankSchedule.endAt)
+          state.selectedEndAt = new Date(schedule.endAt)
         } else {
-          state.selectedEndAt = addHours(new Date(blankSchedule.startAt), 1)
+          state.selectedEndAt = addHours(new Date(schedule.startAt), 1)
         }
+        state.isRequested = true
+        return
       }
       //自分のリクエストだった場合、編集モーダルを出す
-      if (blankSchedule.mine) {
+      if (schedule.mine && !(schedule.status == '確定済み')) {
         context.root.$router.push({
-          query: { edit_blank_schedule: blankSchedule.id }
+          query: { edit_blank_schedule: schedule.id }
         })
         return
       }
       //非承認か確定ずみの場合は
-      if (
-        blankSchedule.status == '非承認' ||
-        blankSchedule.status == '確定済み'
-      )
-        return
-
-      //予定がリクエストだった場合、アクセプターを出す
-      if (blankSchedule.isRequest) {
+      if (schedule.status == '非承認' || schedule.status == '確定済み') {
         context.root.$router.push({
-          query: { requested_schedule_id: blankSchedule.id }
+          query: { confirmed_schedule_id: schedule.id }
         })
         return
-        //相手の空き予定の場合は選択したblankScheduleをstateに入れてリクエストモーダルを出す
+      }
+
+      //予定がリクエストだった場合、アクセプターを出す
+      if (schedule.isRequest) {
+        context.root.$router.push({
+          query: { requested_schedule_id: schedule.id }
+        })
+        return
+        //相手の空き予定の場合は選択したscheduleをstateに入れてリクエストモーダルを出す
       } else {
+        console.log('ssss', schedule.status)
         state.isRequested = true
-        state.selectedSchedule = blankSchedule
+        state.selectedSchedule = schedule
       }
     }
 
