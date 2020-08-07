@@ -11,7 +11,7 @@ class Types::Objects::ScheduleType < Types::BaseObject
   field :mine, Boolean, null: false
   field :status, String, null: false
   field :requester, Types::Unions::ScheduleRequester, null: false
-  field :responder, Types::Objects::MemberType, null: false
+  field :responder, Types::Objects::MemberType, null: true
   field :occupation, Types::Objects::OccupationType, null: true
 
   field :is_request, Boolean, null: false

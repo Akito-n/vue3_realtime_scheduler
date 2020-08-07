@@ -50,6 +50,15 @@ class BlankSchedule < ApplicationRecord
     schedulable
   end
 
+  #MEMO 応急処置
+  def responder
+    nil
+  end
+
+  def occupation
+    nil
+  end
+
   def requester_id
     schedulable_id
   end
