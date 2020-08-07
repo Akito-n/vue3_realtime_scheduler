@@ -8,6 +8,16 @@ subscription individualSchedules {
         mine
         isRequest
         status
+        occupation {
+          id
+          name
+          address
+          applyFrom
+          memo
+          item
+          companyName
+          requiredTime
+        }
         requester {
           __typename
           ... on Member {
@@ -27,6 +37,12 @@ subscription individualSchedules {
             companyName
             requiredTime
           }
+        }
+        responder {
+          id
+          name
+          color
+          companyName
         }
       }
     }

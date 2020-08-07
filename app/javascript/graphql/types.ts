@@ -474,7 +474,7 @@ export type Schedule = {
   mine: Scalars['Boolean'];
   occupation?: Maybe<Occupation>;
   requester: ScheduleRequester;
-  responder: Member;
+  responder?: Maybe<Member>;
   startAt?: Maybe<Scalars['DateTime']>;
   status: Scalars['String'];
 };
@@ -587,10 +587,10 @@ export type ScheduleItemFragment = (
   ) | (
     { __typename: 'Occupation' }
     & Pick<Occupation, 'id' | 'name' | 'companyName'>
-  ), responder: (
+  ), responder?: Maybe<(
     { __typename?: 'Member' }
     & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
-  ) }
+  )> }
 );
 
 export type AddBlankScheduleMutationVariables = {
@@ -806,13 +806,19 @@ export type CompanySchedulesSubscription = (
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Schedule' }
         & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'isRequest' | 'status'>
-        & { requester: (
+        & { occupation?: Maybe<(
+          { __typename?: 'Occupation' }
+          & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+        )>, requester: (
           { __typename: 'Member' }
           & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
         ) | (
           { __typename: 'Occupation' }
           & Pick<Occupation, 'id' | 'name' | 'color' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
-        ) }
+        ), responder?: Maybe<(
+          { __typename?: 'Member' }
+          & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
+        )> }
       )>>> }
     ) }
   ) }
@@ -885,13 +891,19 @@ export type IndividualSchedulesSubscription = (
       & { nodes?: Maybe<Array<Maybe<(
         { __typename?: 'Schedule' }
         & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'mine' | 'isRequest' | 'status'>
-        & { requester: (
+        & { occupation?: Maybe<(
+          { __typename?: 'Occupation' }
+          & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+        )>, requester: (
           { __typename: 'Member' }
           & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
         ) | (
           { __typename: 'Occupation' }
           & Pick<Occupation, 'id' | 'name' | 'color' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
-        ) }
+        ), responder?: Maybe<(
+          { __typename?: 'Member' }
+          & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
+        )> }
       )>>> }
     ) }
   ) }
@@ -1392,6 +1404,16 @@ export const CompanySchedulesDocument = gql`
         mine
         isRequest
         status
+        occupation {
+          id
+          name
+          address
+          applyFrom
+          memo
+          item
+          companyName
+          requiredTime
+        }
         requester {
           __typename
           ... on Member {
@@ -1411,6 +1433,12 @@ export const CompanySchedulesDocument = gql`
             companyName
             requiredTime
           }
+        }
+        responder {
+          id
+          name
+          color
+          companyName
         }
       }
     }
@@ -1521,6 +1549,16 @@ export const IndividualSchedulesDocument = gql`
         mine
         isRequest
         status
+        occupation {
+          id
+          name
+          address
+          applyFrom
+          memo
+          item
+          companyName
+          requiredTime
+        }
         requester {
           __typename
           ... on Member {
@@ -1540,6 +1578,12 @@ export const IndividualSchedulesDocument = gql`
             companyName
             requiredTime
           }
+        }
+        responder {
+          id
+          name
+          color
+          companyName
         }
       }
     }
