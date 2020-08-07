@@ -8,6 +8,7 @@
         :hour-label="timepickerOptions.hourLabel"
         :minute-label="timepickerOptions.minuteLabel"
         :default-value="timepickerOptions.defaultValue"
+        :hour-range="timepickerOptions.hourRange"
         v-model="state.startTime"
         hide-clear-button
       />
@@ -18,6 +19,7 @@
         :hour-label="timepickerOptions.hourLabel"
         :minute-label="timepickerOptions.minuteLabel"
         :default-value="timepickerOptions.defaultValue"
+        :hour-range="timepickerOptions.hourRange"
         v-model="state.endTime"
         hide-clear-button
       />
@@ -173,6 +175,7 @@ export default defineComponent({
       format: 'HH:mm',
       interval: '30',
       placeholder: ' ',
+      hourRange: [[9, 22]],
       hourLabel: '時間',
       minuteLabel: '分'
     }

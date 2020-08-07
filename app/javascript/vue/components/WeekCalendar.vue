@@ -165,7 +165,7 @@ export default defineComponent({
     })
 
     const times = []
-    for (let i = 1; i <= 24; i++) {
+    for (let i = 9; i <= 23; i++) {
       times.push(i)
     }
 

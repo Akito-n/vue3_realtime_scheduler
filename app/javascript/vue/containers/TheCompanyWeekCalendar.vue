@@ -3,12 +3,14 @@
     <schedule-creator />
     <schedule-updater />
     <schedule-confirmer />
-    <week-calendar
-      :getSchedules="getSchedules"
-      :loading="loading"
-      :currentUser="currentUser"
-      @select="select"
-    />
+    <div class="calender-section">
+      <week-calendar
+        :getSchedules="getSchedules"
+        :loading="loading"
+        :currentUser="currentUser"
+        @select="select"
+      />
+    </div>
     <request-to-individual-creator
       v-model="state.isRequested"
       :blankSchedule.sync="state.selectedSchedule"

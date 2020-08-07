@@ -7,6 +7,7 @@
         :minute-interval="timepickerOptions.interval"
         :hour-label="timepickerOptions.hourLabel"
         :minute-label="timepickerOptions.minuteLabel"
+        :hour-range="timepickerOptions.hourRange"
         :default-value="timepickerOptions.defaultValue"
         v-model="state.startTime"
         hide-clear-button
@@ -17,6 +18,7 @@
         :minute-interval="timepickerOptions.interval"
         :hour-label="timepickerOptions.hourLabel"
         :minute-label="timepickerOptions.minuteLabel"
+        :hour-range="timepickerOptions.hourRange"
         :default-value="timepickerOptions.defaultValue"
         v-model="state.endTime"
         hide-clear-button
@@ -161,8 +163,6 @@ export default defineComponent({
     })
 
     const submit = (startAt: Date, endAt: Date, occupationId: string) => {
-      console.log(typeof startAt)
-      console.log(startAt)
       mutate({
         input: { startAt, endAt, occupationId }
       })
@@ -180,6 +180,7 @@ export default defineComponent({
       format: 'HH:mm',
       interval: '30',
       placeholder: ' ',
+      hourRange: [[9, 22]],
       hourLabel: '時間',
       minuteLabel: '分'
     }
