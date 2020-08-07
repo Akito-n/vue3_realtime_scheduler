@@ -98,7 +98,7 @@
                         :class="`cell-h-${scheduleCellCounts(schedule)}`"
                       >
                         {{ schedule | calenderInformation(currentUser) }}
-                      </div>
+                      </span>
                     </div>
                   </template>
                 </div>
