@@ -6,6 +6,7 @@
     <week-calendar
       :getSchedules="getSchedules"
       :loading="loading"
+      :currentUser="currentUser"
       @select="select"
     />
     <request-to-individual-creator
@@ -53,7 +54,7 @@ import ScheduleConfirmer from '@/vue/containers/ScheduleConfirmer.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import RequestToIndividualCreator from '@/vue/containers/RequestToIndividualCreator.vue'
 import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
-import { useSubscription } from '@vue/apollo-composable'
+import { useSubscription, useResult } from '@vue/apollo-composable'
 import WeekCalendar from '../components/WeekCalendar.vue'
 
 export default defineComponent({
@@ -77,6 +78,11 @@ export default defineComponent({
   },
   setup(props, context) {
     const currentUserQuery = useCurrentUserQuery()
+    const currentUser = useResult(
+      currentUserQuery.result,
+      null,
+      (data) => data.currentUser
+    )
 
     const { result, loading, restart } = useCompanySchedulesSubscription(() => {
       return {
@@ -207,7 +213,7 @@ export default defineComponent({
       format,
       jaLocale,
       select,
-      currentUserQuery
+      currentUser
     }
   }
 })
