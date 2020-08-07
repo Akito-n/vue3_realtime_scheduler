@@ -1,48 +1,57 @@
 <template>
   <div id="app">
     <template v-if="!loading">
-      <ul
-        v-if="result.currentUser"
-        class="flex items-center justify-end p-6"
-        :class="`bg-${result.currentUser.color}-400`"
+      <nav
+        class="flex items-center justify-between flex-wrap bg-white-200 p-4 nav"
       >
-        <li class="mr-6">
-          <router-link to="/example" class="text-white hover:text-yellow-800">
-            {{ result.currentUser.email }}({{ result.currentUser.role }})/{{
-              result.currentUser.name
-            }}{{ result.currentUser.companyName }}
-          </router-link>
-        </li>
-        <li class="mr-6">
-          <router-link
-            to="/calendar/month"
-            class="text-white hover:text-yellow-800"
-          >
-            calendar
-          </router-link>
-        </li>
-        <li class="mr-6">
-          <router-link
-            to="/calendar/week"
-            class="text-white hover:text-yellow-800"
-          >
-            week calendar
-          </router-link>
-        </li>
-        <li>
-          <a href="/users/sign_out" data-method="delete">
-            Sign out
-          </a>
-        </li>
-      </ul>
-      <ul v-else class="flex items-center justify-end p-6 bg-teal-500">
-        <li class="mr-6">
-          <a href="/users/sign_in">Sign in</a>
-        </li>
-        <li>
-          <a href="/users/sign_up">Sign up</a>
-        </li>
-      </ul>
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+          <img src="/images/Logo.svg" />
+        </div>
+        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+          <div class="text-sm lg:flex-grow"></div>
+          <div class="relative inline-block flex">
+            <div class="hidden">
+              <a
+                href="#"
+                class="inline-block text-sm px-4 py-2 mr-4 items-center leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+              ></a>
+            </div>
+            <div>
+              <span class="rounded-md shadow-sm">
+                <button
+                  type="button"
+                  class="inline-flex justify-center mt-1 w-full rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150"
+                  id="options-menu"
+                  @click="state.isShowMenu = !state.isShowMenu"
+                  aria-haspopup="true"
+                  aria-expanded="true"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </span>
+            </div>
+            <div
+              class="origin-top-right absolute right-0 mt-5 w-28 rounded-md shadow-lg"
+              v-if="state.isShowMenu"
+            >
+              <div class="rounded-md bg-white shadow-xs">
+                <a
+                  href="/users/sign_out"
+                  data-method="delete"
+                  class="inline-block text-sm py-2 text-center w-24 leading-none text-black border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+                  >Sign Out</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
     </template>
     <main class="flex justify-center items-start">
       <template v-if="!loading && result.currentUser">
@@ -61,7 +70,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, reactive } from '@vue/composition-api'
 import { useResult } from '@vue/apollo-composable'
 import { useCurrentUserQuery } from '@/graphql/types'
 import vueLoading, { VueLoadingOptions } from 'vue-loading-template'
@@ -76,6 +85,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { CurrentUserQuery } from 'graphql/types'
+import Fitty from 'vue-fitty'
 library.add(faPlus)
 library.add(faWindowClose)
 library.add(faChevronLeft)
@@ -83,11 +93,16 @@ library.add(faChevronRight)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use<VueLoadingOptions>(vueLoading)
+Vue.use(Fitty)
 
 export default defineComponent({
   setup() {
     const { result, loading } = useCurrentUserQuery()
-    return { result, loading }
+
+    const state = reactive({
+      isShowMenu: false
+    })
+    return { result, loading, state }
   }
 })
 </script>
@@ -100,5 +115,11 @@ export default defineComponent({
   &--blank + &--border {
     border: none;
   }
+}
+
+.nav {
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(27.1828px);
+  margin-bottom: 30px;
 }
 </style>

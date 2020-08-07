@@ -17,4 +17,11 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.body {
+  background-color: #ebf2f7;
+}
+nav {
+  background-color: white;
+}
+</style>
