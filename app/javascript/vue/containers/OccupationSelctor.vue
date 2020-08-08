@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading">
-    <div class="bg-white task__card--requestbox mb-20 max-w-sm">
+    <div class="bg-white task__card--requestbox mb-5 max-w-sm">
       <p class="task__card-title mb-4">ポジション</p>
       <label
         class="block ml-2 p-2 leading-normal cursor-pointer"

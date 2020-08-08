@@ -8,7 +8,7 @@
       <the-company-side-menu
         v-if="result.currentUser.isCompany"
         v-model="selectedUserIds"
-        class="ml-20"
+        class="mr-20"
       >
         <template v-slot:occupation>
           <occupation-selctor v-model="selectedOccupationIds" />

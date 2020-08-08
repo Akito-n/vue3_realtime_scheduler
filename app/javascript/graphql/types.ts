@@ -873,7 +873,7 @@ export type CompanyTasksSubscriptionSubscription = (
         & Pick<Recruitement, 'id' | 'createdAt' | 'stageCount' | 'isFixed'>
         & { individualUser: (
           { __typename?: 'Member' }
-          & Pick<Member, 'id' | 'name'>
+          & Pick<Member, 'id' | 'name' | 'color'>
         ), occupation: (
           { __typename?: 'Occupation' }
           & Pick<Occupation, 'id' | 'name'>
@@ -886,7 +886,7 @@ export type CompanyTasksSubscriptionSubscription = (
         & Pick<Recruitement, 'id' | 'createdAt'>
         & { individualUser: (
           { __typename?: 'Member' }
-          & Pick<Member, 'id' | 'name'>
+          & Pick<Member, 'id' | 'name' | 'color'>
         ), occupation: (
           { __typename?: 'Occupation' }
           & Pick<Occupation, 'id' | 'name'>
@@ -1521,6 +1521,7 @@ export const CompanyTasksSubscriptionDocument = gql`
         individualUser {
           id
           name
+          color
         }
         occupation {
           id
@@ -1535,6 +1536,7 @@ export const CompanyTasksSubscriptionDocument = gql`
         individualUser {
           id
           name
+          color
         }
         occupation {
           id
