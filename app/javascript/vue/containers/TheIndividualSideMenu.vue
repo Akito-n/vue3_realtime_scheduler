@@ -149,18 +149,22 @@ export default defineComponent({
     const state = reactive({
       isCheckedDayAfterFlag: false,
       todayConfirmedSchedules: computed(() => {
-        return result.value.individualTasks.confirmedScheduleTasks.nodes.filter(
-          (task) => {
+        return result.value.individualTasks.confirmedScheduleTasks.nodes
+          .filter((task) => {
             return isToday(new Date(task.startAt))
-          }
-        )
+          })
+          .sort((a, b) => {
+            return new Date(a.startAt) > new Date(b.startAt) ? 1 : -1
+          })
       }),
       afterTomollowSchedules: computed(() => {
-        return result.value.individualTasks.confirmedScheduleTasks.nodes.filter(
-          (task) => {
+        return result.value.individualTasks.confirmedScheduleTasks.nodes
+          .filter((task) => {
             return !isToday(new Date(task.startAt))
-          }
-        )
+          })
+          .sort((a, b) => {
+            return new Date(a.startAt) > new Date(b.startAt) ? 1 : -1
+          })
       })
     })
 
@@ -193,7 +197,7 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .task {
   &__card-title {
     font-family: Hiragino Sans;

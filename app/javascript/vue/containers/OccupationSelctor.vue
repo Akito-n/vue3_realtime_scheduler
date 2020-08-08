@@ -1,17 +1,22 @@
 <template>
   <div v-if="!loading">
-    <label
-      v-for="occupation in result.currentUser.occupations.nodes"
-      :key="occupation.id"
-    >
-      <input
-        type="checkbox"
-        :value="occupation.id"
-        v-model="selected"
-        @change="change"
-      />
-      {{ occupation.name }}
-    </label>
+    <div class="bg-white task__card--requestbox mb-20 max-w-sm">
+      <p class="task__card-title mb-4">ポジション</p>
+      <label
+        class="block ml-2 p-2 leading-normal cursor-pointer"
+        v-for="occupation in result.currentUser.occupations.nodes"
+        :key="occupation.id"
+      >
+        <input
+          class="form-checkbox text-gray-900 mr-2"
+          type="checkbox"
+          :value="occupation.id"
+          v-model="selected"
+          @change="change"
+        />
+        {{ occupation.name }}
+      </label>
+    </div>
   </div>
 </template>
 
@@ -36,4 +41,4 @@ export default defineComponent({
   }
 })
 </script>
-<style scoped></style>
+<style lang="scss"></style>

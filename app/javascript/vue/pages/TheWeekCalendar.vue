@@ -5,15 +5,18 @@
       <the-individual-week-calendar />
     </template>
     <template v-else>
-      <occupation-selctor v-model="selectedOccupationIds" />
-      <the-company-week-calendar
-        :occupationIds="selectedOccupationIds"
-        :userIds="selectedUserIds"
-      />
       <the-company-side-menu
         v-if="result.currentUser.isCompany"
         v-model="selectedUserIds"
         class="ml-20"
+      >
+        <template v-slot:occupation>
+          <occupation-selctor v-model="selectedOccupationIds" />
+        </template>
+      </the-company-side-menu>
+      <the-company-week-calendar
+        :occupationIds="selectedOccupationIds"
+        :userIds="selectedUserIds"
       />
     </template>
   </div>

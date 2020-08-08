@@ -2,6 +2,87 @@
   <div>
     <p v-if="loading"></p>
     <div v-else>
+      <div class="bg-white task__card--dayschedule mb-20 max-w-sm">
+        <p class="task__card-title mb-4">本日の予定</p>
+        <template v-if="state.todayConfirmedSchedules.length != 0">
+          <div
+            v-for="schedule in state.todayConfirmedSchedules"
+            :key="schedule.id"
+          >
+            <div class="task__schedule--info ml-4 mb-4">
+              <span
+                class="task__schedule-circle task__schedule-circle--inline"
+                :class="`bg-${schedule.occupation.color}-400`"
+              ></span>
+              <span class="task__schedule-time"
+                >{{ schedule.startAt | date('HH:mm') }} ~
+                {{ schedule.endAt | date('HH:mm') }}</span
+              >
+              <p class="task__schedule-name mt-2">
+                {{ schedule | requestIndividualName() }}
+              </p>
+            </div>
+          </div>
+          <div class="shadow-md">
+            <div class="tab w-full overflow-hidden border-t boader-b">
+              <input
+                class="absolute opacity-0"
+                id="tab-single-one"
+                type="checkbox"
+                v-model="state.isCheckedDayAfterFlag"
+              />
+              <label
+                class="block p-5 leading-normal cursor-pointer task__after-tomorrow-title"
+                for="tab-single-one"
+                >明日以降の予定をみる</label
+              >
+              <template v-if="state.afterTomollowSchedules.length != 0">
+                <div
+                  class="tab-content overflow-hidden border-l-2 border-indigo-500 leading-normal bg-white"
+                >
+                  <div
+                    v-for="schedule in state.afterTomollowSchedules"
+                    :key="schedule.id"
+                  >
+                    <p class="task__year-month-day ml-4">
+                      {{ schedule.startAt | date('yyyy/MM/dd') }}
+                    </p>
+                    <div class="task__schedule--info ml-4 mb-4">
+                      <span
+                        class="task__schedule-circle task__schedule-circle--inline"
+                        :class="`bg-${schedule.occupation.color}-400`"
+                      ></span>
+                      <span class="task__schedule-time"
+                        >{{ schedule.startAt | date('HH:mm') }} ~
+                        {{ schedule.endAt | date('HH:mm') }}</span
+                      >
+                      <p class="task__schedule-name mt-2">
+                        {{ schedule | requestIndividualName() }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <div
+                v-else
+                class="tab-content overflow-hidden border-l-2 border-indigo-500 leading-normal bg-white justify-center"
+              >
+                <p class="task__no-schedule-comment m-4">
+                  予定はありません
+                </p>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div v-else>
+          <p class="task__no-schedule-comment m-4 pb-4">
+            本日の予定はありません
+          </p>
+        </div>
+      </div>
+
+      <slot name="occupation"></slot>
+
       <div class="mr-5">
         <p>応募者一覧</p>
         <table
@@ -187,6 +268,7 @@ import {
   computed,
   PropType
 } from '@vue/composition-api'
+import { isToday } from 'date-fns'
 import { useSubscription, useMutation } from '@vue/apollo-composable'
 import { Recruitement } from 'graphql/types'
 import {
@@ -202,6 +284,28 @@ export default defineComponent({
   },
   setup(props, context) {
     const { result, loading } = useCompanyTasksSubscriptionSubscription()
+
+    const state = reactive({
+      isCheckedDayAfterFlag: false,
+      todayConfirmedSchedules: computed(() => {
+        return result.value.companyTasks.confirmedScheduleTasks.nodes
+          .filter((task) => {
+            return isToday(new Date(task.startAt))
+          })
+          .sort((a, b) => {
+            return new Date(a.startAt) > new Date(b.startAt) ? 1 : -1
+          })
+      }),
+      afterTomollowSchedules: computed(() => {
+        return result.value.companyTasks.confirmedScheduleTasks.nodes
+          .filter((task) => {
+            return !isToday(new Date(task.startAt))
+          })
+          .sort((a, b) => {
+            return new Date(a.startAt) > new Date(b.startAt) ? 1 : -1
+          })
+      })
+    })
     const selected = ref(props.value)
     const displayEntryUser = (schedule: Schedule) => {
       if (schedule.requester.__typename == 'Occupation') {
@@ -223,7 +327,15 @@ export default defineComponent({
     const change = () => {
       context.emit('input', selected.value)
     }
-    return { result, loading, displayEntryUser, proceed, selected, change }
+    return {
+      result,
+      loading,
+      displayEntryUser,
+      proceed,
+      selected,
+      change,
+      state
+    }
   }
 })
 </script>
