@@ -11,6 +11,7 @@ class Types::Objects::UserType < Types::BaseObject
   field :color, String, null: false
   field :occupations, Types::Objects::OccupationType.connection_type, null: false
   field :company_occupations, Types::Objects::OccupationType.connection_type, null: false
+  field :company_users, Types::Objects::MemberType.connection_type, null: false
 
   field :recruitements, Types::Objects::RecruitementType.connection_type, null: false
 

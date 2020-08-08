@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { differenceInMinutes } from 'date-fns'
+import { differenceInMinutes, isToday } from 'date-fns'
 import { Schedule, User, Occupation } from 'graphql/types'
 
 export const scheduleFilter = () => {
@@ -72,5 +72,9 @@ export const scheduleFilter = () => {
         }
       }
     }
+  })
+
+  Vue.filter('todaySchedules', (value: Schedule) => {
+    if (isToday(value.startAt)) return value
   })
 }

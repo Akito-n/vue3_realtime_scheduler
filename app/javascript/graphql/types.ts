@@ -229,6 +229,26 @@ export type Member = {
   role: Scalars['String'];
 };
 
+/** The connection type for Member. */
+export type MemberConnection = {
+  __typename?: 'MemberConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<MemberEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<Member>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+};
+
+/** An edge in a connection. */
+export type MemberEdge = {
+  __typename?: 'MemberEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<Member>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addBlankSchedule?: Maybe<AddBlankSchedulePayload>;
@@ -521,6 +541,7 @@ export type User = {
   color: Scalars['String'];
   companyName?: Maybe<Scalars['String']>;
   companyOccupations: OccupationConnection;
+  companyUsers: MemberConnection;
   email?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   isCompany: Scalars['Boolean'];
@@ -533,6 +554,14 @@ export type User = {
 
 
 export type UserCompanyOccupationsArgs = {
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
+  first?: Maybe<Scalars['Int']>;
+  last?: Maybe<Scalars['Int']>;
+};
+
+
+export type UserCompanyUsersArgs = {
   after?: Maybe<Scalars['String']>;
   before?: Maybe<Scalars['String']>;
   first?: Maybe<Scalars['Int']>;
@@ -580,7 +609,7 @@ export type ScheduleItemFragment = (
   & Pick<Schedule, 'id' | 'startAt' | 'endAt' | 'createdAt' | 'acceptedAt' | 'mine' | 'isRequest' | 'status'>
   & { occupation?: Maybe<(
     { __typename?: 'Occupation' }
-    & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
+    & Pick<Occupation, 'id' | 'name' | 'address' | 'color' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
   )>, requester: (
     { __typename: 'Member' }
     & Pick<Member, 'id' | 'name' | 'color' | 'companyName'>
@@ -774,6 +803,12 @@ export type CurrentUserQuery = (
         { __typename?: 'Occupation' }
         & Pick<Occupation, 'id' | 'name' | 'address' | 'applyFrom' | 'memo' | 'item' | 'companyName' | 'requiredTime'>
       )>>> }
+    ), companyUsers: (
+      { __typename?: 'MemberConnection' }
+      & { nodes?: Maybe<Array<Maybe<(
+        { __typename?: 'Member' }
+        & Pick<Member, 'id' | 'companyName'>
+      )>>> }
     ), recruitements: (
       { __typename?: 'RecruitementConnection' }
       & { nodes?: Maybe<Array<Maybe<(
@@ -958,6 +993,7 @@ export const ScheduleItemFragmentDoc = gql`
     id
     name
     address
+    color
     applyFrom
     memo
     item
@@ -1349,6 +1385,12 @@ export const CurrentUserDocument = gql`
         item
         companyName
         requiredTime
+      }
+    }
+    companyUsers {
+      nodes {
+        id
+        companyName
       }
     }
     recruitements {
