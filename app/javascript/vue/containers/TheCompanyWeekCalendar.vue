@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <schedule-creator />
-    <schedule-updater />
-    <schedule-confirmer />
+  <div class="relative">
+    <template v-if="!loading">
+      <schedule-creator />
+      <schedule-updater />
+      <schedule-confirmer />
+    </template>
     <div class="calender-section">
       <week-calendar
         :getSchedules="getSchedules"

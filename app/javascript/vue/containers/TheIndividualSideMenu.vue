@@ -216,7 +216,6 @@ export default defineComponent({
   }
 
   &__card--dayschedule {
-    margin-top: 40px;
     border-top: 3px solid #2d9cdb;
   }
 

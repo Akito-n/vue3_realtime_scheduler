@@ -4,12 +4,15 @@
       <div class="mt-20">
         <vue-loading
           type="spiningDubbles"
-          color="#40e0d0"
+          color="#0000cd"
           :size="{ width: '300px', height: '300px' }"
         />
       </div>
     </div>
-    <div class="flex justify-center items-end" v-else>
+    <div
+      class="flex justify-center items-end bg-white pt-2 pb-10 pl-16 pr-5 rounded week__calender-section"
+      v-else
+    >
       <div class="flex flex-col">
         <div
           v-for="(time, t) in times"
@@ -20,17 +23,17 @@
         </div>
       </div>
       <div>
-        <div class="flex row justify-around items-center my-5">
+        <div class="flex row justify-center items-center my-5">
           <router-link
             :to="`/calendar/week/${state.lastWeek}`"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            class="text-gray-700 font-bold py-2 px-4 mr-4 rounded"
           >
             <font-awesome-icon icon="chevron-left" />
           </router-link>
-          {{ state.currentWeek }}
+          <span class="text-2xl">{{ state.currentWeek }}</span>
           <router-link
             :to="`/calendar/week/${state.nextWeek}`"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            class="text-gray-700 ml-5 font-bold py-2 px-4 rounded"
           >
             <font-awesome-icon icon="chevron-right" />
           </router-link>
@@ -39,9 +42,12 @@
           <div
             v-for="(day, i) in state.days"
             :key="i"
-            class="w-32 h-10 text-center"
+            class="w-32 h-14 text-center"
+            :class="`week__row--${scheduleIsToday(day)}`"
           >
-            {{ format(day, 'dd(E)', { locale: jaLocale }) }}
+            {{ format(day, 'E', { locale: jaLocale }) }}
+            <br />
+            {{ format(day, 'dd', { locale: jaLocale }) }}
           </div>
         </div>
         <div class="flex row justify-center items-center">
@@ -65,10 +71,10 @@
                     minute
                   )
                 "
-                class="bg-gray-100 w-32 h-10 schedule-cell relative"
-                :class="`day-${day} hour-${hour} ${
+                class="w-32 h-10 schedule-cell relative"
+                :class="`${
                   minute === 0 ? 'border-b-0' : ''
-                }`"
+                } week__cell--${dayType(day)}`"
               >
                 <div class="flex row justify-start">
                   <template
@@ -125,7 +131,10 @@ import {
   addHours,
   addMinutes,
   areIntervalsOverlapping,
-  differenceInMinutes
+  differenceInMinutes,
+  isSunday,
+  isSaturday,
+  isToday
 } from 'date-fns'
 import jaLocale from 'date-fns/locale/ja'
 import Vue from 'vue'
@@ -175,10 +184,7 @@ export default defineComponent({
       state.nextWeek = format(addWeeks(current, 1), 'yyyy/MM/dd')
 
       state.days = daysOfWeek(current)
-      state.currentWeek = `${format(current, 'M月')} ${format(
-        state.days[0],
-        'dd'
-      )}～${format(state.days[6], 'dd')}日`
+      state.currentWeek = format(current, 'yyyy/M')
     }
 
     const displayableInformation = (
@@ -228,6 +234,14 @@ export default defineComponent({
       )
     }
 
+    const dayType = (day: Date) => {
+      return isSunday(day) || isSaturday(day) ? 'holiday' : 'weekday'
+    }
+
+    const scheduleIsToday = (day: Date) => {
+      return isToday(day) ? 'today' : 'other'
+    }
+
     return {
       times,
       state,
@@ -235,9 +249,42 @@ export default defineComponent({
       jaLocale,
       select,
       displayableInformation,
-      scheduleCellCounts
+      scheduleCellCounts,
+      dayType,
+      scheduleIsToday
     }
   }
 })
 </script>
-<style scoped></style>
+<style lang="scss" scoped>
+.week {
+  &__calender-section {
+    box-shadow: 0px 0px 10px rgba(153, 153, 153, 0.2);
+  }
+  &__current-week-title {
+    /* Today’s Agenda */
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 26px;
+    /* identical to box height */
+
+    /* Gray 2 */
+    color: #4f4f4f;
+  }
+
+  &__row--today {
+    color: #2d9cdb;
+  }
+
+  &__cell--holiday {
+    /* Rectangle 5 */
+    background-color: #edf0f280;
+    mix-blend-mode: normal;
+  }
+  &__cell--weekday {
+    background-color: white;
+  }
+}
+</style>

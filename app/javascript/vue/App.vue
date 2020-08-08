@@ -5,7 +5,9 @@
         class="flex items-center justify-between flex-wrap bg-white-200 p-4 nav"
       >
         <div class="flex items-center flex-shrink-0 text-white mr-6">
-          <img src="/images/Logo.svg" />
+          <router-link to="/calendar/week">
+            <img src="/images/Logo.svg" />
+          </router-link>
         </div>
         <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
           <div class="text-sm lg:flex-grow"></div>
@@ -16,7 +18,14 @@
                 class="inline-block text-sm px-4 py-2 mr-4 items-center leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
               ></a>
             </div>
-            <div>
+            <div class="flex">
+              <span
+                ><router-link to="/calendar/month">
+                  <img
+                    src="/images/calender.svg"
+                    class="w-4 h-4 mr-4 inline-block"
+                  /> </router-link
+              ></span>
               <span class="rounded-md shadow-sm">
                 <button
                   type="button"
@@ -81,19 +90,19 @@ import {
   faPlus,
   faWindowClose,
   faChevronLeft,
-  faChevronRight
+  faChevronRight,
+  faCalendarPlus
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { CurrentUserQuery } from 'graphql/types'
-import Fitty from 'vue-fitty'
 library.add(faPlus)
 library.add(faWindowClose)
 library.add(faChevronLeft)
 library.add(faChevronRight)
+library.add(faCalendarPlus)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use<VueLoadingOptions>(vueLoading)
-Vue.use(Fitty)
 
 export default defineComponent({
   setup() {
@@ -110,8 +119,11 @@ export default defineComponent({
 <style lang="scss">
 .schedule-cell {
   &--border {
-    border: solid 1px #a0aec0;
+    border-right: solid 0.25px #a0aec0;
+    border-bottom: solid 0.25px #a0aec0;
+    border-top: solid 0.25px #a0aec0;
   }
+
   &--blank + &--border {
     border: none;
   }

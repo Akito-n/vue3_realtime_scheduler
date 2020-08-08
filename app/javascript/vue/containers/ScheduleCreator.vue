@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <modal :value="state.opened" @input="close" title="選択した内容">
+  <div class="h-0">
+    <modal :value="state.opened" @input="close" title="予定を登録/編集">
       <schedule-form
         :disabled="loading"
         :ocupations="occupations"
@@ -13,10 +13,10 @@
       </template>
     </modal>
     <button
-      class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+      class="bg-gray-800 hover:bg-gray-700 text-white font-light py-2 px-4 rounded-full -m-10"
       @click="open"
     >
-      <font-awesome-icon icon="plus" />
+      <font-awesome-icon icon="calendar-plus" />
     </button>
   </div>
 </template>
@@ -91,4 +91,4 @@ export default defineComponent({
 })
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>
