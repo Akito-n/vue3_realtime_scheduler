@@ -5,7 +5,7 @@
         class="flex items-center justify-between flex-wrap bg-white-200 p-4 nav"
       >
         <div class="flex items-center flex-shrink-0 text-white mr-6">
-          <router-link to="/calendar/week">
+          <router-link to="/calendar/week" class="ml-5">
             <img src="/images/Logo.svg" />
           </router-link>
         </div>

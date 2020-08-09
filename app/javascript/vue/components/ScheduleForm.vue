@@ -43,7 +43,7 @@
       </div>
       <slot name="delete"></slot>
       <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 ml-5"
+        class="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 ml-5"
         @click="submit"
         :disabled="props.disabled"
       >

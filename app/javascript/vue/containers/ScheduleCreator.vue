@@ -1,6 +1,6 @@
 <template>
   <div class="h-0">
-    <modal :value="state.opened" @input="close" title="予定を登録/編集">
+    <modal :value="state.opened" @input="close" class="sssssss">
       <schedule-form
         :disabled="loading"
         :ocupations="occupations"

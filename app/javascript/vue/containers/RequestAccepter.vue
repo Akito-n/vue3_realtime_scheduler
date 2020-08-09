@@ -3,7 +3,11 @@
     <modal
       :value="!!state.scheduleId"
       @input="close"
-      :title="state.isCancelled ? 'キャンセルしました' : 'リクエストされた内容'"
+      :title="
+        state.isCancelled
+          ? 'キャンセルしました'
+          : requesterName(schedule) + 'さんからのリクエストがあります。'
+      "
     >
       <template v-if="!state.isCancelled">
         {{ schedule.startAt | date('M/d(E) HH:mm') }}～{{
@@ -33,13 +37,13 @@
         <!--Footer-->
         <div class="flex justify-between pt-2">
           <button
-            class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
+            class="px-4 bg-transparent p-3 rounded-md text-white bg-black mr-2"
             @click="state.confirming = true"
           >
-            承認しない
+            非承認
           </button>
           <button
-            class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
+            class="px-4 bg-transparent p-3 rounded-md text-white bg-black mr-2"
             @click="submit(schedule.id)"
           >
             リクエストを承認する
@@ -118,6 +122,16 @@ export default defineComponent({
       context.root.$router.push({ query: null })
     }
 
+    const requesterName = (schedule: Schedule) => {
+      if (!schedule.isRequest) return ''
+
+      if (schedule.requester.__typename == 'Member') {
+        return schedule.requester.name
+      } else {
+        return schedule.requester.companyName
+      }
+    }
+
     onDone(() => {
       if (state.isCancelled) {
         return
@@ -132,7 +146,15 @@ export default defineComponent({
       }
     )
 
-    return { currentUser, submit, cancel, state, schedule, close }
+    return {
+      currentUser,
+      submit,
+      cancel,
+      state,
+      schedule,
+      close,
+      requesterName
+    }
   }
 })
 </script>

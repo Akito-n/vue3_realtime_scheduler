@@ -160,6 +160,9 @@ export default defineComponent({
       afterTomollowSchedules: computed(() => {
         return result.value.individualTasks.confirmedScheduleTasks.nodes
           .filter((task) => {
+            console.log(task.startAt)
+            console.log(isToday(new Date(task.startAt)))
+
             return !isToday(new Date(task.startAt))
           })
           .sort((a, b) => {
