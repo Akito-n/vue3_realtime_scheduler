@@ -86,25 +86,39 @@
         >
           <div class="ml-5">
             <p class="task__schedule-name mb-2">{{ company.companyName }}</p>
-            <div
-              class="pb-2"
-              v-for="schedule in requestSchedulesGroupingByCompany(
-                result.individualTasks.respondingTasks.nodes,
-                company.companyName
-              )"
-              :key="schedule.id"
+            <template
+              v-if="
+                requestSchedulesGroupingByCompany(
+                  result.individualTasks.respondingTasks.nodes,
+                  company.companyName
+                ).length > 0
+              "
             >
-              <span
-                class="task__schedule-circle task__schedule-circle--inline"
-                :class="`bg-${schedule.occupation.color}-400`"
-              ></span>
-              <span>{{ schedule.occupation.name }}</span>
-              <button
-                @click="select(schedule.id)"
-                class="bg-gray-700 hover:bg-gray-900 text-white font-bold ml-2 py-1 px-1 rounded-full"
+              <div
+                class="pb-2"
+                v-for="schedule in requestSchedulesGroupingByCompany(
+                  result.individualTasks.respondingTasks.nodes,
+                  company.companyName
+                )"
+                :key="schedule.id"
               >
-                <img src="/images/mail.svg" class="w-4 h-4" />
-              </button>
+                <span
+                  class="task__schedule-circle task__schedule-circle--inline"
+                  :class="`bg-${schedule.occupation.color}-400`"
+                ></span>
+                <span>{{ schedule.occupation.name }}</span>
+                <button
+                  @click="select(schedule.id)"
+                  class="bg-gray-700 hover:bg-gray-900 text-white font-bold ml-2 py-1 px-1 rounded-full"
+                >
+                  <img src="/images/mail.svg" class="w-4 h-4" />
+                </button>
+              </div>
+            </template>
+            <div v-else>
+              <p class="task__no-schedule-comment m-4">
+                リクエストはありません
+              </p>
             </div>
           </div>
         </div>
@@ -160,9 +174,6 @@ export default defineComponent({
       afterTomollowSchedules: computed(() => {
         return result.value.individualTasks.confirmedScheduleTasks.nodes
           .filter((task) => {
-            console.log(task.startAt)
-            console.log(isToday(new Date(task.startAt)))
-
             return !isToday(new Date(task.startAt))
           })
           .sort((a, b) => {

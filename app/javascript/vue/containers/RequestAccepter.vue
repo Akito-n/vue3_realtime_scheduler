@@ -159,7 +159,6 @@ export default defineComponent({
     )
 
     const submit = (scheduleId: string) => {
-      console.log(scheduleId)
       mutate({ input: { scheduleId: scheduleId } })
     }
 

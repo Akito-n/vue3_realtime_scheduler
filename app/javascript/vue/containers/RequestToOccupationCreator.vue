@@ -282,7 +282,6 @@ export default defineComponent({
     )
 
     watch(entries, (data) => {
-      console.log('watch entry', data[0])
       state.selectedOccupationId = data[0]?.id
     })
 

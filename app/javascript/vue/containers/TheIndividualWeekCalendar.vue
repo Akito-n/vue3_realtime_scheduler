@@ -133,10 +133,8 @@ export default defineComponent({
       } else {
         //自分のスケジュールの場合
         if (schedule.mine) {
-          console.log('自分のリクエスト')
           //空き予定の場合
           if (!schedule.isRequest) {
-            console.log('blankScheduleをクリック')
             //自分のリクエストだった場合、編集モーダルを出す
             context.root.$router.push({
               query: { edit_blank_schedule: schedule.id }
@@ -144,10 +142,9 @@ export default defineComponent({
             return
           } else {
             //空き予定ではない場合（自分からのリクエスト）
-            console.log('Scheduleをクリック')
+
             //確定済みの場合、確認モーダル
             if (schedule.status == '確定済み') {
-              console.log('自分からリクエストした案件で確定済みのもの')
               context.root.$router.push({
                 query: { confirmed_schedule_id: schedule.id }
               })
@@ -162,10 +159,9 @@ export default defineComponent({
           }
         } else {
           //相手のスケジュールの場合
-          console.log('相手のリクエスト')
+
           //空き予定の場合
           if (!schedule.isRequest) {
-            console.log('blankScheduleをクリック')
             state.selectedSchedule = schedule
             //相手のリクエストだった場合、リクエストモーダルを出す
             if (
@@ -185,9 +181,7 @@ export default defineComponent({
           } else {
             //空き予定ではない場合（相手からのリクエスト）
 
-            console.log('Scheduleをクリック')
             if (schedule.status == '確定済み') {
-              console.log('相手からリクエストした案件で確定済みのもの')
               context.root.$router.push({
                 query: { confirmed_schedule_id: schedule.id }
               })
