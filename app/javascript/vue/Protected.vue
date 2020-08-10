@@ -6,12 +6,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, watch } from '@vue/composition-api'
 import { useCurrentUserQuery } from '@/graphql/types'
 
 export default defineComponent({
-  setup() {
+  setup(_, context) {
     const { result, loading } = useCurrentUserQuery()
+
+    watch(result, () => {
+      if (context.root.$route.path == '/') {
+        context.root.$router.push('/calendar/week')
+      }
+    })
     return { result, loading }
   }
 })
