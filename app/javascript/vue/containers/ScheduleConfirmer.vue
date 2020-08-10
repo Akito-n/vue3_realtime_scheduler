@@ -13,7 +13,7 @@
       >
         <div class="">
           <div class="flex justify-between items-center p-4 mb-4 modal__card">
-            <p class="modal__card-title">
+            <p class="modal__card-title text-lg">
               {{ schedule | confirmTitle(currentUser) }}
             </p>
             <div class="cursor-pointer z-50" @click="close">
@@ -91,7 +91,6 @@
         </div>
       </div>
     </div>
-    <confirm-dialog v-model="state.confirming" @ok="cancel(schedule.id)" />
   </div>
 </template>
 <script lang="ts">
@@ -186,8 +185,6 @@ export default defineComponent({
   }
   &__card-title {
     font-weight: bold;
-    font-size: 1.25rem;
-    line-height: 14px;
     /* identical to box height, or 100% */
 
     display: flex;
