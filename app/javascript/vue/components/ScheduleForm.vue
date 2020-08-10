@@ -1,8 +1,8 @@
 <template>
   <div class="my-5">
-    <div class="justify-around items-center">
+    <div class="justify-around items-center mt-5">
       開始
-      <input type="date" v-model="state.startDate" />
+      <input type="date" v-model="state.startDate" class="" />
       <vue-timepicker
         :format="timepickerOptions.format"
         :placeholder="timepickerOptions.placeholder"
@@ -15,7 +15,7 @@
         hide-clear-button
       />
     </div>
-    <div class="justify-around items-center">
+    <div class="justify-around items-center mt-4">
       終了
       <input type="date" v-model="state.endDate" />
       <vue-timepicker
@@ -30,20 +30,36 @@
       />
     </div>
 
-    <div class="flex justify-end items-center pt-20 mt-10">
-      <div v-for="occupation in ocupations || []" :key="occupation.id">
-        <label class="ml-3">
-          <input
-            type="radio"
+    <div class="flex justify-around items-center pt-10">
+      <div class="relative" v-if="ocupations.length > 0">
+        <select
+          class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          v-model="state.selectedOccupationId"
+        >
+          <option
             :value="occupation.id"
-            v-model="state.selectedOccupationId"
-          />
-          {{ occupation.name }}
-        </label>
+            v-for="occupation in ocupations || []"
+            :key="occupation.id"
+            >{{ occupation.name }}</option
+          >
+        </select>
+        <div
+          class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+        >
+          <svg
+            class="fill-current h-4 w-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+          >
+            <path
+              d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+            />
+          </svg>
+        </div>
       </div>
       <slot name="delete"></slot>
       <button
-        class="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 ml-5"
+        class="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 ml-5 rounded-md"
         @click="submit"
         :disabled="props.disabled"
       >
@@ -54,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { format, parse, addHours } from 'date-fns'
 import {
   defineComponent,
@@ -66,24 +82,16 @@ import {
 import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 
-interface Props {
-  defaultStartAt: string
-  defaultEndAt: string
-  defaultOccupationId: string
-  disabled: boolean
-  ocupations: Array<{ id: string; subject: string }>
-}
-
 export default defineComponent<Props>({
   components: { VueTimepicker },
   props: {
-    defaultStartAt: String,
-    defaultEndAt: String,
-    defaultOccupationId: String,
-    disabled: Boolean,
-    ocupations: Array
+    defaultStartAt: String as PropType<string>,
+    defaultEndAt: String as PropType<string>,
+    defaultOccupationId: String as PropType<string>,
+    disabled: Boolean as PropType<boolean>,
+    ocupations: Array as PropType<Array<{ id: string; subject: string }>>
   },
-  setup(props: Props, context) {
+  setup(props, context) {
     const state = reactive({
       startDate: null,
       startTime: null,
@@ -181,4 +189,10 @@ export default defineComponent<Props>({
 })
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.modal-content div p {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #4f4f4f;
+}
+</style>

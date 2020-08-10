@@ -1,6 +1,6 @@
 <template>
   <div class="h-0">
-    <modal :value="state.opened" @input="close" class="sssssss">
+    <modal :value="state.opened" @input="close" title="スケジュールを立てる">
       <schedule-form
         :disabled="loading"
         :ocupations="occupations"
@@ -91,4 +91,8 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+button:focus {
+  outline: 0;
+}
+</style>

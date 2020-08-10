@@ -2,7 +2,6 @@
   <div v-if="state.scheduleId">
     <div
       class="fixed w-full h-full top-0 left-0 flex items-center justify-center z-50"
-      style=""
     >
       <div
         class="absolute w-full h-full bg-gray-100 opacity-25"
@@ -198,6 +197,11 @@ export default defineComponent({
     width: 150px;
     min-width: 150px;
     color: #bdbdbd;
+    &--small {
+      max-width: 150px;
+      color: #bdbdbd;
+      width: 50px;
+    }
   }
   &__content-context {
     width: 200px;
