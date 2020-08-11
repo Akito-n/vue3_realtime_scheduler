@@ -317,6 +317,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.vue__time-picker .dropdown ul li:not([disabled]).active {
+  background: black;
+}
 .modal {
   &__request-timeinput {
     border: none;
