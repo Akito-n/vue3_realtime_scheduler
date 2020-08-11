@@ -62,6 +62,9 @@
         </div>
       </nav>
     </template>
+    <template v-else>
+      <loading />
+    </template>
     <main class="flex justify-center items-start">
       <template v-if="!loading && result.currentUser">
         <router-view />
@@ -95,6 +98,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { CurrentUserQuery } from 'graphql/types'
+import Loading from '../vue/components/Loading.vue'
 library.add(faPlus)
 library.add(faWindowClose)
 library.add(faChevronLeft)
@@ -105,6 +109,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use<VueLoadingOptions>(vueLoading)
 
 export default defineComponent({
+  components: { Loading },
   setup() {
     const { result, loading } = useCurrentUserQuery()
 
