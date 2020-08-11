@@ -1,129 +1,136 @@
 <template>
-  <div v-if="!loading">
-    <div class="bg-white task__card--dayschedule mb-20 max-w-sm">
-      <p class="task__card-title mb-4">本日の予定</p>
-      <template v-if="state.todayConfirmedSchedules.length != 0">
-        <div
-          v-for="schedule in state.todayConfirmedSchedules"
-          :key="schedule.id"
-        >
-          <div class="task__schedule--info ml-4 mb-4">
-            <span
-              class="task__schedule-circle task__schedule-circle--inline"
-              :class="`bg-${schedule.occupation.color}-400`"
-            ></span>
-            <span class="task__schedule-time"
-              >{{ schedule.startAt | date('HH:mm') }} ~
-              {{ schedule.endAt | date('HH:mm') }}</span
-            >
-            <p class="task__schedule-name mt-2">
-              {{ schedule.occupation.companyName }}
-            </p>
-          </div>
-        </div>
-        <div class="shadow-md">
-          <div class="tab w-full overflow-hidden border-t boader-b">
-            <input
-              class="absolute opacity-0"
-              id="tab-single-one"
-              type="checkbox"
-              v-model="state.isCheckedDayAfterFlag"
-            />
-            <label
-              class="block p-5 leading-normal cursor-pointer task__after-tomorrow-title"
-              for="tab-single-one"
-              >明日以降の予定をみる</label
-            >
-            <template v-if="state.afterTomollowSchedules.length != 0">
-              <div
-                class="tab-content overflow-hidden border-l-2 border-indigo-500 leading-normal bg-white"
+  <div>
+    <div v-if="!loading">
+      <div class="bg-white task__card--dayschedule mb-20 max-w-sm">
+        <p class="task__card-title mb-4">本日の予定</p>
+        <template v-if="state.todayConfirmedSchedules.length != 0">
+          <div
+            v-for="schedule in state.todayConfirmedSchedules"
+            :key="schedule.id"
+          >
+            <div class="task__schedule--info ml-4 mb-4">
+              <span
+                class="task__schedule-circle task__schedule-circle--inline"
+                :class="`bg-${schedule.occupation.color}-400`"
+              ></span>
+              <span class="task__schedule-time"
+                >{{ schedule.startAt | date('HH:mm') }} ~
+                {{ schedule.endAt | date('HH:mm') }}</span
               >
+              <p class="task__schedule-name mt-2">
+                {{ schedule.occupation.companyName }}
+              </p>
+            </div>
+          </div>
+          <div class="shadow-md">
+            <div class="tab w-full overflow-hidden border-t boader-b">
+              <input
+                class="absolute opacity-0"
+                id="tab-single-one"
+                type="checkbox"
+                v-model="state.isCheckedDayAfterFlag"
+              />
+              <label
+                class="block p-5 leading-normal cursor-pointer task__after-tomorrow-title"
+                for="tab-single-one"
+                >明日以降の予定をみる</label
+              >
+              <template v-if="state.afterTomollowSchedules.length != 0">
                 <div
-                  v-for="schedule in state.afterTomollowSchedules"
-                  :key="schedule.id"
+                  class="tab-content overflow-hidden border-l-2 border-indigo-500 leading-normal bg-white"
                 >
-                  <p class="task__year-month-day ml-4">
-                    {{ schedule.startAt | date('yyyy/MM/dd') }}
-                  </p>
-                  <div class="task__schedule--info ml-4 mb-4">
-                    <span
-                      class="task__schedule-circle task__schedule-circle--inline"
-                      :class="`bg-${schedule.occupation.color}-400`"
-                    ></span>
-                    <span class="task__schedule-time"
-                      >{{ schedule.startAt | date('HH:mm') }} ~
-                      {{ schedule.endAt | date('HH:mm') }}</span
-                    >
-                    <p class="task__schedule-name mt-2">
-                      {{ schedule.occupation.companyName }}
+                  <div
+                    v-for="schedule in state.afterTomollowSchedules"
+                    :key="schedule.id"
+                  >
+                    <p class="task__year-month-day ml-4">
+                      {{ schedule.startAt | date('yyyy/MM/dd') }}
                     </p>
+                    <div class="task__schedule--info ml-4 mb-4">
+                      <span
+                        class="task__schedule-circle task__schedule-circle--inline"
+                        :class="`bg-${schedule.occupation.color}-400`"
+                      ></span>
+                      <span class="task__schedule-time"
+                        >{{ schedule.startAt | date('HH:mm') }} ~
+                        {{ schedule.endAt | date('HH:mm') }}</span
+                      >
+                      <p class="task__schedule-name mt-2">
+                        {{ schedule.occupation.companyName }}
+                      </p>
+                    </div>
                   </div>
                 </div>
+              </template>
+              <div
+                v-else
+                class="tab-content overflow-hidden border-l-2 border-indigo-500 leading-normal bg-white justify-center"
+              >
+                <p class="task__no-schedule-comment m-4">
+                  予定はありません
+                </p>
               </div>
-            </template>
-            <div
-              v-else
-              class="tab-content overflow-hidden border-l-2 border-indigo-500 leading-normal bg-white justify-center"
-            >
-              <p class="task__no-schedule-comment m-4">
-                予定はありません
-              </p>
             </div>
           </div>
+        </template>
+        <div v-else>
+          <p class="task__no-schedule-comment m-4 pb-4">
+            本日の予定はありません
+          </p>
         </div>
-      </template>
-      <div v-else>
-        <p class="task__no-schedule-comment m-4 pb-4">本日の予定はありません</p>
+      </div>
+
+      <div class="bg-white task__card--requestbox mb-20 max-w-sm">
+        <p class="task__card-title mb-4">リクエストボックス</p>
+        <template v-if="currentUser.companyUsers.nodes.length > 0">
+          <div
+            v-for="company in currentUser.companyUsers.nodes"
+            :key="company.id"
+          >
+            <div class="ml-5">
+              <p class="task__schedule-name mb-2">{{ company.companyName }}</p>
+              <template
+                v-if="
+                  requestSchedulesGroupingByCompany(
+                    result.individualTasks.respondingTasks.nodes,
+                    company.companyName
+                  ).length > 0
+                "
+              >
+                <div
+                  class="pb-2"
+                  v-for="schedule in requestSchedulesGroupingByCompany(
+                    result.individualTasks.respondingTasks.nodes,
+                    company.companyName
+                  )"
+                  :key="schedule.id"
+                >
+                  <span
+                    class="task__schedule-circle task__schedule-circle--inline"
+                    :class="`bg-${schedule.occupation.color}-400`"
+                  ></span>
+                  <span>{{ schedule.occupation.name }}</span>
+                  <button
+                    @click="select(schedule.id)"
+                    class="bg-gray-700 hover:bg-gray-900 text-white font-bold ml-2 py-1 px-1 rounded-full"
+                  >
+                    <img src="/images/mail.svg" class="w-4 h-4" />
+                  </button>
+                </div>
+              </template>
+              <div v-else>
+                <p class="task__no-schedule-comment m-4">
+                  リクエストはありません
+                </p>
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
-
-    <div class="bg-white task__card--requestbox mb-20 max-w-sm">
-      <p class="task__card-title mb-4">リクエストボックス</p>
-      <template v-if="currentUser.companyUsers.nodes.length > 0">
-        <div
-          v-for="company in currentUser.companyUsers.nodes"
-          :key="company.id"
-        >
-          <div class="ml-5">
-            <p class="task__schedule-name mb-2">{{ company.companyName }}</p>
-            <template
-              v-if="
-                requestSchedulesGroupingByCompany(
-                  result.individualTasks.respondingTasks.nodes,
-                  company.companyName
-                ).length > 0
-              "
-            >
-              <div
-                class="pb-2"
-                v-for="schedule in requestSchedulesGroupingByCompany(
-                  result.individualTasks.respondingTasks.nodes,
-                  company.companyName
-                )"
-                :key="schedule.id"
-              >
-                <span
-                  class="task__schedule-circle task__schedule-circle--inline"
-                  :class="`bg-${schedule.occupation.color}-400`"
-                ></span>
-                <span>{{ schedule.occupation.name }}</span>
-                <button
-                  @click="select(schedule.id)"
-                  class="bg-gray-700 hover:bg-gray-900 text-white font-bold ml-2 py-1 px-1 rounded-full"
-                >
-                  <img src="/images/mail.svg" class="w-4 h-4" />
-                </button>
-              </div>
-            </template>
-            <div v-else>
-              <p class="task__no-schedule-comment m-4">
-                リクエストはありません
-              </p>
-            </div>
-          </div>
-        </div>
-      </template>
-    </div>
+    <template v-else>
+      <loading />
+    </template>
   </div>
 </template>
 
@@ -147,9 +154,10 @@ import {
   useCurrentUserQuery
 } from 'graphql/types'
 import { PropType } from '@vue/composition-api'
+import Loading from '@/vue/components/Loading.vue'
 
 export default defineComponent({
-  components: {},
+  components: { Loading },
   setup(props, context) {
     const { result, loading } = useIndividualTasksSubscriptionSubscription()
 
