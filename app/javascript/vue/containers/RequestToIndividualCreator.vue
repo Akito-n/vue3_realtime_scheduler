@@ -7,9 +7,7 @@
         class="absolute w-full h-full bg-gray-100 opacity-25"
         @click="close"
       ></div>
-      <div
-        class="bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto"
-      >
+      <div class="bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50">
         <div class="">
           <div class="flex justify-between items-center p-4 mb-4 modal__card">
             <p class="modal__card-title text-lg">
