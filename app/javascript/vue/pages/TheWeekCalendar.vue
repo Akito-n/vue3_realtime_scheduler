@@ -1,23 +1,27 @@
 <template>
   <div v-if="!loading" class="flex justify-between items-start">
     <template v-if="result.currentUser.isIndividual">
-      <the-individual-side-menu class="mr-20" />
-      <the-individual-week-calendar />
+      <div class="mt-24 flex">
+        <the-individual-side-menu class="mr-20" />
+        <the-individual-week-calendar />
+      </div>
     </template>
     <template v-else>
-      <the-company-side-menu
-        v-if="result.currentUser.isCompany"
-        v-model="selectedUserIds"
-        class="mr-20"
-      >
-        <template v-slot:occupation>
-          <occupation-selctor v-model="selectedOccupationIds" />
-        </template>
-      </the-company-side-menu>
-      <the-company-week-calendar
-        :occupationIds="selectedOccupationIds"
-        :userIds="selectedUserIds"
-      />
+      <div class="mt-24 flex">
+        <the-company-side-menu
+          v-if="result.currentUser.isCompany"
+          v-model="selectedUserIds"
+          class="mr-20"
+        >
+          <template v-slot:occupation>
+            <occupation-selctor v-model="selectedOccupationIds" />
+          </template>
+        </the-company-side-menu>
+        <the-company-week-calendar
+          :occupationIds="selectedOccupationIds"
+          :userIds="selectedUserIds"
+        />
+      </div>
     </template>
   </div>
 </template>

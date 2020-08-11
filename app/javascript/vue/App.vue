@@ -2,7 +2,7 @@
   <div id="app">
     <template v-if="!loading">
       <nav
-        class="flex items-center justify-between flex-wrap bg-white-200 p-4 nav"
+        class="flex items-center justify-between flex-wrap bg-white-200 p-4 nav fixed w-full z-30 pb-30"
       >
         <div class="flex items-center flex-shrink-0 text-white mr-6">
           <router-link to="/calendar/week" class="ml-5">

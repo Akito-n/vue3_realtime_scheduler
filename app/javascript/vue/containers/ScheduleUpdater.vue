@@ -1,6 +1,6 @@
 <template>
   <div v-if="blankSchedule">
-    <modal :value="!!state.blankScheduleId" @input="close" title="選択した内容">
+    <modal :value="!!state.blankScheduleId" @input="close" title="予定の編集">
       <schedule-form
         :disabled="loading"
         :ocupations="[]"
