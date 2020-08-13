@@ -19,6 +19,11 @@ class Types::Objects::UserType < Types::BaseObject
     User.human_attribute_name("role.#{object.role}")
   end
 
+  field :company_users, Types::Objects::MemberType.connection_type, null: false
+  def company_users
+    object.company_users.uniq
+  end
+
   field :is_individual, Boolean, method: :individual?, null: false
   field :is_company, Boolean, method: :company?, null: false
 end

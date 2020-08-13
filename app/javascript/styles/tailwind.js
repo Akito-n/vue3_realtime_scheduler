@@ -18,6 +18,7 @@ module.exports = {
       }
 
       addUtilities(cellUtilities)
-    }
+    },
+    require('@tailwindcss/custom-forms')
   ]
 }

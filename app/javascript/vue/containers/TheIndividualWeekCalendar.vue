@@ -2,6 +2,7 @@
   <div>
     <schedule-creator />
     <schedule-updater />
+    <schedule-confirmer />
     <week-calendar
       :getSchedules="getSchedules"
       :loading="loading"
@@ -49,6 +50,7 @@ import {
 import { routes } from 'vue/routes'
 import ScheduleCreator from '@/vue/containers/ScheduleCreator.vue'
 import ScheduleUpdater from '@/vue/containers/ScheduleUpdater.vue'
+import ScheduleConfirmer from '@/vue/containers/ScheduleConfirmer.vue'
 import { useCalendar } from '@/vue/composition-funcs/calendar'
 import RequestToOccupationCreator from '@/vue/containers/RequestToOccupationCreator.vue'
 import RequestAccepter from '@/vue/containers/RequestAccepter.vue'
@@ -60,6 +62,7 @@ export default defineComponent({
   components: {
     ScheduleCreator,
     ScheduleUpdater,
+    ScheduleConfirmer,
     RequestToOccupationCreator,
     RequestAccepter,
     WeekCalendar
@@ -106,12 +109,12 @@ export default defineComponent({
     }
 
     const select = ({
-      blankSchedule,
+      schedule,
       dateString,
       hour,
       minute
     }: {
-      blankSchedule: Schedule
+      schedule: Schedule
       dateString: string
       hour: number
       minute: number
@@ -123,46 +126,75 @@ export default defineComponent({
       )
       state.selectedStartAt = date
       state.selectedEndAt = addHours(date, 1)
-      if (!blankSchedule) {
+      //空き予定をクリックしてない時
+      if (!schedule) {
         state.isRequested = true
         return
       } else {
-        state.selectedStartAt = new Date(blankSchedule.startAt)
-        if (
-          differenceInHours(
-            new Date(blankSchedule.endAt),
-            new Date(blankSchedule.startAt)
-          ) < 2
-        ) {
-          state.selectedEndAt = new Date(blankSchedule.endAt)
-        } else {
-          state.selectedEndAt = addHours(new Date(blankSchedule.startAt), 1)
-        }
-      }
-      //自分のリクエストだった場合、編集モーダルを出す
-      if (blankSchedule.mine) {
-        context.root.$router.push({
-          query: { edit_blank_schedule: blankSchedule.id }
-        })
-        return
-      }
-      //非承認か確定ずみの場合は
-      if (
-        blankSchedule.status == '非承認' ||
-        blankSchedule.status == '確定済み'
-      )
-        return
+        //自分のスケジュールの場合
+        if (schedule.mine) {
+          //空き予定の場合
+          if (!schedule.isRequest) {
+            //自分のリクエストだった場合、編集モーダルを出す
+            context.root.$router.push({
+              query: { edit_blank_schedule: schedule.id }
+            })
+            return
+          } else {
+            //空き予定ではない場合（自分からのリクエスト）
 
-      //予定がリクエストだった場合、アクセプターを出す
-      if (blankSchedule.isRequest) {
-        context.root.$router.push({
-          query: { requested_schedule_id: blankSchedule.id }
-        })
-        return
-        //相手の空き予定の場合は選択したblankScheduleをstateに入れてリクエストモーダルを出す
-      } else {
-        state.isRequested = true
-        state.selectedSchedule = blankSchedule
+            //確定済みの場合、確認モーダル
+            if (schedule.status == '確定済み') {
+              context.root.$router.push({
+                query: { confirmed_schedule_id: schedule.id }
+              })
+              return
+            } else {
+              //未確定のものは編集モーダルを出す
+              context.root.$router.push({
+                query: { edit_blank_schedule: schedule.id }
+              })
+              return
+            }
+          }
+        } else {
+          //相手のスケジュールの場合
+
+          //空き予定の場合
+          if (!schedule.isRequest) {
+            state.selectedSchedule = schedule
+            //相手のリクエストだった場合、リクエストモーダルを出す
+            if (
+              differenceInHours(
+                new Date(schedule.endAt),
+                new Date(schedule.startAt)
+              ) < 2
+            ) {
+              //空き予定が１時間未満の場合、リクエストの終了時間は空き予定に合わせる
+              state.selectedEndAt = new Date(schedule.endAt)
+            } else {
+              //FIXME : ここどうするか
+              state.selectedEndAt = new Date(schedule.endAt)
+            }
+            state.isRequested = true
+            return
+          } else {
+            //空き予定ではない場合（相手からのリクエスト）
+
+            if (schedule.status == '確定済み') {
+              context.root.$router.push({
+                query: { confirmed_schedule_id: schedule.id }
+              })
+              return
+            } else {
+              //未確定のものはアクセプターを出す
+              context.root.$router.push({
+                query: { requested_schedule_id: schedule.id }
+              })
+              return
+            }
+          }
+        }
       }
     }
 

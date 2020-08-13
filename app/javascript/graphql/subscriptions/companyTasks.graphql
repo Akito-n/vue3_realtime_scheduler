@@ -9,6 +9,7 @@ subscription companyTasksSubscription {
         individualUser {
           id
           name
+          color
         }
         occupation {
           id
@@ -23,6 +24,7 @@ subscription companyTasksSubscription {
         individualUser {
           id
           name
+          color
         }
         occupation {
           id

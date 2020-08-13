@@ -1,7 +1,9 @@
 <template>
   <div v-if="!loading" class="flex justify-between items-start">
     <template v-if="result.currentUser.isIndividual">
-      <the-individual-month-calender />
+      <div class="mt-56">
+        <the-individual-month-calender />
+      </div>
     </template>
     <template v-else>
       <the-company-month-calender />

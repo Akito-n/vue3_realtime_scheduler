@@ -23,7 +23,7 @@ class Subscriptions::IndividualTasks < Subscriptions::BaseSubscription
     has_blank_schedule_task = context[:current_user].blank_schedules.exists?(start_at: Time.current..Float::INFINITY)
     waiting_tasks = context[:current_user].request_schedules.status_pending.order(created_at: :asc)
     responding_tasks = context[:current_user].reseived_schedules.status_pending.order(created_at: :asc)
-    confirmed_schedule_tasks = Schedule.where(status: :accept).where(requester: context[:current_user]).or(Schedule.where(status: :accept).where(responder: context[:current_user])).order(created_at: :asc)
+    confirmed_schedule_tasks = Schedule.where(status: :accept).where(requester: context[:current_user]).where('start_at >= ?', Date.today).or(Schedule.where(status: :accept).where(responder: context[:current_user]).where('start_at >= ?', Date.today)).order(created_at: :asc)
 
     {
       blank_schedule_tasks: has_blank_schedule_task ? [] : occupations, # TODO: 確定済の案件どうする?

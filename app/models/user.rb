@@ -73,7 +73,7 @@ class User < ApplicationRecord
   end
 
   def can_schedulable?(object)
-    schedulable = individual? ? individual_schedulables : company_schedulables
+    schedulable = individual? ? individual_schedulables + company_users : company_schedulables
     schedulable.include?(object)
   end
 
