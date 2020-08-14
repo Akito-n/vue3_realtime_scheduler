@@ -155,8 +155,8 @@
                 @click="
                   submit(
                     recruitment.individualUser.id,
-                    startAt,
-                    endAt,
+                    state.startDateTime,
+                    state.endDateTime,
                     recruitment.occupation.id
                   )
                 "
