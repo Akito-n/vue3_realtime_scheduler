@@ -47,7 +47,7 @@ export const scheduleFilter = () => {
       } else if (!value.isRequest && value.mine) {
         return '【面接可能】'
       } else if (!value.isRequest && !value.mine) {
-        return '【面接枠】' + value.requester.name
+        return '【面接枠】' + value.requester.companyName
       }
     } else {
       if (!value.isRequest) {

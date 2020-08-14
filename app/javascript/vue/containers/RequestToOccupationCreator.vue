@@ -138,7 +138,9 @@
               </button>
               <button
                 class="px-4 bg-transparent p-3 rounded-md text-white bg-black mr-2"
-                @click="submit(startAt, endAt, entry.id)"
+                @click="
+                  submit(state.startDateTime, state.endDateTime, entry.id)
+                "
               >
                 面接日程をリクエストする
               </button>
