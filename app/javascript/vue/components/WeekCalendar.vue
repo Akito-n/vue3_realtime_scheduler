@@ -84,9 +84,9 @@
                       v-if="displayableInformation(schedule, day, hour, minute)"
                       :key="i"
                       class="max-w-3/4 min-h-full flex-grow z-10 items-center justify-center flex mr-2 rounded-md"
-                      :class="`bg-${
+                      :class="`bg__${
                         schedule.requester.color
-                      }-400 cell-h-${scheduleCellCounts(schedule)}`"
+                      } cell-h-${scheduleCellCounts(schedule)}`"
                       @click.stop="
                         select(
                           schedule,
@@ -285,6 +285,48 @@ export default defineComponent({
   }
   &__cell--weekday {
     background-color: white;
+  }
+}
+
+.bg {
+  &__sato {
+    background-color: #7b86c6;
+  }
+  &__suzuki {
+    background-color: #5bb37e;
+  }
+  &__takahashi {
+    background-color: #eec14b;
+  }
+  &__nakamura {
+    background-color: #d98177;
+  }
+  &__tozawa {
+    &-it {
+      background-color: #5285ec;
+    }
+    &-pm {
+      background-color: #e35d33;
+    }
+    &-sales {
+      background-color: #377e49;
+    }
+  }
+  &__kaneko {
+    &-infra {
+      background-color: #4252af;
+    }
+    &-sales {
+      background-color: #e49735;
+    }
+  }
+  &__sawada {
+    &-sales {
+      background-color: #4299df;
+    }
+    &-se {
+      background-color: #c5291c;
+    }
   }
 }
 </style>
