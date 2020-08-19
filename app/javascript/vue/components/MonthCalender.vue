@@ -1,16 +1,16 @@
 <template>
-  <div class="max-w-screen-xl">
-    <div class="flex row justify-around items-center my-5">
+  <div class="max-w-screen-xl mt-40">
+    <div class="flex row justify-around items-center pt-5 bg-white">
       <router-link
         :to="`/calendar/month/${state.last}`"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        class="font-bold py-2 px-4 rounded"
       >
         <font-awesome-icon icon="chevron-left" />
       </router-link>
       <div>{{ state.currentMonth | date('M') }}月</div>
       <router-link
         :to="`/calendar/month/${state.next}`"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        class="font-bold py-2 px-4 rounded"
       >
         <font-awesome-icon icon="chevron-right" />
       </router-link>
@@ -25,7 +25,7 @@
         />
       </div>
     </div>
-    <div v-else>
+    <div v-else class="bg-white p-5">
       <div class="flex row justify-around items-center">
         <div
           v-for="(elementaly, i) in elementalies"
