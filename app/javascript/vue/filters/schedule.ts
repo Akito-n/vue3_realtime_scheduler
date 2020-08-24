@@ -37,6 +37,7 @@ export const scheduleFilter = () => {
 
   Vue.filter('calenderInformation', (value: Schedule, user: User) => {
     if (!value && !user) return ''
+    if (value.status == '非承認') return '非承認'
     if (user.isIndividual) {
       if (value.isRequest && value.status == '確定済み') {
         return '【面接】' + value.occupation.companyName
