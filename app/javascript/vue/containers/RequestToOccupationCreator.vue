@@ -285,6 +285,15 @@ export default defineComponent({
       state.selectedOccupationId = data[0]?.id
     })
 
+    watch(
+      () => props.blankSchedule,
+      (newBlankschedule) => {
+        if (newBlankschedule) {
+          state.selectedOccupationId = newBlankschedule.requester.id
+        }
+      }
+    )
+
     const settingTime = (
       dateString: string,
       time: { HH: StringConstructor; mm: StringConstructor }
